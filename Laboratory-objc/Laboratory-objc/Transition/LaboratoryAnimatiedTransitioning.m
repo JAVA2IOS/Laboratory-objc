@@ -18,8 +18,17 @@
 @end
 
 @implementation LaboratoryAnimatiedTransitioning
+
+- (instancetype)init {
+    if (self = [super init]) {
+        _animatedDuriation = .382;
+    }
+    
+    return self;
+}
+
 - (NSTimeInterval)transitionDuration:(id<UIViewControllerContextTransitioning>)transitionContext {
-    return .382;
+    return MAX(0, _animatedDuriation);
 }
 
 // 转场动画实现逻辑
@@ -30,37 +39,17 @@
     UIView *toView = [transitionContext viewForKey:UITransitionContextToViewKey];
     UIView *fromView = [transitionContext viewForKey:UITransitionContextFromViewKey];
     
-    UIViewController *fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
-    UIViewController *toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
+//    UIViewController *fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
+//    UIViewController *toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
     switch (_animatedType) {
         case LABAnimatedTransitioningTypeFade:
             [self lab_animatedTransitionTypeFade:transitionContext container:containerView fromView:fromView toView:toView];
             break;
         default:
-            [self lab_defaultAnimation:transitionContext container:containerView toView:toView];
+            [self lab_defaultAnimation:transitionContext fromView:fromView toView:toView];
             break;
     }
 }
-
-- (id<UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController animationControllerForOperation:(UINavigationControllerOperation)operation fromViewController:(UIViewController *)fromVC toViewController:(UIViewController *)toVC {
-    switch (operation) {
-        case UINavigationControllerOperationPop:
-        {
-            if (_hasUsed) {
-                
-            }
-        }
-            break;
-            
-        default:
-            break;
-    }
-    
-    return [[LaboratoryAnimatiedTransitioning alloc] init];
-}
-
-
-
 
 #pragma mark - 动画实现
 
@@ -91,14 +80,17 @@
     }];
 }
 
-
-- (void)lab_defaultAnimation:(id<UIViewControllerContextTransitioning>)transitionContext container:(UIView *)container toView:(UIView *)toView {
-    [container addSubview:toView];
+- (void)lab_defaultAnimation:(id<UIViewControllerContextTransitioning>)transitionContext fromView:(UIView *)fromView toView:(UIView *)toView {
     NSTimeInterval animatedTime = [self transitionDuration:transitionContext];
-    [UIView animateWithDuration:animatedTime animations:^{} completion:^(BOOL finished) {
-        // 一定要实现，用于有交互式转场时
-        BOOL canceled = [transitionContext transitionWasCancelled];
-        [transitionContext completeTransition:!canceled];
-    }];
+    [UIView transitionFromView:fromView
+                        toView:toView
+                      duration:animatedTime
+                       options: _operation == UINavigationControllerOperationPop ? UIViewAnimationOptionTransitionCurlUp : UIViewAnimationOptionTransitionCurlDown
+                    completion:^(BOOL finished) {
+                        // 一定要实现，用于有交互式转场时
+                        BOOL canceled = [transitionContext transitionWasCancelled];
+                        [transitionContext completeTransition:!canceled];
+                    }];
 }
+
 @end

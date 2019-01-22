@@ -26,7 +26,6 @@
     HomeViewController *homeVC = [[HomeViewController alloc] init];
     homeVC.title = @"主页";
     LABNavigationController *nav = [[LABNavigationController alloc] initWithRootViewController:homeVC];
-    nav.labNavgationBar.titleLabel.text = homeVC.title;
     self.viewControllers = @[nav];
 }
 

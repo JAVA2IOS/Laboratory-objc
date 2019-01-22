@@ -16,5 +16,7 @@
  */
 + (instancetype)lab_initTable;
 
++ (instancetype)lab_initTableFrame:(CGRect)frame;
+
 @end
 

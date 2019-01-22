@@ -11,7 +11,7 @@
 /**
  渐变视图控制器
  */
-@interface FadeViewController : UIViewController
+@interface FadeViewController : LABBaseViewController
 
 @end
 

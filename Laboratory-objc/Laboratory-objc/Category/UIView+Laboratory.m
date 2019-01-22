@@ -18,15 +18,17 @@
 @dynamic labCenterX;
 @dynamic labCenterY;
 
-- (void)lab_addRoundingCorners:(UIRectCorner)corners cornerRadii:(CGFloat)radius {
-    [self lab_addRoundingCorners:corners inRect:self.bounds cornerRadii:radius];
+- (CALayer *)lab_addRoundingCorners:(UIRectCorner)corners cornerRadii:(CGFloat)radius {
+    return [self lab_addRoundingCorners:corners inRect:self.bounds cornerRadii:radius];
 }
 
-- (void)lab_addRoundingCorners:(UIRectCorner)corners inRect:(CGRect)rect cornerRadii:(CGFloat)radius {
+- (CALayer *)lab_addRoundingCorners:(UIRectCorner)corners inRect:(CGRect)rect cornerRadii:(CGFloat)radius {
     UIBezierPath *maskPath = [UIBezierPath bezierPathWithRoundedRect:rect byRoundingCorners:corners cornerRadii:CGSizeMake(radius, radius)];
     CAShapeLayer *maskLayer = [[CAShapeLayer alloc] init];
     maskLayer.path = maskPath.CGPath;
     self.layer.mask = maskLayer;
+    
+    return maskLayer;
 }
 
 - (CALayer *)lab_addSubLayer:(UIColor *)backgroundColor RoundingCorners:(UIRectCorner)corners cornerRadii:(CGFloat)radius {

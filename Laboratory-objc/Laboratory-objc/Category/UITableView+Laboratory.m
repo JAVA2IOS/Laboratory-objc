@@ -10,8 +10,8 @@
 
 @implementation UITableView (Laboratory)
 
-+ (instancetype)lab_initTable {
-    UITableView *table = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
++ (instancetype)lab_initTableFrame:(CGRect)frame {
+    UITableView *table = [[UITableView alloc] initWithFrame:frame style:UITableViewStylePlain];
     table.estimatedRowHeight = 0;
     table.estimatedSectionFooterHeight = 0;
     table.estimatedSectionHeaderHeight = 0;
@@ -22,6 +22,10 @@
     table.backgroundColor = [UIColor clearColor];
     
     return table;
+}
+
++ (instancetype)lab_initTable {
+    return [[self class] lab_initTableFrame:CGRectZero];
 }
 
 @end

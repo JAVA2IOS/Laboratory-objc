@@ -34,6 +34,8 @@
 		F792B7D021F6BAA200335025 /* NSString+Laboratory.m in Sources */ = {isa = PBXBuildFile; fileRef = F792B7BB21F6BAA100335025 /* NSString+Laboratory.m */; };
 		F792B7D121F6BAA200335025 /* UIButton+Laboratory.m in Sources */ = {isa = PBXBuildFile; fileRef = F792B7BD21F6BAA100335025 /* UIButton+Laboratory.m */; };
 		F792B7D221F6BAA200335025 /* UIViewController+Laboratory.m in Sources */ = {isa = PBXBuildFile; fileRef = F792B7C321F6BAA100335025 /* UIViewController+Laboratory.m */; };
+		F7FBEFC521F6F4DB00E2B362 /* UITableViewCell+Laboratory.m in Sources */ = {isa = PBXBuildFile; fileRef = F7FBEFC421F6F4DB00E2B362 /* UITableViewCell+Laboratory.m */; };
+		F7FBEFC921F6F64800E2B362 /* HomeTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F7FBEFC821F6F64800E2B362 /* HomeTableViewCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -112,6 +114,11 @@
 		F792B7C121F6BAA100335025 /* UIScrollView+Laboratory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+Laboratory.h"; sourceTree = "<group>"; };
 		F792B7C221F6BAA100335025 /* NSDate+Laboratory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+Laboratory.h"; sourceTree = "<group>"; };
 		F792B7C321F6BAA100335025 /* UIViewController+Laboratory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+Laboratory.m"; sourceTree = "<group>"; };
+		F792B7D321F6BD3100335025 /* Cocoapods.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Cocoapods.h; sourceTree = "<group>"; };
+		F7FBEFC321F6F4DB00E2B362 /* UITableViewCell+Laboratory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UITableViewCell+Laboratory.h"; sourceTree = "<group>"; };
+		F7FBEFC421F6F4DB00E2B362 /* UITableViewCell+Laboratory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UITableViewCell+Laboratory.m"; sourceTree = "<group>"; };
+		F7FBEFC721F6F64800E2B362 /* HomeTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HomeTableViewCell.h; sourceTree = "<group>"; };
+		F7FBEFC821F6F64800E2B362 /* HomeTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HomeTableViewCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -146,7 +153,6 @@
 				68D04801BF2ECF9FE5CE9059 /* Pods-Laboratory-objc.debug.xcconfig */,
 				3038ABE175D426A7D6472B7A /* Pods-Laboratory-objc.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -246,6 +252,7 @@
 			children = (
 				F792B79E21F6BAA100335025 /* Constants.h */,
 				F792B79F21F6BAA100335025 /* PrefixHeader.pch */,
+				F792B7D321F6BD3100335025 /* Cocoapods.h */,
 			);
 			path = Define;
 			sourceTree = "<group>";
@@ -253,6 +260,7 @@
 		F792B7A021F6BAA100335025 /* Home */ = {
 			isa = PBXGroup;
 			children = (
+				F7FBEFC621F6F63600E2B362 /* View */,
 				F792B7A121F6BAA100335025 /* HomeModel.h */,
 				F792B7A221F6BAA100335025 /* HomeModel.m */,
 				F792B7A321F6BAA100335025 /* ViewController */,
@@ -313,8 +321,19 @@
 				F792B7B421F6BAA100335025 /* UIColor+Laboratory.m */,
 				F792B7C021F6BAA100335025 /* UILabel+Laboratory.h */,
 				F792B7B921F6BAA100335025 /* UILabel+Laboratory.m */,
+				F7FBEFC321F6F4DB00E2B362 /* UITableViewCell+Laboratory.h */,
+				F7FBEFC421F6F4DB00E2B362 /* UITableViewCell+Laboratory.m */,
 			);
 			path = Category;
+			sourceTree = "<group>";
+		};
+		F7FBEFC621F6F63600E2B362 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				F7FBEFC721F6F64800E2B362 /* HomeTableViewCell.h */,
+				F7FBEFC821F6F64800E2B362 /* HomeTableViewCell.m */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -498,7 +517,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F7FBEFC521F6F4DB00E2B362 /* UITableViewCell+Laboratory.m in Sources */,
 				F792B7C421F6BAA200335025 /* HomeModel.m in Sources */,
+				F7FBEFC921F6F64800E2B362 /* HomeTableViewCell.m in Sources */,
 				F792B79C21F6BA1000335025 /* LABNavigationBar.m in Sources */,
 				F792B79A21F6BA1000335025 /* BaseTabBarController.m in Sources */,
 				F792B79B21F6BA1000335025 /* LABBaseViewController.m in Sources */,
@@ -695,13 +716,14 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "${SRCROOT}/Laboratory-objc/Define/PrefixHeader.pch";
 				INFOPLIST_FILE = "Laboratory-objc/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "CodeZ.Laboratory-objc";
+				PRODUCT_BUNDLE_IDENTIFIER = CodeZ.laboratory.objc;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -715,13 +737,14 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "${SRCROOT}/Laboratory-objc/Define/PrefixHeader.pch";
 				INFOPLIST_FILE = "Laboratory-objc/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "CodeZ.Laboratory-objc";
+				PRODUCT_BUNDLE_IDENTIFIER = CodeZ.laboratory.objc;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

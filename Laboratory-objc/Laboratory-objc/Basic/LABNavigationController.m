@@ -17,9 +17,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self setNavigationBarHidden:YES animated:NO];
-    _labNavgationBar = [[LABNavigationBar alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, LABTopHeight)];
-    _labNavgationBar.backgroundColor = [UIColor whiteColor];
-    [self.view addSubview:_labNavgationBar];
 }
 
 

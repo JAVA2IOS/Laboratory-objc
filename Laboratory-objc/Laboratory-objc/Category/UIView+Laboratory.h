@@ -48,7 +48,7 @@ typedef NS_ENUM(NSInteger, LABGradientDirection) {
  @param corners 需要添加圆角的方位(左上、左下、右上、右下)
  @param radius 圆角的半径
  */
-- (void)lab_addRoundingCorners:(UIRectCorner)corners cornerRadii:(CGFloat)radius;
+- (CALayer *)lab_addRoundingCorners:(UIRectCorner)corners cornerRadii:(CGFloat)radius;
 
 /**
  添加圆角遮罩层
@@ -57,7 +57,7 @@ typedef NS_ENUM(NSInteger, LABGradientDirection) {
  @param rect 圆角显示的rect，使用于masonary，无法得到正确的rect
  @param radius 圆角的半径
  */
-- (void)lab_addRoundingCorners:(UIRectCorner)corners inRect:(CGRect)rect cornerRadii:(CGFloat)radius;
+- (CALayer *)lab_addRoundingCorners:(UIRectCorner)corners inRect:(CGRect)rect cornerRadii:(CGFloat)radius;
 
 /**
  向当前的视图插入CAShaplyer，无法裁切子视图的圆角
@@ -210,4 +210,5 @@ typedef NS_ENUM(NSInteger, LABGradientDirection) {
  @return 初始化实例对象
  */
 + (instancetype)lab_initFrame:(CGRect)rect gradientColor:(NSArray<UIColor*> *)colors gradientDirection:(LABGradientDirection)direction cornerRadius:(CGFloat)radius;
+
 @end

@@ -7,6 +7,9 @@
 //
 
 #import "HomeViewController.h"
+#import "UITableViewCell+Laboratory.h"
+#import "HomeTableViewCell.h"
+
 #import "HomeModel.h"
 
 @interface HomeViewController () <UITableViewDelegate, UITableViewDataSource>
@@ -18,13 +21,14 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.title = @"首页";
     _childVC = [HomeModel tableDatasource];
     self.table = [UITableView lab_initTable];
     self.table.frame = CGRectMake(0, LABTopHeight, SCREENWIDTH, SCREENHEIGHT - LABTopHeight - LABTabBarHeight);
     self.table.delegate = self;
     self.table.dataSource = self;
     self.table.separatorColor = [UIColor colorWithHexString:@"509AD7"];
-    _table.separatorStyle = UITableViewCellSeparatorStyleSingleLineEtched;
+    _table.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
     [self.view addSubview:self.table];
 }
 
@@ -38,19 +42,17 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"homeReusableIdentifier"];
-    if (!cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"homeReusableIdentifier"];
-    }
+    HomeTableViewCell *homeCell = [HomeTableViewCell lab_tableView:tableView dequeueReusableIdentifier:@"homeReusableIdentifier"];
     HomeModel *model = _childVC[indexPath.row];
-    cell.textLabel.text = model.title;
-    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    homeCell.textLabel.text = model.title;
+    homeCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     
-    return cell;
+    return homeCell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     HomeModel *model = _childVC[indexPath.row];
     [self lab_pushChildViewControllerName:model.childViewControllerClassName];
 }
+
 @end

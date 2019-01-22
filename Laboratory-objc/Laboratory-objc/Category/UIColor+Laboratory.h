@@ -8,6 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
+#ifndef LabColor
+
+#define LabColor(args) [UIColor colorWithHexString:args]
+
+#endif
+
 @interface UIColor (Laboratory)
 #pragma mark - Colors from Hex Strings
 
