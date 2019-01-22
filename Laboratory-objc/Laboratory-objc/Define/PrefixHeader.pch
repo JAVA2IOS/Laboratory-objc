@@ -1,0 +1,53 @@
+//
+//  PrefixHeader.pch
+//  Laboratory-objc
+//
+//  Created by qeeniao35 on 2019/1/17.
+//  Copyright © 2019 CodeZ. All rights reserved.
+//
+
+#ifndef PrefixHeader_pch
+#define PrefixHeader_pch
+
+#import "Constants.h"
+#import "Category.h"
+
+
+
+#define LABBundleImage(args) [LABBundleManager bundleName:args]
+
+// 循环引用
+#define WeakSelf(type) __weak typeof(type) weak##type = type;
+
+// 屏幕参数
+#define APPDELEGATE ((AppDelegate *)[[UIApplication sharedApplication] delegate])
+#define CURRENTWINDOW [APPDELEGATE window]
+
+/**
+ * 屏幕尺寸
+ */
+#define SCREENWIDTH ([UIScreen mainScreen].bounds.size.width)
+#define SCREENHEIGHT ([UIScreen mainScreen].bounds.size.height)
+
+/**
+ * 屏幕尺寸适配更新
+ */
+#define IS_IPHONE_4 CGSizeEqualToSize(CGSizeMake(320, 480), [UIScreen mainScreen].bounds.size)
+#define IS_IPHONE_5 CGSizeEqualToSize(CGSizeMake(320, 568), [UIScreen mainScreen].bounds.size)
+#define IS_IPHONE_6 CGSizeEqualToSize(CGSizeMake(375, 667), [UIScreen mainScreen].bounds.size)
+#define IS_IPHONE_6P CGSizeEqualToSize(CGSizeMake(414, 736), [UIScreen mainScreen].bounds.size)
+#define IS_IPHONE_X CGSizeEqualToSize(CGSizeMake(375, 812), [UIScreen mainScreen].bounds.size)
+#define IS_IPHONE_XS CGSizeEqualToSize(CGSizeMake(375, 812), [UIScreen mainScreen].bounds.size)
+#define IS_IPHONE_XS_MAX_OR_XR CGSizeEqualToSize(CGSizeMake(414, 896), [UIScreen mainScreen].bounds.size)
+#define IS_Prefix_X (IS_IPHONE_X || IS_IPHONE_XS || IS_IPHONE_XS_MAX_OR_XR)
+
+/*
+ 状态栏 导航栏 底部TabBar的高度
+ */
+#define LABStatusBarHeight (IS_Prefix_X ? 44.0 : 20.0)
+#define LABNavBarHeight 44.0
+#define LABTabBarFootHeight (IS_Prefix_X ? 34 : 0)
+#define LABTabBarHeight (IS_Prefix_X ? 83 : 49)
+#define LABTopHeight (LABStatusBarHeight + LABNavBarHeight)
+
+#endif /* PrefixHeader_pch */

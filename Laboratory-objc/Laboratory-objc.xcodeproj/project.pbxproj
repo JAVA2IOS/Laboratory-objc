@@ -19,6 +19,21 @@
 		F792B79A21F6BA1000335025 /* BaseTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = F792B79321F6BA1000335025 /* BaseTabBarController.m */; };
 		F792B79B21F6BA1000335025 /* LABBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F792B79421F6BA1000335025 /* LABBaseViewController.m */; };
 		F792B79C21F6BA1000335025 /* LABNavigationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = F792B79821F6BA1000335025 /* LABNavigationBar.m */; };
+		F792B7C421F6BAA200335025 /* HomeModel.m in Sources */ = {isa = PBXBuildFile; fileRef = F792B7A221F6BAA100335025 /* HomeModel.m */; };
+		F792B7C521F6BAA200335025 /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F792B7A421F6BAA100335025 /* HomeViewController.m */; };
+		F792B7C621F6BAA200335025 /* FadeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F792B7A521F6BAA100335025 /* FadeViewController.m */; };
+		F792B7C721F6BAA200335025 /* TransitionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F792B7A921F6BAA100335025 /* TransitionViewController.m */; };
+		F792B7C821F6BAA200335025 /* LaboratoryAnimatiedTransitioning.m in Sources */ = {isa = PBXBuildFile; fileRef = F792B7AC21F6BAA100335025 /* LaboratoryAnimatiedTransitioning.m */; };
+		F792B7C921F6BAA200335025 /* LABBundleManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F792B7AF21F6BAA100335025 /* LABBundleManager.m */; };
+		F792B7CA21F6BAA200335025 /* UIView+Laboratory.m in Sources */ = {isa = PBXBuildFile; fileRef = F792B7B321F6BAA100335025 /* UIView+Laboratory.m */; };
+		F792B7CB21F6BAA200335025 /* UIColor+Laboratory.m in Sources */ = {isa = PBXBuildFile; fileRef = F792B7B421F6BAA100335025 /* UIColor+Laboratory.m */; };
+		F792B7CC21F6BAA200335025 /* NSDate+Laboratory.m in Sources */ = {isa = PBXBuildFile; fileRef = F792B7B721F6BAA100335025 /* NSDate+Laboratory.m */; };
+		F792B7CD21F6BAA200335025 /* UIScrollView+Laboratory.m in Sources */ = {isa = PBXBuildFile; fileRef = F792B7B821F6BAA100335025 /* UIScrollView+Laboratory.m */; };
+		F792B7CE21F6BAA200335025 /* UILabel+Laboratory.m in Sources */ = {isa = PBXBuildFile; fileRef = F792B7B921F6BAA100335025 /* UILabel+Laboratory.m */; };
+		F792B7CF21F6BAA200335025 /* UITableView+Laboratory.m in Sources */ = {isa = PBXBuildFile; fileRef = F792B7BA21F6BAA100335025 /* UITableView+Laboratory.m */; };
+		F792B7D021F6BAA200335025 /* NSString+Laboratory.m in Sources */ = {isa = PBXBuildFile; fileRef = F792B7BB21F6BAA100335025 /* NSString+Laboratory.m */; };
+		F792B7D121F6BAA200335025 /* UIButton+Laboratory.m in Sources */ = {isa = PBXBuildFile; fileRef = F792B7BD21F6BAA100335025 /* UIButton+Laboratory.m */; };
+		F792B7D221F6BAA200335025 /* UIViewController+Laboratory.m in Sources */ = {isa = PBXBuildFile; fileRef = F792B7C321F6BAA100335025 /* UIViewController+Laboratory.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -63,6 +78,39 @@
 		F792B79621F6BA1000335025 /* LABBaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LABBaseViewController.h; sourceTree = "<group>"; };
 		F792B79821F6BA1000335025 /* LABNavigationBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LABNavigationBar.m; sourceTree = "<group>"; };
 		F792B79921F6BA1000335025 /* LABNavigationBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LABNavigationBar.h; sourceTree = "<group>"; };
+		F792B79E21F6BAA100335025 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
+		F792B79F21F6BAA100335025 /* PrefixHeader.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
+		F792B7A121F6BAA100335025 /* HomeModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeModel.h; sourceTree = "<group>"; };
+		F792B7A221F6BAA100335025 /* HomeModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeModel.m; sourceTree = "<group>"; };
+		F792B7A421F6BAA100335025 /* HomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeViewController.m; sourceTree = "<group>"; };
+		F792B7A521F6BAA100335025 /* FadeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FadeViewController.m; sourceTree = "<group>"; };
+		F792B7A621F6BAA100335025 /* TransitionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TransitionViewController.h; sourceTree = "<group>"; };
+		F792B7A721F6BAA100335025 /* FadeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FadeViewController.h; sourceTree = "<group>"; };
+		F792B7A821F6BAA100335025 /* HomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
+		F792B7A921F6BAA100335025 /* TransitionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TransitionViewController.m; sourceTree = "<group>"; };
+		F792B7AB21F6BAA100335025 /* LaboratoryAnimatiedTransitioning.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LaboratoryAnimatiedTransitioning.h; sourceTree = "<group>"; };
+		F792B7AC21F6BAA100335025 /* LaboratoryAnimatiedTransitioning.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LaboratoryAnimatiedTransitioning.m; sourceTree = "<group>"; };
+		F792B7AE21F6BAA100335025 /* LABBundleManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LABBundleManager.h; sourceTree = "<group>"; };
+		F792B7AF21F6BAA100335025 /* LABBundleManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LABBundleManager.m; sourceTree = "<group>"; };
+		F792B7B121F6BAA100335025 /* NSString+Laboratory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Laboratory.h"; sourceTree = "<group>"; };
+		F792B7B221F6BAA100335025 /* UITableView+Laboratory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITableView+Laboratory.h"; sourceTree = "<group>"; };
+		F792B7B321F6BAA100335025 /* UIView+Laboratory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Laboratory.m"; sourceTree = "<group>"; };
+		F792B7B421F6BAA100335025 /* UIColor+Laboratory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Laboratory.m"; sourceTree = "<group>"; };
+		F792B7B521F6BAA100335025 /* UIButton+Laboratory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIButton+Laboratory.h"; sourceTree = "<group>"; };
+		F792B7B621F6BAA100335025 /* UIViewController+Laboratory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+Laboratory.h"; sourceTree = "<group>"; };
+		F792B7B721F6BAA100335025 /* NSDate+Laboratory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+Laboratory.m"; sourceTree = "<group>"; };
+		F792B7B821F6BAA100335025 /* UIScrollView+Laboratory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+Laboratory.m"; sourceTree = "<group>"; };
+		F792B7B921F6BAA100335025 /* UILabel+Laboratory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UILabel+Laboratory.m"; sourceTree = "<group>"; };
+		F792B7BA21F6BAA100335025 /* UITableView+Laboratory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITableView+Laboratory.m"; sourceTree = "<group>"; };
+		F792B7BB21F6BAA100335025 /* NSString+Laboratory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Laboratory.m"; sourceTree = "<group>"; };
+		F792B7BC21F6BAA100335025 /* Category.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Category.h; sourceTree = "<group>"; };
+		F792B7BD21F6BAA100335025 /* UIButton+Laboratory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIButton+Laboratory.m"; sourceTree = "<group>"; };
+		F792B7BE21F6BAA100335025 /* UIColor+Laboratory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Laboratory.h"; sourceTree = "<group>"; };
+		F792B7BF21F6BAA100335025 /* UIView+Laboratory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Laboratory.h"; sourceTree = "<group>"; };
+		F792B7C021F6BAA100335025 /* UILabel+Laboratory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UILabel+Laboratory.h"; sourceTree = "<group>"; };
+		F792B7C121F6BAA100335025 /* UIScrollView+Laboratory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+Laboratory.h"; sourceTree = "<group>"; };
+		F792B7C221F6BAA100335025 /* NSDate+Laboratory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+Laboratory.h"; sourceTree = "<group>"; };
+		F792B7C321F6BAA100335025 /* UIViewController+Laboratory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+Laboratory.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -113,6 +161,11 @@
 		F792B71821F6B6FD00335025 /* Laboratory-objc */ = {
 			isa = PBXGroup;
 			children = (
+				F792B7B021F6BAA100335025 /* Category */,
+				F792B79D21F6BAA100335025 /* Define */,
+				F792B7A021F6BAA100335025 /* Home */,
+				F792B7AD21F6BAA100335025 /* Tool */,
+				F792B7AA21F6BAA100335025 /* Transition */,
 				F792B78F21F6B91300335025 /* Basic */,
 				F792B71921F6B6FD00335025 /* AppDelegate.h */,
 				F792B71A21F6B6FD00335025 /* AppDelegate.m */,
@@ -166,6 +219,82 @@
 				F792B79821F6BA1000335025 /* LABNavigationBar.m */,
 			);
 			path = View;
+			sourceTree = "<group>";
+		};
+		F792B79D21F6BAA100335025 /* Define */ = {
+			isa = PBXGroup;
+			children = (
+				F792B79E21F6BAA100335025 /* Constants.h */,
+				F792B79F21F6BAA100335025 /* PrefixHeader.pch */,
+			);
+			path = Define;
+			sourceTree = "<group>";
+		};
+		F792B7A021F6BAA100335025 /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				F792B7A121F6BAA100335025 /* HomeModel.h */,
+				F792B7A221F6BAA100335025 /* HomeModel.m */,
+				F792B7A321F6BAA100335025 /* ViewController */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		F792B7A321F6BAA100335025 /* ViewController */ = {
+			isa = PBXGroup;
+			children = (
+				F792B7A821F6BAA100335025 /* HomeViewController.h */,
+				F792B7A421F6BAA100335025 /* HomeViewController.m */,
+				F792B7A621F6BAA100335025 /* TransitionViewController.h */,
+				F792B7A921F6BAA100335025 /* TransitionViewController.m */,
+				F792B7A721F6BAA100335025 /* FadeViewController.h */,
+				F792B7A521F6BAA100335025 /* FadeViewController.m */,
+			);
+			path = ViewController;
+			sourceTree = "<group>";
+		};
+		F792B7AA21F6BAA100335025 /* Transition */ = {
+			isa = PBXGroup;
+			children = (
+				F792B7AB21F6BAA100335025 /* LaboratoryAnimatiedTransitioning.h */,
+				F792B7AC21F6BAA100335025 /* LaboratoryAnimatiedTransitioning.m */,
+			);
+			path = Transition;
+			sourceTree = "<group>";
+		};
+		F792B7AD21F6BAA100335025 /* Tool */ = {
+			isa = PBXGroup;
+			children = (
+				F792B7AE21F6BAA100335025 /* LABBundleManager.h */,
+				F792B7AF21F6BAA100335025 /* LABBundleManager.m */,
+			);
+			path = Tool;
+			sourceTree = "<group>";
+		};
+		F792B7B021F6BAA100335025 /* Category */ = {
+			isa = PBXGroup;
+			children = (
+				F792B7BC21F6BAA100335025 /* Category.h */,
+				F792B7BF21F6BAA100335025 /* UIView+Laboratory.h */,
+				F792B7B321F6BAA100335025 /* UIView+Laboratory.m */,
+				F792B7B521F6BAA100335025 /* UIButton+Laboratory.h */,
+				F792B7BD21F6BAA100335025 /* UIButton+Laboratory.m */,
+				F792B7B621F6BAA100335025 /* UIViewController+Laboratory.h */,
+				F792B7C321F6BAA100335025 /* UIViewController+Laboratory.m */,
+				F792B7C221F6BAA100335025 /* NSDate+Laboratory.h */,
+				F792B7B721F6BAA100335025 /* NSDate+Laboratory.m */,
+				F792B7C121F6BAA100335025 /* UIScrollView+Laboratory.h */,
+				F792B7B821F6BAA100335025 /* UIScrollView+Laboratory.m */,
+				F792B7B221F6BAA100335025 /* UITableView+Laboratory.h */,
+				F792B7BA21F6BAA100335025 /* UITableView+Laboratory.m */,
+				F792B7B121F6BAA100335025 /* NSString+Laboratory.h */,
+				F792B7BB21F6BAA100335025 /* NSString+Laboratory.m */,
+				F792B7BE21F6BAA100335025 /* UIColor+Laboratory.h */,
+				F792B7B421F6BAA100335025 /* UIColor+Laboratory.m */,
+				F792B7C021F6BAA100335025 /* UILabel+Laboratory.h */,
+				F792B7B921F6BAA100335025 /* UILabel+Laboratory.m */,
+			);
+			path = Category;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -298,11 +427,26 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F792B7C421F6BAA200335025 /* HomeModel.m in Sources */,
 				F792B79C21F6BA1000335025 /* LABNavigationBar.m in Sources */,
 				F792B79A21F6BA1000335025 /* BaseTabBarController.m in Sources */,
 				F792B79B21F6BA1000335025 /* LABBaseViewController.m in Sources */,
+				F792B7C921F6BAA200335025 /* LABBundleManager.m in Sources */,
+				F792B7CB21F6BAA200335025 /* UIColor+Laboratory.m in Sources */,
+				F792B7C721F6BAA200335025 /* TransitionViewController.m in Sources */,
+				F792B7CF21F6BAA200335025 /* UITableView+Laboratory.m in Sources */,
+				F792B7CC21F6BAA200335025 /* NSDate+Laboratory.m in Sources */,
+				F792B7D221F6BAA200335025 /* UIViewController+Laboratory.m in Sources */,
+				F792B7C821F6BAA200335025 /* LaboratoryAnimatiedTransitioning.m in Sources */,
+				F792B7D021F6BAA200335025 /* NSString+Laboratory.m in Sources */,
+				F792B7CE21F6BAA200335025 /* UILabel+Laboratory.m in Sources */,
 				F792B71E21F6B6FD00335025 /* ViewController.m in Sources */,
+				F792B7D121F6BAA200335025 /* UIButton+Laboratory.m in Sources */,
+				F792B7C521F6BAA200335025 /* HomeViewController.m in Sources */,
+				F792B7CA21F6BAA200335025 /* UIView+Laboratory.m in Sources */,
+				F792B7C621F6BAA200335025 /* FadeViewController.m in Sources */,
 				F792B72921F6B6FE00335025 /* main.m in Sources */,
+				F792B7CD21F6BAA200335025 /* UIScrollView+Laboratory.m in Sources */,
 				F792B71B21F6B6FD00335025 /* AppDelegate.m in Sources */,
 				F792B79221F6B94C00335025 /* LABNavigationController.m in Sources */,
 			);
