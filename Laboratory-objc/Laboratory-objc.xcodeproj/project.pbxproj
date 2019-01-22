@@ -16,6 +16,9 @@
 		F792B73321F6B6FE00335025 /* Laboratory_objcTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F792B73221F6B6FE00335025 /* Laboratory_objcTests.m */; };
 		F792B73E21F6B6FE00335025 /* Laboratory_objcUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = F792B73D21F6B6FE00335025 /* Laboratory_objcUITests.m */; };
 		F792B79221F6B94C00335025 /* LABNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = F792B79121F6B94C00335025 /* LABNavigationController.m */; };
+		F792B79A21F6BA1000335025 /* BaseTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = F792B79321F6BA1000335025 /* BaseTabBarController.m */; };
+		F792B79B21F6BA1000335025 /* LABBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F792B79421F6BA1000335025 /* LABBaseViewController.m */; };
+		F792B79C21F6BA1000335025 /* LABNavigationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = F792B79821F6BA1000335025 /* LABNavigationBar.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,6 +57,12 @@
 		F792B73F21F6B6FE00335025 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F792B79021F6B94C00335025 /* LABNavigationController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LABNavigationController.h; sourceTree = "<group>"; };
 		F792B79121F6B94C00335025 /* LABNavigationController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LABNavigationController.m; sourceTree = "<group>"; };
+		F792B79321F6BA1000335025 /* BaseTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseTabBarController.m; sourceTree = "<group>"; };
+		F792B79421F6BA1000335025 /* LABBaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LABBaseViewController.m; sourceTree = "<group>"; };
+		F792B79521F6BA1000335025 /* BaseTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseTabBarController.h; sourceTree = "<group>"; };
+		F792B79621F6BA1000335025 /* LABBaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LABBaseViewController.h; sourceTree = "<group>"; };
+		F792B79821F6BA1000335025 /* LABNavigationBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LABNavigationBar.m; sourceTree = "<group>"; };
+		F792B79921F6BA1000335025 /* LABNavigationBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LABNavigationBar.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -139,10 +148,24 @@
 		F792B78F21F6B91300335025 /* Basic */ = {
 			isa = PBXGroup;
 			children = (
+				F792B79721F6BA1000335025 /* View */,
+				F792B79521F6BA1000335025 /* BaseTabBarController.h */,
+				F792B79321F6BA1000335025 /* BaseTabBarController.m */,
+				F792B79621F6BA1000335025 /* LABBaseViewController.h */,
+				F792B79421F6BA1000335025 /* LABBaseViewController.m */,
 				F792B79021F6B94C00335025 /* LABNavigationController.h */,
 				F792B79121F6B94C00335025 /* LABNavigationController.m */,
 			);
 			path = Basic;
+			sourceTree = "<group>";
+		};
+		F792B79721F6BA1000335025 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				F792B79921F6BA1000335025 /* LABNavigationBar.h */,
+				F792B79821F6BA1000335025 /* LABNavigationBar.m */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -275,6 +298,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F792B79C21F6BA1000335025 /* LABNavigationBar.m in Sources */,
+				F792B79A21F6BA1000335025 /* BaseTabBarController.m in Sources */,
+				F792B79B21F6BA1000335025 /* LABBaseViewController.m in Sources */,
 				F792B71E21F6B6FD00335025 /* ViewController.m in Sources */,
 				F792B72921F6B6FE00335025 /* main.m in Sources */,
 				F792B71B21F6B6FD00335025 /* AppDelegate.m in Sources */,
