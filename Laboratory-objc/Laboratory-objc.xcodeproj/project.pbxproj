@@ -15,6 +15,7 @@
 		F792B72921F6B6FE00335025 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F792B72821F6B6FE00335025 /* main.m */; };
 		F792B73321F6B6FE00335025 /* Laboratory_objcTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F792B73221F6B6FE00335025 /* Laboratory_objcTests.m */; };
 		F792B73E21F6B6FE00335025 /* Laboratory_objcUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = F792B73D21F6B6FE00335025 /* Laboratory_objcUITests.m */; };
+		F792B79221F6B94C00335025 /* LABNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = F792B79121F6B94C00335025 /* LABNavigationController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +52,8 @@
 		F792B73921F6B6FE00335025 /* Laboratory-objcUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Laboratory-objcUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F792B73D21F6B6FE00335025 /* Laboratory_objcUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Laboratory_objcUITests.m; sourceTree = "<group>"; };
 		F792B73F21F6B6FE00335025 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F792B79021F6B94C00335025 /* LABNavigationController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LABNavigationController.h; sourceTree = "<group>"; };
+		F792B79121F6B94C00335025 /* LABNavigationController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LABNavigationController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +104,7 @@
 		F792B71821F6B6FD00335025 /* Laboratory-objc */ = {
 			isa = PBXGroup;
 			children = (
+				F792B78F21F6B91300335025 /* Basic */,
 				F792B71921F6B6FD00335025 /* AppDelegate.h */,
 				F792B71A21F6B6FD00335025 /* AppDelegate.m */,
 				F792B71C21F6B6FD00335025 /* ViewController.h */,
@@ -130,6 +134,15 @@
 				F792B73F21F6B6FE00335025 /* Info.plist */,
 			);
 			path = "Laboratory-objcUITests";
+			sourceTree = "<group>";
+		};
+		F792B78F21F6B91300335025 /* Basic */ = {
+			isa = PBXGroup;
+			children = (
+				F792B79021F6B94C00335025 /* LABNavigationController.h */,
+				F792B79121F6B94C00335025 /* LABNavigationController.m */,
+			);
+			path = Basic;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -265,6 +278,7 @@
 				F792B71E21F6B6FD00335025 /* ViewController.m in Sources */,
 				F792B72921F6B6FE00335025 /* main.m in Sources */,
 				F792B71B21F6B6FD00335025 /* AppDelegate.m in Sources */,
+				F792B79221F6B94C00335025 /* LABNavigationController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
