@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		F792B71B21F6B6FD00335025 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F792B71A21F6B6FD00335025 /* AppDelegate.m */; };
-		F792B71E21F6B6FD00335025 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F792B71D21F6B6FD00335025 /* ViewController.m */; };
 		F792B72121F6B6FD00335025 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F792B71F21F6B6FD00335025 /* Main.storyboard */; };
 		F792B72321F6B6FE00335025 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F792B72221F6B6FE00335025 /* Assets.xcassets */; };
 		F792B72621F6B6FE00335025 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F792B72421F6B6FE00335025 /* LaunchScreen.storyboard */; };
@@ -57,8 +56,6 @@
 		F792B71621F6B6FD00335025 /* Laboratory-objc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Laboratory-objc.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F792B71921F6B6FD00335025 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		F792B71A21F6B6FD00335025 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		F792B71C21F6B6FD00335025 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		F792B71D21F6B6FD00335025 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		F792B72021F6B6FD00335025 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		F792B72221F6B6FE00335025 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F792B72521F6B6FE00335025 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -169,8 +166,6 @@
 				F792B78F21F6B91300335025 /* Basic */,
 				F792B71921F6B6FD00335025 /* AppDelegate.h */,
 				F792B71A21F6B6FD00335025 /* AppDelegate.m */,
-				F792B71C21F6B6FD00335025 /* ViewController.h */,
-				F792B71D21F6B6FD00335025 /* ViewController.m */,
 				F792B71F21F6B6FD00335025 /* Main.storyboard */,
 				F792B72221F6B6FE00335025 /* Assets.xcassets */,
 				F792B72421F6B6FE00335025 /* LaunchScreen.storyboard */,
@@ -440,7 +435,6 @@
 				F792B7C821F6BAA200335025 /* LaboratoryAnimatiedTransitioning.m in Sources */,
 				F792B7D021F6BAA200335025 /* NSString+Laboratory.m in Sources */,
 				F792B7CE21F6BAA200335025 /* UILabel+Laboratory.m in Sources */,
-				F792B71E21F6B6FD00335025 /* ViewController.m in Sources */,
 				F792B7D121F6BAA200335025 /* UIButton+Laboratory.m in Sources */,
 				F792B7C521F6BAA200335025 /* HomeViewController.m in Sources */,
 				F792B7CA21F6BAA200335025 /* UIView+Laboratory.m in Sources */,
