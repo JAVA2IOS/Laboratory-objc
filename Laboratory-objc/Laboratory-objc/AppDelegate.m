@@ -2,11 +2,12 @@
 //  AppDelegate.m
 //  Laboratory-objc
 //
-//  Created by qeeniao35 on 2019/1/22.
+//  Created by qeeniao35 on 2019/1/15.
 //  Copyright © 2019 CodeZ. All rights reserved.
 //
 
 #import "AppDelegate.h"
+#import "BaseTabBarController.h"
 
 @interface AppDelegate ()
 
@@ -16,7 +17,10 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
+    
+    BaseTabBarController *baseTab = [[BaseTabBarController alloc] init];
+    self.window.rootViewController = baseTab;
+    [self.window makeKeyAndVisible];
     return YES;
 }
 
