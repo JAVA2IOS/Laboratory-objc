@@ -11,7 +11,7 @@
 
 #import "LaboratoryAnimatiedTransitioning.h"
 
-@interface TransitionViewController ()<UINavigationControllerDelegate, UIGestureRecognizerDelegate>
+@interface TransitionViewController ()<UINavigationControllerDelegate>
 
 @end
 
@@ -37,8 +37,7 @@
 
 - (id<UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController animationControllerForOperation:(UINavigationControllerOperation)operation fromViewController:(UIViewController *)fromVC toViewController:(UIViewController *)toVC {
     LaboratoryAnimatiedTransitioning *animatedTransitioning = [[LaboratoryAnimatiedTransitioning alloc] init];
-//    animatedTransitioning.animatedType = LABAnimatedTransitioningTypeFade;
-//    animatedTransitioning.animatedDuriation = 10;
+    animatedTransitioning.animatedType = LABAnimatedTransitioningTypeFade;
     animatedTransitioning.operation = operation;
     
     return animatedTransitioning;

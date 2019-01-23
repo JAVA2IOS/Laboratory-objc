@@ -55,25 +55,25 @@
 
 
 - (void)lab_animatedTransitionTypeFade:(id<UIViewControllerContextTransitioning>)transitionContext container:(UIView *)container fromView:(UIView *)fromView toView:(UIView *)toView {
-    UIView *snapshotView = [fromView snapshotViewAfterScreenUpdates:NO];
+//    UIView *snapshotView = [fromView snapshotViewAfterScreenUpdates:NO];
     
     // 一定要把转场后的视图添加到容器当中
     [container addSubview:toView];
-    [container addSubview:snapshotView];
+//    [container addSubview:snapshotView];
     
     
     // 关键动画实现步骤. e.g 渐变动画
-    fromView.hidden = YES;
-    snapshotView.transform = CGAffineTransformMakeScale(.5, .5);
+//    fromView.hidden = YES;
+//    snapshotView.transform = CGAffineTransformMakeScale(.5, .5);
     toView.alpha = 0;
     NSTimeInterval animatedTime = [self transitionDuration:transitionContext];
     [UIView animateWithDuration:animatedTime animations:^{
         toView.alpha = 1;
-        snapshotView.transform = CGAffineTransformMakeScale(1, 1);
+//        snapshotView.transform = CGAffineTransformMakeScale(1, 1);
     } completion:^(BOOL finished) {
-        fromView.hidden = NO;
+//        fromView.hidden = NO;
         // 一定要实现，用于有交互式转场时
-        [snapshotView removeFromSuperview];
+//        [snapshotView removeFromSuperview];
         
         BOOL canceled = [transitionContext transitionWasCancelled];
         [transitionContext completeTransition:!canceled];

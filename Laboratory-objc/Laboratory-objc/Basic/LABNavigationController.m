@@ -8,7 +8,7 @@
 
 #import "LABNavigationController.h"
 
-@interface LABNavigationController ()
+@interface LABNavigationController ()<UIGestureRecognizerDelegate>
 
 @end
 
@@ -17,6 +17,20 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self setNavigationBarHidden:YES animated:NO];
+    self.interactivePopGestureRecognizer.delegate = self;
+}
+
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
+    if ( gestureRecognizer == self.interactivePopGestureRecognizer )
+    {
+        //  禁用根目录的侧滑手势
+        if ( self.viewControllers.count < 2 || self.visibleViewController == [self.viewControllers objectAtIndex:0] )
+        {
+            return NO;
+        }
+    }
+    
+    return YES;
 }
 
 

@@ -8,7 +8,7 @@
 
 #import "LABBaseViewController.h"
 
-@interface LABBaseViewController ()<UIGestureRecognizerDelegate>
+@interface LABBaseViewController ()
 
 @end
 
@@ -16,8 +16,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    self.navigationController.interactivePopGestureRecognizer.delegate = self;
     
     _labNavgationBar = [[LABNavigationBar alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, LABTopHeight)];
     _labNavgationBar.backgroundColor = [UIColor whiteColor];
@@ -33,19 +31,6 @@
     [self lab_addSubViews];
     
     [self lab_addDataSource];
-}
-
-- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
-    if ( gestureRecognizer == self.navigationController.interactivePopGestureRecognizer )
-    {
-        //  禁用根目录的侧滑手势
-        if ( self.navigationController.viewControllers.count < 2 || self.navigationController.visibleViewController == [self.navigationController.viewControllers objectAtIndex:0] )
-        {
-            return NO;
-        }
-    }
-    
-    return YES;
 }
 
 

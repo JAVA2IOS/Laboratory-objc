@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		C5A5E78131D00E521269514A /* Pods_Laboratory_objc.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A84FD0E27AEE1FAF19CA118D /* Pods_Laboratory_objc.framework */; };
+		F757E01A21F802F3008919FD /* LaboratoryNavigationDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F757E01921F802F3008919FD /* LaboratoryNavigationDelegate.m */; };
 		F792B71B21F6B6FD00335025 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F792B71A21F6B6FD00335025 /* AppDelegate.m */; };
 		F792B72121F6B6FD00335025 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F792B71F21F6B6FD00335025 /* Main.storyboard */; };
 		F792B72321F6B6FE00335025 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F792B72221F6B6FE00335025 /* Assets.xcassets */; };
@@ -59,6 +60,8 @@
 		3038ABE175D426A7D6472B7A /* Pods-Laboratory-objc.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Laboratory-objc.release.xcconfig"; path = "Target Support Files/Pods-Laboratory-objc/Pods-Laboratory-objc.release.xcconfig"; sourceTree = "<group>"; };
 		68D04801BF2ECF9FE5CE9059 /* Pods-Laboratory-objc.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Laboratory-objc.debug.xcconfig"; path = "Target Support Files/Pods-Laboratory-objc/Pods-Laboratory-objc.debug.xcconfig"; sourceTree = "<group>"; };
 		A84FD0E27AEE1FAF19CA118D /* Pods_Laboratory_objc.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Laboratory_objc.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F757E01821F802F3008919FD /* LaboratoryNavigationDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LaboratoryNavigationDelegate.h; sourceTree = "<group>"; };
+		F757E01921F802F3008919FD /* LaboratoryNavigationDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LaboratoryNavigationDelegate.m; sourceTree = "<group>"; };
 		F792B71621F6B6FD00335025 /* Laboratory-objc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Laboratory-objc.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F792B71921F6B6FD00335025 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		F792B71A21F6B6FD00335025 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -286,6 +289,8 @@
 			children = (
 				F792B7AB21F6BAA100335025 /* LaboratoryAnimatiedTransitioning.h */,
 				F792B7AC21F6BAA100335025 /* LaboratoryAnimatiedTransitioning.m */,
+				F757E01821F802F3008919FD /* LaboratoryNavigationDelegate.h */,
+				F757E01921F802F3008919FD /* LaboratoryNavigationDelegate.m */,
 			);
 			path = Transition;
 			sourceTree = "<group>";
@@ -528,6 +533,7 @@
 				F792B7C721F6BAA200335025 /* TransitionViewController.m in Sources */,
 				F792B7CF21F6BAA200335025 /* UITableView+Laboratory.m in Sources */,
 				F792B7CC21F6BAA200335025 /* NSDate+Laboratory.m in Sources */,
+				F757E01A21F802F3008919FD /* LaboratoryNavigationDelegate.m in Sources */,
 				F792B7D221F6BAA200335025 /* UIViewController+Laboratory.m in Sources */,
 				F792B7C821F6BAA200335025 /* LaboratoryAnimatiedTransitioning.m in Sources */,
 				F792B7D021F6BAA200335025 /* NSString+Laboratory.m in Sources */,
