@@ -19,6 +19,8 @@ typedef void(^LABbuttonClick)(void);
 
 + (instancetype)lab_initButtonTitile:(NSString *)title font:(UIFont *)font titleColor:(UIColor *)titleColor backgroundColor:(UIColor *)backgroundColor;
 
++ (instancetype)lab_initButtonTitile:(NSString *)title fontSize:(NSInteger)fontSize titleColor:(UIColor *)titleColor backgroundColor:(UIColor *)backgroundColor;
+
 + (instancetype)lab_initButton:(CGRect)rect image:(NSString *)imageName;
 
 + (instancetype)lab_initButton:(NSString *)imageName;
@@ -30,6 +32,19 @@ typedef void(^LABbuttonClick)(void);
  */
 - (void)lab_imageName:(NSString *)imageName;
 
+/**
+ 设置按钮标题
+
+ @param title 标题
+ */
+- (void)lab_title:(NSString *)title;
+
+/**
+ 按钮点击响应
+
+ @param target 响应对象
+ @param selector 响应方法
+ */
 - (void)buttonClick:(id)target selector:(SEL)selector;
 
 - (void)buttonClickCompletion:(void(^)(void))completion;

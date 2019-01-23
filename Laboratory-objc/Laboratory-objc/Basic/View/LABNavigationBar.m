@@ -66,6 +66,7 @@
                 weakself.navigationBarItemBlock(LABNavigationBarItemTypeRightButton);
             }
         }];
+        _rightNavigationBarItem.hidden = YES;
     }
     
     return _rightNavigationBarItem;

@@ -40,6 +40,10 @@ static const void *lab_button_callback_key = @"labButtonCallbackKey";
     return button;
 }
 
++ (instancetype)lab_initButtonTitile:(NSString *)title fontSize:(NSInteger)fontSize titleColor:(UIColor *)titleColor backgroundColor:(UIColor *)backgroundColor {
+    return [[self class] lab_initButtonTitile:title font:[UIFont systemFontOfSize:fontSize] titleColor:titleColor backgroundColor:backgroundColor];
+}
+
 + (instancetype)lab_initButtonTitile:(NSString *)title font:(UIFont *)font titleColor:(UIColor *)titleColor backgroundColor:(UIColor *)backgroundColor {
     return [[self class] lab_initButton:CGRectZero title:title font:font titleColor:titleColor backgroundColor:backgroundColor];
 }
@@ -50,6 +54,10 @@ static const void *lab_button_callback_key = @"labButtonCallbackKey";
     if (imageName.length > 0 && imageName != nil) {
         [self setImage:[UIImage imageNamed:imageName] forState:UIControlStateNormal];
     }
+}
+
+- (void)lab_title:(NSString *)title {
+    [self setTitle:title forState:UIControlStateNormal];
 }
 
 - (void)buttonClick:(id)target selector:(SEL)selector {

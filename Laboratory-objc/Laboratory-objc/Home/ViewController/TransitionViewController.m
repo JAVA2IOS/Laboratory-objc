@@ -25,7 +25,11 @@
 }
 
 - (void)lab_addSubViews {
-    UIButton *button = [UIButton lab_initButton:CGRectMake(30, LABTopHeight + 100, SCREENWIDTH - 30 * 2, 40) title:@"跳转" font:[UIFont systemFontOfSize:14] titleColor:[UIColor whiteColor] backgroundColor:[UIColor redColor]];
+    UIButton *button = [UIButton lab_initButtonTitile:@"跳转"
+                                             fontSize:14
+                                           titleColor:[UIColor whiteColor]
+                                      backgroundColor:[UIColor redColor]];
+    button.frame = CGRectMake(30, LABTopHeight + 100, SCREENWIDTH - 30 * 2, 40);
     [button buttonClick:self selector:@selector(fadeViewControllerHandler)];
     [self.view addSubview:button];
 }
