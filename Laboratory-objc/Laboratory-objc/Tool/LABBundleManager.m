@@ -21,6 +21,9 @@
         case LABImageBundleSourceType_Navigation_backLightArrow:
             return [[self class] p_prefixNavigationIcon:@"icon_leftLightArrow"];
             break;
+        case LABImageBundleSourceType_Table_icon_sortable:
+            return [[self class] p_prefixTableIcon:@"icon_sortable"];
+            break;
         default:
             break;
     }
@@ -34,6 +37,11 @@
 
 + (NSString *)p_prefixNavigationIcon:(NSString *)suffixName {
     return [@"lab_navigation_" stringByAppendingString:suffixName];
+}
+
+
++ (NSString *)p_prefixTableIcon:(NSString *)suffixName {
+    return [@"lab_table_" stringByAppendingString:suffixName];
 }
 
 @end

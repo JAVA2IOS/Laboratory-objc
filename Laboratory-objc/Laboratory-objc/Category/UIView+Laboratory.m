@@ -180,24 +180,48 @@
     return CGRectGetMinX(self.frame);
 }
 
+- (void)setLabX:(CGFloat)labX {
+    self.frame = CGRectMake(labX, self.labY, self.labWidth, self.labHeight);
+}
+
 - (CGFloat)labY {
     return CGRectGetMinY(self.frame);
+}
+
+- (void)setLabY:(CGFloat)labY {
+    self.frame = CGRectMake(self.labX, labY, self.labWidth, self.labHeight);
 }
 
 - (CGFloat)labBottom {
     return CGRectGetMaxY(self.frame);
 }
 
+- (void)setLabBottom:(CGFloat)labBottom {
+    self.frame = CGRectMake(self.labX, labBottom - self.labHeight, self.labWidth, self.labHeight);
+}
+
 - (CGFloat)labRight {
     return CGRectGetMaxX(self.frame);
+}
+
+- (void)setLabRight:(CGFloat)labRight {
+    self.frame = CGRectMake(labRight - self.labWidth, self.labY, self.labWidth, self.labHeight);
 }
 
 - (CGFloat)labWidth {
     return CGRectGetWidth(self.bounds);
 }
 
+- (void)setLabWidth:(CGFloat)labWidth {
+    self.frame = CGRectMake(self.labX, self.labY, labWidth, self.labHeight);
+}
+
 - (CGFloat)labHeight {
     return CGRectGetHeight(self.bounds);
+}
+
+- (void)setLabHeight:(CGFloat)labHeight {
+    self.frame = CGRectMake(self.labX, self.labY, self.labWidth, labHeight);
 }
 
 - (CGFloat)labCenterX {

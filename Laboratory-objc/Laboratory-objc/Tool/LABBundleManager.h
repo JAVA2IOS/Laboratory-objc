@@ -14,11 +14,13 @@
  - LABImageBundleSourceTypeNone: 资源类型无
  - LABImageBundleSourceType_Navigation_backLightArrow: 导航栏左箭头浅色
  - LABImageBundleSourceType_Navigation_backDarkArrow: 导航栏左箭头深色
+ - LABImageBundleSourceType_Table_icon_sortable: 排序图标
  */
 typedef NS_ENUM(NSInteger, LABImageBundleSourceType) {
     LABImageBundleSourceTypeNone,
     LABImageBundleSourceType_Navigation_backLightArrow,
     LABImageBundleSourceType_Navigation_backDarkArrow,
+    LABImageBundleSourceType_Table_icon_sortable
 };
 
 @interface LABBundleManager : NSObject
