@@ -48,15 +48,6 @@ typedef NS_ENUM(NSInteger, LABSystemParameters) {
 - (CGFloat)lab_stringWidth:(UIFont *)font limitHeight:(CGFloat)height;
 
 /**
- 获取字符串的宽度(可用于富文本)
-
- @param attributes 修饰的样式
- @param height 限制高度
- @return 字符串的宽度
- */
-- (CGFloat)lab_attributeStringWidth:(NSDictionary *)attributes limitHeight:(CGFloat)height;
-
-/**
  获取字符串的高度
 
  @param font 字体样式
@@ -64,15 +55,6 @@ typedef NS_ENUM(NSInteger, LABSystemParameters) {
  @return 字符串的高度
  */
 - (CGFloat)lab_stringHeight:(UIFont *)font limitWidth:(CGFloat)width;
-
-/**
- 获取字符串的宽度(可用于富文本)
-
- @param attributes 修饰的样式
- @param width 限制宽度
- @return 字符串的高度
- */
-- (CGFloat)lab_attrubteStringHeight:(NSDictionary *)attributes limitWidth:(CGFloat)width;
 
 
 #pragma mark - 系统参数

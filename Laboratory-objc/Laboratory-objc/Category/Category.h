@@ -17,3 +17,4 @@
 
 #import "NSDate+Laboratory.h"
 #import "NSString+Laboratory.h"
+#import "NSAttributedString+Laboratory.h"

@@ -39,7 +39,7 @@
     NSMutableAttributedString *mutAttributeString = [[NSMutableAttributedString alloc] initWithString:string attributes:attributes];
     self.attributedText = mutAttributeString;
     if (sizeToFit) {
-        CGFloat height = [string lab_attrubteStringHeight:attributes limitWidth:self.labWidth];
+        CGFloat height = [self.attributedText lab_stringHeightLimitWidth:self.labWidth];
         self.frame = CGRectMake(self.labX, self.labY, self.labWidth, height);
     }
 }

@@ -38,6 +38,7 @@
 		F792B7D021F6BAA200335025 /* NSString+Laboratory.m in Sources */ = {isa = PBXBuildFile; fileRef = F792B7BB21F6BAA100335025 /* NSString+Laboratory.m */; };
 		F792B7D121F6BAA200335025 /* UIButton+Laboratory.m in Sources */ = {isa = PBXBuildFile; fileRef = F792B7BD21F6BAA100335025 /* UIButton+Laboratory.m */; };
 		F792B7D221F6BAA200335025 /* UIViewController+Laboratory.m in Sources */ = {isa = PBXBuildFile; fileRef = F792B7C321F6BAA100335025 /* UIViewController+Laboratory.m */; };
+		F7CE9203221A47D9007FFD70 /* NSAttributedString+Laboratory.m in Sources */ = {isa = PBXBuildFile; fileRef = F7CE9202221A47D9007FFD70 /* NSAttributedString+Laboratory.m */; };
 		F7FBEFC521F6F4DB00E2B362 /* UITableViewCell+Laboratory.m in Sources */ = {isa = PBXBuildFile; fileRef = F7FBEFC421F6F4DB00E2B362 /* UITableViewCell+Laboratory.m */; };
 		F7FBEFC921F6F64800E2B362 /* HomeTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F7FBEFC821F6F64800E2B362 /* HomeTableViewCell.m */; };
 /* End PBXBuildFile section */
@@ -127,6 +128,8 @@
 		F792B7C221F6BAA100335025 /* NSDate+Laboratory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+Laboratory.h"; sourceTree = "<group>"; };
 		F792B7C321F6BAA100335025 /* UIViewController+Laboratory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+Laboratory.m"; sourceTree = "<group>"; };
 		F792B7D321F6BD3100335025 /* Cocoapods.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Cocoapods.h; sourceTree = "<group>"; };
+		F7CE9201221A47D9007FFD70 /* NSAttributedString+Laboratory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSAttributedString+Laboratory.h"; sourceTree = "<group>"; };
+		F7CE9202221A47D9007FFD70 /* NSAttributedString+Laboratory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSAttributedString+Laboratory.m"; sourceTree = "<group>"; };
 		F7FBEFC321F6F4DB00E2B362 /* UITableViewCell+Laboratory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UITableViewCell+Laboratory.h"; sourceTree = "<group>"; };
 		F7FBEFC421F6F4DB00E2B362 /* UITableViewCell+Laboratory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UITableViewCell+Laboratory.m"; sourceTree = "<group>"; };
 		F7FBEFC721F6F64800E2B362 /* HomeTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HomeTableViewCell.h; sourceTree = "<group>"; };
@@ -341,6 +344,8 @@
 				F792B7B921F6BAA100335025 /* UILabel+Laboratory.m */,
 				F7FBEFC321F6F4DB00E2B362 /* UITableViewCell+Laboratory.h */,
 				F7FBEFC421F6F4DB00E2B362 /* UITableViewCell+Laboratory.m */,
+				F7CE9201221A47D9007FFD70 /* NSAttributedString+Laboratory.h */,
+				F7CE9202221A47D9007FFD70 /* NSAttributedString+Laboratory.m */,
 			);
 			path = Category;
 			sourceTree = "<group>";
@@ -552,6 +557,7 @@
 				F792B7CC21F6BAA200335025 /* NSDate+Laboratory.m in Sources */,
 				F757E01A21F802F3008919FD /* LaboratoryNavigationDelegate.m in Sources */,
 				F792B7D221F6BAA200335025 /* UIViewController+Laboratory.m in Sources */,
+				F7CE9203221A47D9007FFD70 /* NSAttributedString+Laboratory.m in Sources */,
 				F715EA9621F98AF3004A870F /* EditableViewController.m in Sources */,
 				F792B7C821F6BAA200335025 /* LaboratoryAnimatiedTransitioning.m in Sources */,
 				F792B7D021F6BAA200335025 /* NSString+Laboratory.m in Sources */,
