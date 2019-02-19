@@ -17,6 +17,8 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    // 移除main.storyboard 时，需要重新初始化window
+    self.window = [[UIWindow alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, SCREENHEIGHT)];
     
     BaseTabBarController *baseTab = [[BaseTabBarController alloc] init];
     self.window.rootViewController = baseTab;

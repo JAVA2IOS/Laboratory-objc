@@ -13,7 +13,6 @@
 		F715EA9921F98D0D004A870F /* HomeEditTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F715EA9821F98D0D004A870F /* HomeEditTableCell.m */; };
 		F757E01A21F802F3008919FD /* LaboratoryNavigationDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F757E01921F802F3008919FD /* LaboratoryNavigationDelegate.m */; };
 		F792B71B21F6B6FD00335025 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F792B71A21F6B6FD00335025 /* AppDelegate.m */; };
-		F792B72121F6B6FD00335025 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F792B71F21F6B6FD00335025 /* Main.storyboard */; };
 		F792B72321F6B6FE00335025 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F792B72221F6B6FE00335025 /* Assets.xcassets */; };
 		F792B72621F6B6FE00335025 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F792B72421F6B6FE00335025 /* LaunchScreen.storyboard */; };
 		F792B72921F6B6FE00335025 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F792B72821F6B6FE00335025 /* main.m */; };
@@ -75,7 +74,6 @@
 		F792B71621F6B6FD00335025 /* Laboratory-objc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Laboratory-objc.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F792B71921F6B6FD00335025 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		F792B71A21F6B6FD00335025 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		F792B72021F6B6FD00335025 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		F792B72221F6B6FE00335025 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F792B72521F6B6FE00335025 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		F792B72721F6B6FE00335025 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -212,7 +210,6 @@
 				F792B78F21F6B91300335025 /* Basic */,
 				F792B71921F6B6FD00335025 /* AppDelegate.h */,
 				F792B71A21F6B6FD00335025 /* AppDelegate.m */,
-				F792B71F21F6B6FD00335025 /* Main.storyboard */,
 				F792B72221F6B6FE00335025 /* Assets.xcassets */,
 				F792B72421F6B6FE00335025 /* LaunchScreen.storyboard */,
 				F792B72721F6B6FE00335025 /* Info.plist */,
@@ -468,7 +465,6 @@
 			files = (
 				F792B72621F6B6FE00335025 /* LaunchScreen.storyboard in Resources */,
 				F792B72321F6B6FE00335025 /* Assets.xcassets in Resources */,
-				F792B72121F6B6FD00335025 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -605,14 +601,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		F792B71F21F6B6FD00335025 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				F792B72021F6B6FD00335025 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		F792B72421F6B6FE00335025 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
