@@ -93,4 +93,11 @@
                     }];
 }
 
+
+
+#pragma mark - 交互转场动画
+- (void)startInteractiveTransition:(id<UIViewControllerContextTransitioning>)transitionContext {
+    
+}
+
 @end

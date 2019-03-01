@@ -15,7 +15,7 @@ typedef NS_ENUM(NSInteger, LABAnimatedTransitioningType) {
     LABAnimatedTransitioningTypePop,
 };
 
-@interface LaboratoryAnimatiedTransitioning : NSObject<UIViewControllerAnimatedTransitioning>
+@interface LaboratoryAnimatiedTransitioning : NSObject<UIViewControllerAnimatedTransitioning, UIViewControllerInteractiveTransitioning>
 /**
  动画时间
  */

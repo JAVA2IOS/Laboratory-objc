@@ -40,11 +40,19 @@
 }
 
 - (id<UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController animationControllerForOperation:(UINavigationControllerOperation)operation fromViewController:(UIViewController *)fromVC toViewController:(UIViewController *)toVC {
+    if (operation == UINavigationControllerOperationPop) {
+        return nil;
+    }
     LaboratoryAnimatiedTransitioning *animatedTransitioning = [[LaboratoryAnimatiedTransitioning alloc] init];
     animatedTransitioning.animatedType = LABAnimatedTransitioningTypeFade;
     animatedTransitioning.operation = operation;
     
     return animatedTransitioning;
+    
+}
+
+- (id<UIViewControllerInteractiveTransitioning>)navigationController:(UINavigationController *)navigationController interactionControllerForAnimationController:(id<UIViewControllerAnimatedTransitioning>)animationController {
+    return nil;
 }
 
 - (void)dealloc {
