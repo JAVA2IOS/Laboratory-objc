@@ -37,6 +37,8 @@
 		F792B7D021F6BAA200335025 /* NSString+Laboratory.m in Sources */ = {isa = PBXBuildFile; fileRef = F792B7BB21F6BAA100335025 /* NSString+Laboratory.m */; };
 		F792B7D121F6BAA200335025 /* UIButton+Laboratory.m in Sources */ = {isa = PBXBuildFile; fileRef = F792B7BD21F6BAA100335025 /* UIButton+Laboratory.m */; };
 		F792B7D221F6BAA200335025 /* UIViewController+Laboratory.m in Sources */ = {isa = PBXBuildFile; fileRef = F792B7C321F6BAA100335025 /* UIViewController+Laboratory.m */; };
+		F7AD8F6922290FFE00E0D62E /* IMConversationController.m in Sources */ = {isa = PBXBuildFile; fileRef = F7AD8F6822290FFE00E0D62E /* IMConversationController.m */; };
+		F7AD8F6D2229104C00E0D62E /* LABIMCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = F7AD8F6C2229104C00E0D62E /* LABIMCenter.m */; };
 		F7CE9203221A47D9007FFD70 /* NSAttributedString+Laboratory.m in Sources */ = {isa = PBXBuildFile; fileRef = F7CE9202221A47D9007FFD70 /* NSAttributedString+Laboratory.m */; };
 		F7FBEFC521F6F4DB00E2B362 /* UITableViewCell+Laboratory.m in Sources */ = {isa = PBXBuildFile; fileRef = F7FBEFC421F6F4DB00E2B362 /* UITableViewCell+Laboratory.m */; };
 		F7FBEFC921F6F64800E2B362 /* HomeTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F7FBEFC821F6F64800E2B362 /* HomeTableViewCell.m */; };
@@ -126,6 +128,10 @@
 		F792B7C221F6BAA100335025 /* NSDate+Laboratory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+Laboratory.h"; sourceTree = "<group>"; };
 		F792B7C321F6BAA100335025 /* UIViewController+Laboratory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+Laboratory.m"; sourceTree = "<group>"; };
 		F792B7D321F6BD3100335025 /* Cocoapods.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Cocoapods.h; sourceTree = "<group>"; };
+		F7AD8F6722290FFE00E0D62E /* IMConversationController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IMConversationController.h; sourceTree = "<group>"; };
+		F7AD8F6822290FFE00E0D62E /* IMConversationController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IMConversationController.m; sourceTree = "<group>"; };
+		F7AD8F6B2229104C00E0D62E /* LABIMCenter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LABIMCenter.h; sourceTree = "<group>"; };
+		F7AD8F6C2229104C00E0D62E /* LABIMCenter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LABIMCenter.m; sourceTree = "<group>"; };
 		F7CE9201221A47D9007FFD70 /* NSAttributedString+Laboratory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSAttributedString+Laboratory.h"; sourceTree = "<group>"; };
 		F7CE9202221A47D9007FFD70 /* NSAttributedString+Laboratory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSAttributedString+Laboratory.m"; sourceTree = "<group>"; };
 		F7FBEFC321F6F4DB00E2B362 /* UITableViewCell+Laboratory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UITableViewCell+Laboratory.h"; sourceTree = "<group>"; };
@@ -202,6 +208,7 @@
 		F792B71821F6B6FD00335025 /* Laboratory-objc */ = {
 			isa = PBXGroup;
 			children = (
+				F7AD8F622229060F00E0D62E /* IM */,
 				F792B7B021F6BAA100335025 /* Category */,
 				F792B79D21F6BAA100335025 /* Define */,
 				F792B7A021F6BAA100335025 /* Home */,
@@ -345,6 +352,57 @@
 				F7CE9202221A47D9007FFD70 /* NSAttributedString+Laboratory.m */,
 			);
 			path = Category;
+			sourceTree = "<group>";
+		};
+		F7AD8F622229060F00E0D62E /* IM */ = {
+			isa = PBXGroup;
+			children = (
+				F7AD8F6A2229101F00E0D62E /* Tool */,
+				F7AD8F6622290F8500E0D62E /* ViewController */,
+				F7AD8F6522290F8000E0D62E /* View */,
+				F7AD8F6422290F7900E0D62E /* Model */,
+				F7AD8F6322290E6D00E0D62E /* Common */,
+			);
+			path = IM;
+			sourceTree = "<group>";
+		};
+		F7AD8F6322290E6D00E0D62E /* Common */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
+		F7AD8F6422290F7900E0D62E /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		F7AD8F6522290F8000E0D62E /* View */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		F7AD8F6622290F8500E0D62E /* ViewController */ = {
+			isa = PBXGroup;
+			children = (
+				F7AD8F6722290FFE00E0D62E /* IMConversationController.h */,
+				F7AD8F6822290FFE00E0D62E /* IMConversationController.m */,
+			);
+			path = ViewController;
+			sourceTree = "<group>";
+		};
+		F7AD8F6A2229101F00E0D62E /* Tool */ = {
+			isa = PBXGroup;
+			children = (
+				F7AD8F6B2229104C00E0D62E /* LABIMCenter.h */,
+				F7AD8F6C2229104C00E0D62E /* LABIMCenter.m */,
+			);
+			path = Tool;
 			sourceTree = "<group>";
 		};
 		F7FBEFC621F6F63600E2B362 /* View */ = {
@@ -494,6 +552,7 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Laboratory-objc/Pods-Laboratory-objc-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/CocoaAsyncSocket/CocoaAsyncSocket.framework",
 				"${BUILT_PRODUCTS_DIR}/MBProgressHUD/MBProgressHUD.framework",
 				"${BUILT_PRODUCTS_DIR}/MJRefresh/MJRefresh.framework",
 			);
@@ -501,6 +560,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CocoaAsyncSocket.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MBProgressHUD.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MJRefresh.framework",
 			);
@@ -556,12 +616,14 @@
 				F7CE9203221A47D9007FFD70 /* NSAttributedString+Laboratory.m in Sources */,
 				F715EA9621F98AF3004A870F /* EditableViewController.m in Sources */,
 				F792B7C821F6BAA200335025 /* LaboratoryAnimatiedTransitioning.m in Sources */,
+				F7AD8F6D2229104C00E0D62E /* LABIMCenter.m in Sources */,
 				F792B7D021F6BAA200335025 /* NSString+Laboratory.m in Sources */,
 				F792B7CE21F6BAA200335025 /* UILabel+Laboratory.m in Sources */,
 				F792B7D121F6BAA200335025 /* UIButton+Laboratory.m in Sources */,
 				F792B7C521F6BAA200335025 /* HomeViewController.m in Sources */,
 				F792B7CA21F6BAA200335025 /* UIView+Laboratory.m in Sources */,
 				F792B7C621F6BAA200335025 /* FadeViewController.m in Sources */,
+				F7AD8F6922290FFE00E0D62E /* IMConversationController.m in Sources */,
 				F792B72921F6B6FE00335025 /* main.m in Sources */,
 				F792B7CD21F6BAA200335025 /* UIScrollView+Laboratory.m in Sources */,
 				F792B71B21F6B6FD00335025 /* AppDelegate.m in Sources */,
