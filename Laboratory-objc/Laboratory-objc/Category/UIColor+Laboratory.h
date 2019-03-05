@@ -85,5 +85,27 @@
  */
 - (NSString *_Nullable)hexValue;
 
+
+/**
+ 颜色是否是深色
+
+ @return YES 深色/ NO 浅色
+ */
+- (BOOL)lab_deepColor;
+
+/**
+ 颜色透明度
+
+ @return 透明值
+ */
+- (CGFloat)lab_alpha;
+
+/**
+ 颜色不透明
+
+ @return 返回当前颜色不透明(alpha = 1.0)的颜色
+ */
+- (UIColor *)lab_withoutAlphaColor;
+
 @end
 

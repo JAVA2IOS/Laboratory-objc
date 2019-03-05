@@ -177,4 +177,42 @@
     
 }
 
+
+// 颜色深浅
+- (BOOL)lab_deepColor {
+    CGFloat red = 0.0, green = 0.0, blue = 0.0, alpha = 0.0;
+    if ([self getRed:&red green:&green blue:&blue alpha:&alpha]) {
+        float referenceValue = 0.411;
+        float colorDelta = ((red * 0.299) + (green * 0.587) + (blue * 0.114));
+        
+        return 1.0 - colorDelta > referenceValue;
+    }
+    
+    return YES;
+}
+
+
+// 透明度
+- (CGFloat)lab_alpha {
+    CGFloat a;
+    if ([self getRed:0 green:0 blue:0 alpha:&a]) {
+        return a;
+    }
+    
+    return 0;
+}
+
+
+// 颜色不透明
+- (UIColor *)lab_withoutAlphaColor {
+    CGFloat r;
+    CGFloat g;
+    CGFloat b;
+    if ([self getRed:&r green:&g blue:&b alpha:0]) {
+        return [UIColor colorWithRed:r green:g blue:b alpha:1];
+    } else {
+        return nil;
+    }
+}
+
 @end
