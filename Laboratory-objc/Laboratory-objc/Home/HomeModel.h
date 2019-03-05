@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-
+#import "LABIMTabViewController.h"
 NS_ASSUME_NONNULL_BEGIN
 
 @interface HomeModel : NSObject

@@ -37,6 +37,7 @@
 		F792B7D021F6BAA200335025 /* NSString+Laboratory.m in Sources */ = {isa = PBXBuildFile; fileRef = F792B7BB21F6BAA100335025 /* NSString+Laboratory.m */; };
 		F792B7D121F6BAA200335025 /* UIButton+Laboratory.m in Sources */ = {isa = PBXBuildFile; fileRef = F792B7BD21F6BAA100335025 /* UIButton+Laboratory.m */; };
 		F792B7D221F6BAA200335025 /* UIViewController+Laboratory.m in Sources */ = {isa = PBXBuildFile; fileRef = F792B7C321F6BAA100335025 /* UIViewController+Laboratory.m */; };
+		F7935871222E118E00233833 /* LABIMTabViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F7935870222E118E00233833 /* LABIMTabViewController.m */; };
 		F7AD8F6922290FFE00E0D62E /* IMConversationController.m in Sources */ = {isa = PBXBuildFile; fileRef = F7AD8F6822290FFE00E0D62E /* IMConversationController.m */; };
 		F7AD8F6D2229104C00E0D62E /* LABIMCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = F7AD8F6C2229104C00E0D62E /* LABIMCenter.m */; };
 		F7CE9203221A47D9007FFD70 /* NSAttributedString+Laboratory.m in Sources */ = {isa = PBXBuildFile; fileRef = F7CE9202221A47D9007FFD70 /* NSAttributedString+Laboratory.m */; };
@@ -128,6 +129,8 @@
 		F792B7C221F6BAA100335025 /* NSDate+Laboratory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+Laboratory.h"; sourceTree = "<group>"; };
 		F792B7C321F6BAA100335025 /* UIViewController+Laboratory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+Laboratory.m"; sourceTree = "<group>"; };
 		F792B7D321F6BD3100335025 /* Cocoapods.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Cocoapods.h; sourceTree = "<group>"; };
+		F793586F222E118E00233833 /* LABIMTabViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LABIMTabViewController.h; sourceTree = "<group>"; };
+		F7935870222E118E00233833 /* LABIMTabViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LABIMTabViewController.m; sourceTree = "<group>"; };
 		F7AD8F6722290FFE00E0D62E /* IMConversationController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IMConversationController.h; sourceTree = "<group>"; };
 		F7AD8F6822290FFE00E0D62E /* IMConversationController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IMConversationController.m; sourceTree = "<group>"; };
 		F7AD8F6B2229104C00E0D62E /* LABIMCenter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LABIMCenter.h; sourceTree = "<group>"; };
@@ -392,6 +395,8 @@
 			children = (
 				F7AD8F6722290FFE00E0D62E /* IMConversationController.h */,
 				F7AD8F6822290FFE00E0D62E /* IMConversationController.m */,
+				F793586F222E118E00233833 /* LABIMTabViewController.h */,
+				F7935870222E118E00233833 /* LABIMTabViewController.m */,
 			);
 			path = ViewController;
 			sourceTree = "<group>";
@@ -626,6 +631,7 @@
 				F7AD8F6922290FFE00E0D62E /* IMConversationController.m in Sources */,
 				F792B72921F6B6FE00335025 /* main.m in Sources */,
 				F792B7CD21F6BAA200335025 /* UIScrollView+Laboratory.m in Sources */,
+				F7935871222E118E00233833 /* LABIMTabViewController.m in Sources */,
 				F792B71B21F6B6FD00335025 /* AppDelegate.m in Sources */,
 				F792B79221F6B94C00335025 /* LABNavigationController.m in Sources */,
 			);

@@ -52,6 +52,11 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     HomeModel *model = _childVC[indexPath.row];
+    if ([model.childViewControllerClassName isEqualToString:NSStringFromClass([LABIMTabViewController class])]) {
+        LABIMTabViewController *imTab = [[LABIMTabViewController alloc] init];
+        [self.navigationController presentViewController:imTab animated:YES completion:nil];
+        return;
+    }
     [self lab_pushChildViewControllerName:model.childViewControllerClassName];
 }
 

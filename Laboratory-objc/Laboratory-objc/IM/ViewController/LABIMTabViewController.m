@@ -1,23 +1,27 @@
 //
-//  IMConversationController.m
+//  LABIMTabViewController.m
 //  Laboratory-objc
 //
-//  Created by qeeniao35 on 2019/3/1.
+//  Created by qeeniao35 on 2019/3/5.
 //  Copyright © 2019 CodeZ. All rights reserved.
 //
 
+#import "LABIMTabViewController.h"
 #import "IMConversationController.h"
 
-@interface IMConversationController ()
+@interface LABIMTabViewController ()
 
 @end
 
-@implementation IMConversationController
+@implementation LABIMTabViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor whiteColor];
-    self.title = @"IM";
+    IMConversationController *conversationController = [[IMConversationController alloc] init];
+    LABNavigationController *conversationNav = [[LABNavigationController alloc] initWithRootViewController:conversationController];
+    conversationNav.title = @"会话";
+    
+    self.viewControllers = @[conversationNav];
 }
 
 /*

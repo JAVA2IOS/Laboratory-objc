@@ -14,7 +14,7 @@
 @implementation HomeModel
 + (NSArray<HomeModel *> *)tableDatasource {
     NSArray *titles = @[@"转场动画", @"粒子效果", @"可排序"];
-    NSArray *viewControllers = @[NSStringFromClass([TransitionViewController class]), NSStringFromClass([EmitterViewController class]), NSStringFromClass([EditableViewController class])];
+    NSArray *viewControllers = @[NSStringFromClass([TransitionViewController class]), NSStringFromClass([EmitterViewController class]), NSStringFromClass([EditableViewController class]), NSStringFromClass([LABIMTabViewController class])];
     
     NSMutableArray *childVC = [[NSMutableArray alloc] init];
     for (int i = 0; i < MIN(titles.count, viewControllers.count); i ++) {

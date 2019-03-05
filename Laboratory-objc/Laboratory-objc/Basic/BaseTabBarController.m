@@ -8,6 +8,7 @@
 
 #import "BaseTabBarController.h"
 #import "HomeViewController.h"
+#import "IMConversationController.h"
 
 @interface BaseTabBarController ()
 
@@ -24,9 +25,17 @@
 #pragma mark - Navigation
 - (void)configureTabbarController {
     HomeViewController *homeVC = [[HomeViewController alloc] init];
-    homeVC.title = @"主页";
-    LABNavigationController *nav = [[LABNavigationController alloc] initWithRootViewController:homeVC];
-    self.viewControllers = @[nav];
+    LABNavigationController *homeNav = [[LABNavigationController alloc] initWithRootViewController:homeVC];
+    UITabBarItem *homeItem = [[UITabBarItem alloc] initWithTitle:@"首页" image:nil selectedImage:nil];
+    homeNav.tabBarItem = homeItem;
+    
+    IMConversationController *conversationVC = [[IMConversationController alloc] init];
+    LABNavigationController *conversationNav = [[LABNavigationController alloc] initWithRootViewController:conversationVC];
+    self.viewControllers = @[homeNav, conversationNav];
+    UITabBarItem *imItem = [[UITabBarItem alloc] init];
+    imItem.title = @"IM";
+    conversationNav.tabBarItem = imItem;
+    
 }
 
 @end
