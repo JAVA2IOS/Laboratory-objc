@@ -228,8 +228,16 @@
     return self.center.x;
 }
 
+- (void)setLabCenterX:(CGFloat)labCenterX {
+    self.labX = labCenterX - self.labWidth / 2;
+}
+
 - (CGFloat)labCenterY {
     return self.center.y;
+}
+
+- (void)setLabCenterY:(CGFloat)labCenterY {
+    self.labY = labCenterY - self.labHeight / 2;
 }
 
 @end

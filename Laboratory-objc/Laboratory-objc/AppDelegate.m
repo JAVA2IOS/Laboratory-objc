@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #import "BaseTabBarController.h"
+#import "LABAudioManager.h"
 
 @interface AppDelegate ()
 
@@ -17,6 +18,7 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audioManagerInterruption:) name:AVAudioSessionInterruptionNotification object:[AVAudioSession sharedInstance]];
     // 移除main.storyboard 时，需要重新初始化window
     self.window = [[UIWindow alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, SCREENHEIGHT)];
     
@@ -26,10 +28,23 @@
     return YES;
 }
 
+/**
+ 中断
+ */
+- (void)audioManagerInterruption:(NSNotification *)notification {
+    NSDictionary *userInfo = notification.userInfo;
+    if ([[userInfo valueForKey:AVAudioSessionInterruptionTypeKey] integerValue] == AVAudioSessionInterruptionTypeBegan) {
+        NSLog(@"中断录音或者播放");
+        [[LABAudioManager sharedInstance] stopRecordOrAudio];
+    }
+}
+
+
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
+    [[LABAudioManager sharedInstance] stopRecordOrAudio];
 }
 
 
