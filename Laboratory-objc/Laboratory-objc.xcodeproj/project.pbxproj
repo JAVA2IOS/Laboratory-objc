@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2FCAE11C2279ED90009A954D /* libmp3lame.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FCAE11A2279ED90009A954D /* libmp3lame.a */; };
+		2FCAE11F2279EE52009A954D /* LameForMP3.m in Sources */ = {isa = PBXBuildFile; fileRef = 2FCAE11E2279EE52009A954D /* LameForMP3.m */; };
 		C5A5E78131D00E521269514A /* Pods_Laboratory_objc.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A84FD0E27AEE1FAF19CA118D /* Pods_Laboratory_objc.framework */; };
 		F715EA9321F94B20004A870F /* EmitterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F715EA9221F94B20004A870F /* EmitterViewController.m */; };
 		F715EA9621F98AF3004A870F /* EditableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F715EA9521F98AF3004A870F /* EditableViewController.m */; };
@@ -68,6 +70,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2FCAE11A2279ED90009A954D /* libmp3lame.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libmp3lame.a; sourceTree = "<group>"; };
+		2FCAE11B2279ED90009A954D /* lame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lame.h; sourceTree = "<group>"; };
+		2FCAE11D2279EE52009A954D /* LameForMP3.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LameForMP3.h; sourceTree = "<group>"; };
+		2FCAE11E2279EE52009A954D /* LameForMP3.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LameForMP3.m; sourceTree = "<group>"; };
 		3038ABE175D426A7D6472B7A /* Pods-Laboratory-objc.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Laboratory-objc.release.xcconfig"; path = "Target Support Files/Pods-Laboratory-objc/Pods-Laboratory-objc.release.xcconfig"; sourceTree = "<group>"; };
 		68D04801BF2ECF9FE5CE9059 /* Pods-Laboratory-objc.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Laboratory-objc.debug.xcconfig"; path = "Target Support Files/Pods-Laboratory-objc/Pods-Laboratory-objc.debug.xcconfig"; sourceTree = "<group>"; };
 		A84FD0E27AEE1FAF19CA118D /* Pods_Laboratory_objc.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Laboratory_objc.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -164,6 +170,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C5A5E78131D00E521269514A /* Pods_Laboratory_objc.framework in Frameworks */,
+				2FCAE11C2279ED90009A954D /* libmp3lame.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -184,6 +191,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2FCAE1192279ED07009A954D /* lameTool */ = {
+			isa = PBXGroup;
+			children = (
+				2FCAE11B2279ED90009A954D /* lame.h */,
+				2FCAE11A2279ED90009A954D /* libmp3lame.a */,
+				2FCAE11D2279EE52009A954D /* LameForMP3.h */,
+				2FCAE11E2279EE52009A954D /* LameForMP3.m */,
+			);
+			path = lameTool;
+			sourceTree = "<group>";
+		};
 		38DC6B684CB075CFC9E59214 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -361,6 +379,7 @@
 		F792B7AD21F6BAA100335025 /* Tool */ = {
 			isa = PBXGroup;
 			children = (
+				2FCAE1192279ED07009A954D /* lameTool */,
 				F76C9771227581BD00B92905 /* AudioManager */,
 				F76C97672275521600B92905 /* CardView */,
 				F792B7AE21F6BAA100335025 /* LABBundleManager.h */,
@@ -603,6 +622,7 @@
 				F792B79A21F6BA1000335025 /* BaseTabBarController.m in Sources */,
 				F792B79B21F6BA1000335025 /* LABBaseViewController.m in Sources */,
 				F792B7C921F6BAA200335025 /* LABBundleManager.m in Sources */,
+				2FCAE11F2279EE52009A954D /* LameForMP3.m in Sources */,
 				F71FA2F72271559100459CF8 /* LABAudioManager.m in Sources */,
 				F715EA9321F94B20004A870F /* EmitterViewController.m in Sources */,
 				F7B56AE922324D45008FE498 /* LABPopAnimateTransitioning.m in Sources */,
@@ -803,6 +823,10 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Laboratory-objc/Tool/lameTool",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = CodeZ.laboratory.objc;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = 1;
@@ -823,6 +847,10 @@
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Laboratory-objc/Tool/lameTool",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = CodeZ.laboratory.objc;
 				PRODUCT_NAME = "$(TARGET_NAME)";

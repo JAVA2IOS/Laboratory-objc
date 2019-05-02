@@ -28,6 +28,7 @@
     
     [self.view addSubview:self.recordButton];
     [self.view addSubview:self.playButton];
+//    [[LABAudioManager sharedInstance] configureRecorderDirectory:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/Audio/Record"]];
     
 }
 
@@ -56,6 +57,9 @@
             [[LABAudioManager sharedInstance] audioPlay:self.recordFilePath completion:^(NSError *error) {
                 if (!error) {
                     button.selected = NO;
+                }else {
+                    button.selected = YES;
+                    NSLog(@"文件不存在");
                 }
             }];
         }else {

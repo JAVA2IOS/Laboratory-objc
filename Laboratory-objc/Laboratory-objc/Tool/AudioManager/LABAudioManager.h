@@ -22,7 +22,19 @@ typedef void(^LabRecordingHandler)(NSError *error);
  */
 @property (nonatomic, assign, readonly) NSInteger *recordingSeconds;
 
+/**
+ 录音文件的子目录路径, 放在 documents下, 默认 /Documents/Audio/Recorder
+ */
+@property (nonatomic, copy, readonly) NSString *recorderDirectory;
+
 + (instancetype)sharedInstance;
+
+/**
+ 配置录制音频的保存的文件路径
+
+ @param directory 保存的文件路径目录
+ */
+- (void)configureRecorderDirectory:(NSString *)directory;
 
 /**
  停止录音或者播放
