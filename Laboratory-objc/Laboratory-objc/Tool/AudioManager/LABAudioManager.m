@@ -8,14 +8,16 @@
 
 #import "LABAudioManager.h"
 #import "AYFile.h"
+#import "LameForMP3.h"
 
-@interface LABAudioManager()<AVAudioRecorderDelegate, AVAudioPlayerDelegate>
+@interface LABAudioManager()<AVAudioRecorderDelegate, AVAudioPlayerDelegate, LameForMp3Delegate>
 @property (nonatomic, retain) AVAudioSession *recordSession;
 @property (nonatomic, retain) AVAudioPlayer *audioPlayer;
 @property (nonatomic, retain) NSTimer *recorderTimer;
 @property (nonatomic, retain) NSTimer *playerTimer;
 @property (nonatomic, retain, readwrite) AVAudioRecorder *recorder;
 @property (nonatomic, assign, readwrite) NSInteger *recordingSeconds;
+@property (nonatomic, copy, readwrite) NSString *recorderDirectory;
 /**
  播放回调方法
  */
@@ -23,27 +25,45 @@
 
 @property (nonatomic, copy) LabRecordingHandler recordingBlock;
 
+@property (nonatomic, copy) LabRecordFinishHandler recorderFinishedBlock;
 @end
 
 static LABAudioManager *manager = nil;
 
 /* 文件后缀名 */
-static NSString *const kLabAudioSuffix = @".wav";
+static NSString *const kLabAudioSuffix = @"wav";
 /* 文件目录路径 */
-static NSString *const kLabAudioDirectiory = @"Audio/Record";
-
-/* 监听属性 */
-static NSString *const kLabAudioMonitorProperty = @"currentTime";
-
+static NSString *const kLabAudioDirectiory = @"Audio/Recorder";
 
 @implementation LABAudioManager
 + (instancetype)sharedInstance {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         manager = [[self alloc] init];
+        manager.recorderDirectory = kLabAudioDirectiory;
+        [LameForMP3 sharedInstance].delegate = manager;
     });
     
     return manager;
+}
+
+- (void)configureRecorderDirectory:(NSString *)directory {
+    if (directory == nil) {
+        directory = kLabAudioDirectiory;
+    }else if (directory.length <= 0) {
+        directory = @"/";
+    }
+    // 文件目录标准化
+    BOOL isDirectory = NO;
+    [[NSFileManager defaultManager] fileExistsAtPath:directory isDirectory:&isDirectory];
+    if (!isDirectory) {
+        directory = [directory stringByReplacingOccurrencesOfString:[directory lastPathComponent] withString:@""];
+    }
+    // 移除documents路径
+    directory = [directory stringByReplacingOccurrencesOfString:[AYFile documents].path withString:@""];
+    NSLog(@"子目录路径: %@", directory);
+    
+    _recorderDirectory = directory;
 }
 
 + (BOOL)checkMicroPhoneAuthorization {
@@ -81,16 +101,14 @@ static NSString *const kLabAudioMonitorProperty = @"currentTime";
         return;
     }
     
-    // 添加后缀.mp3
-    if (![[fileName lowercaseString] hasSuffix:kLabAudioSuffix]) {
-        fileName = [fileName stringByAppendingString:kLabAudioSuffix];
-    }
-    
+    // 添加文件后缀
+    [fileName stringByDeletingPathExtension];
+    fileName = [fileName stringByAppendingPathExtension:kLabAudioSuffix];
     fileName = [fileName lastPathComponent];
     
     // documents/Audio/Record/xxxx.mp3
     // 创建目录
-    NSString *directoryPath = [[AYFile documents].path stringByAppendingPathComponent:kLabAudioDirectiory];
+    NSString *directoryPath = [[AYFile documents].path stringByAppendingPathComponent:_recorderDirectory];
     AYFile *directoryFile = [AYFile fileWithPath:directoryPath];
     [directoryFile makeDirs];
     // 文件完整路径
@@ -128,6 +146,10 @@ static NSString *const kLabAudioMonitorProperty = @"currentTime";
                 }
                 [self recordFailure:@"录音出现问题"];
             } @finally {}
+            if ([weakself.recorder prepareToRecord]) {
+                [weakself.recorder record];
+                [[LameForMP3 sharedInstance] transcodingMP3File:file.path sampleRate:[weakself.recorder.settings[AVSampleRateKey] integerValue]];
+            }
         }else {
             if (completion) {
                 completion([NSError errorWithDomain:@"录音开启失败" code:500 userInfo:nil]);
@@ -157,7 +179,11 @@ static NSString *const kLabAudioMonitorProperty = @"currentTime";
         [self deleteRecord:self.recorder.url.path];
     }else {
         [self recordSuccess:self.recorder];
+        [[LameForMP3 sharedInstance] cancelTranscoding];
+        return;
     }
+    _recorderFinishedBlock = completion;
+
     [self.recorder stop];
     self.recorder = nil;
 }
@@ -254,6 +280,14 @@ static NSString *const kLabAudioMonitorProperty = @"currentTime";
         return;
     }
     
+    NSLog(@"播放文件:%@", filePath);
+    if (![[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
+        if (completion) {
+            completion([NSError errorWithDomain:@"找不到该文件" code:500 userInfo:nil]);
+        }
+        return;
+    }
+
     self.recordSession = [AVAudioSession sharedInstance];
     [self.recordSession setCategory:AVAudioSessionCategoryPlayback error:nil];
     NSError *error = nil;
@@ -417,6 +451,11 @@ static NSString *const kLabAudioMonitorProperty = @"currentTime";
         self.recordingBlock(flag ? nil : [NSError errorWithDomain:@"录音出现未知错误" code:500 userInfo:nil]);
         self.recordingBlock = nil;
     }
+    if (!flag) {
+        [[LameForMP3 sharedInstance] cancelTranscoding];
+    }else {
+        [[LameForMP3 sharedInstance] finishTranscoding];
+    }
 }
 
 - (void)audioRecorderEncodeErrorDidOccur:(AVAudioRecorder *)recorder error:(NSError *)error {
@@ -429,6 +468,7 @@ static NSString *const kLabAudioMonitorProperty = @"currentTime";
     }
     
     [self recordFailure:@"录音失败"];
+    [[LameForMP3 sharedInstance] cancelTranscoding];
 }
 
 
@@ -457,6 +497,41 @@ static NSString *const kLabAudioMonitorProperty = @"currentTime";
         self.playBlock(error);
         self.playBlock = nil;
     }
+}
+
+
+#pragma mark LameForMp3Delegate
+- (void)transcodingFailured {
+    NSLog(@"转码失败");
+    if (_recorderFinishedBlock) {
+        _recorderFinishedBlock(nil, 0);
+    }
+    [[LameForMP3 sharedInstance] deleteSourceFile];
+}
+
+- (void)transcodingFinished:(NSString *)filePath audioTimes:(NSTimeInterval)times {
+    /*
+     1. 是否转码完成，没有完成直接报录制失败
+     2. 如果完成，判断时间是否大于1秒，小于1秒，报失败(删除源文件和mp3文件)
+     3. 如果大于1秒，完成转码(删除源文件，保留mp3文件)
+     */
+    
+    if ([LameForMP3 sharedInstance].status == LameTranscodeStatusFinished) {
+        if ([LameForMP3 sharedInstance].mp3FilePath.length > 0) {
+            if (_recorderFinishedBlock) {
+                _recorderFinishedBlock(times > 1 ? filePath : nil, times > 1 ?: 0);
+                if (times < 1) {
+                    [[LameForMP3 sharedInstance] deleteMp3File];
+                }
+            }
+        }
+    }else {
+        if (_recorderFinishedBlock) {
+            _recorderFinishedBlock(nil, 0);
+        }
+    }
+    
+    [[LameForMP3 sharedInstance] deleteSourceFile];
 }
 
 @end

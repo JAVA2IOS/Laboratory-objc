@@ -27,12 +27,16 @@
     self.view.backgroundColor = LabColor(@"ffffff");
     
     [self.view addSubview:self.recordButton];
+
     [LABAudioManager sharedInstance].audioDelegate = self;
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     [[NSNotificationCenter defaultCenter] postNotificationName:AVAudioSessionInterruptionNotification object:nil];
+    [self.view addSubview:self.playButton];
+//    [[LABAudioManager sharedInstance] configureRecorderDirectory:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/Audio/Record"]];
+    
 }
 
 - (void)recordButtonHandler:(UIButton *)button {
@@ -62,6 +66,9 @@
             [[LABAudioManager sharedInstance] audioPlay:self.recordFilePath completion:^(NSError *error) {
                 if (!error) {
                     button.selected = NO;
+                }else {
+                    button.selected = YES;
+                    NSLog(@"文件不存在");
                 }
             }];
         }else {
