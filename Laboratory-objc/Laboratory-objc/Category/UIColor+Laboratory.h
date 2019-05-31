@@ -16,7 +16,7 @@
 
 @interface UIColor (Laboratory)
 #pragma mark - Colors from Hex Strings
-
++ (UIColor *)randomColor;
 /**
  *  Creates and returns a @c UIColor object based on the specified hex string.
  *

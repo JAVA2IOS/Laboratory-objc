@@ -12,6 +12,46 @@
 typedef void(^LabRecordFinishHandler)(NSString *filePath, NSTimeInterval recordTime);
 typedef void(^LabRecordPlayHandler)(NSError *error);
 typedef void(^LabRecordingHandler)(NSError *error);
+
+@protocol LABAudioManagerDelegate <NSObject>
+
+@optional
+
+- (void)audioRecordSuccess:(NSString *)recordFilePath totalTime:(NSTimeInterval)totalTime;
+
+- (void)audioRecordFailure:(NSError *)error;
+
+- (void)audioRecordInterruped;
+
+/**
+ 录音暂停
+ */
+- (void)audioRecordPaused;
+
+/**
+ 录音继续
+ */
+- (void)audioRecordContinued:(NSTimeInterval)currentTimer;
+
+- (void)audioRecording:(NSTimeInterval)currentTime;
+
+- (void)audioPlayedSuccess;
+
+- (void)audioPlayedFailure:(NSError *)error;
+
+- (void)audioPlayedInterruped;
+/**
+ 播放过程
+
+ @param currentTime 播放的当前时间
+ @param totalTime 音频总时长
+ */
+- (void)audioPlaying:(NSTimeInterval)currentTime totalTimes:(NSTimeInterval)totalTime;
+
+@end
+
+
+
 /**
  音频管理
  */
@@ -21,6 +61,11 @@ typedef void(^LabRecordingHandler)(NSError *error);
  录音的时间
  */
 @property (nonatomic, assign, readonly) NSInteger *recordingSeconds;
+
+/**
+ 委托协议
+ */
+@property (nonatomic, weak) id<LABAudioManagerDelegate> audioDelegate;
 
 + (instancetype)sharedInstance;
 

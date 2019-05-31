@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "StackCardCell.h"
 @class StackCardView;
 
 @protocol StackCardViewDelegate <NSObject>
@@ -17,7 +18,9 @@
  @param cardsView 当前的卡片视图
  @return 新增的数据源
  */
-- (NSArray *)currentCardsDataForCards:(StackCardView *)cardsView;
+- (NSInteger)numberOfCardsDataForCards:(StackCardView *)cardsView;
+
+- (StackCardCell *)stackCardsView:(StackCardView *)cardView cellForCurrentIndex:(NSInteger)index;
 
 @optional
 /**
@@ -36,6 +39,20 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @interface StackCardView : UIScrollView
 @property (nonatomic, weak) id<StackCardViewDelegate> stackDelegate;
+
+
+/**
+ 当前需要复用的cell
+
+ @param index cell需要显示的下标
+ @param reusableIdentifier 复用标志符
+ @return 复用的cell
+ */
+- (StackCardCell *)cellForIndex:(NSInteger)index reusableIdentifier:(NSString *)reusableIdentifier;
+
+- (void)selectIndex:(NSInteger)index animated:(BOOL)animated;
+
+- (void)reloadCardsView;
 
 @end
 

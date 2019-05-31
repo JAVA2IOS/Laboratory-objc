@@ -8,14 +8,21 @@
 
 #import "StackCardCell.h"
 
-@implementation StackCardCell
+@interface StackCardCell()
+@property (nonatomic, copy, readwrite) NSString *identifier;
+@property (nonatomic, assign, readwrite) NSInteger index;
+@end
 
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
+@implementation StackCardCell
+- (instancetype)initWithIndex:(NSInteger)index reusableIdentifier:(NSString *)reusableIdentifier {
+    if (self = [super init]) {
+        self.identifier = reusableIdentifier;
+        self.index = index;
+        
+        self.backgroundColor = [UIColor randomColor];
+    }
+    
+    return self;
 }
-*/
 
 @end

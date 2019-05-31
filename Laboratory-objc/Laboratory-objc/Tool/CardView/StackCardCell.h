@@ -12,6 +12,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface StackCardCell : UIView
 
+/**
+ 复用标志符
+ */
+@property (nonatomic, copy, readonly) NSString *identifier;
+
+@property (nonatomic, assign, readonly) NSInteger index;
+
+- (instancetype)initWithIndex:(NSInteger)index reusableIdentifier:(NSString *)reusableIdentifier;
+
 @end
 
 NS_ASSUME_NONNULL_END

@@ -9,6 +9,13 @@
 #import "UIColor+Laboratory.h"
 
 @implementation UIColor (Laboratory)
++ (UIColor *)randomColor {
+    CGFloat red = arc4random() % 256 / 255.0;
+    CGFloat green = arc4random() % 256 / 255.0;
+    CGFloat blue = arc4random() % 256 / 255.0;
+    return [UIColor colorWithRed:red green:green blue:blue alpha:1];
+}
+
 + (UIColor * _Nullable)colorWithHexString:(NSString * _Nonnull)string {
     
     //Color with string and a defualt alpha value of 1.0

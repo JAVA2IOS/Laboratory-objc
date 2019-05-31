@@ -9,7 +9,7 @@
 #import "AudioViewController.h"
 #import "LABAudioManager.h"
 
-@interface AudioViewController ()
+@interface AudioViewController ()<LABAudioManagerDelegate>
 
 @property (nonatomic, retain) UIButton *recordButton;
 @property (nonatomic, retain) UIButton *playButton;
@@ -27,31 +27,37 @@
     self.view.backgroundColor = LabColor(@"ffffff");
     
     [self.view addSubview:self.recordButton];
-    [self.view addSubview:self.playButton];
-    
+    [LABAudioManager sharedInstance].audioDelegate = self;
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [[NSNotificationCenter defaultCenter] postNotificationName:AVAudioSessionInterruptionNotification object:nil];
 }
 
 - (void)recordButtonHandler:(UIButton *)button {
-    button.selected = !button.selected;
-    
     if (button == _recordButton) {
-        if (button.selected) {
-            [[LABAudioManager sharedInstance] startRecord:@"" completion:^(NSError *error) {
-                if (!error) {
-                    button.selected = NO;
-                }
-            }];
+        if (button.highlighted) {
+            NSLog(@"高亮");
         }else {
-            WeakSelf(self)
-            [[LABAudioManager sharedInstance] stopRecord:^(NSString *filePath, NSTimeInterval recordTime) {
-                NSLog(@"文件路径:%@, 时间:%ld", filePath, (long)recordTime);
-                weakself.recordFilePath = filePath;
-            }];
+            NSLog(@"不高亮");
         }
+        /*
+         if (button.selected) {
+         [[LABAudioManager sharedInstance] startRecord:@"" completion:^(NSError *error) {
+         if (!error) {
+         button.selected = NO;
+         }
+         }];
+         }else {
+         [[LABAudioManager sharedInstance] stopRecord:nil];
+         }
+         */
         return;
     }
     
     if (button == _playButton) {
+        button.selected = !button.selected;
         if (button.selected) {
             [[LABAudioManager sharedInstance] audioPlay:self.recordFilePath completion:^(NSError *error) {
                 if (!error) {
@@ -64,13 +70,49 @@
     }
 }
 
+- (void)buttonDown:(UIButton *)button {
+    NSLog(@"按下录音");
+    [[LABAudioManager sharedInstance] startRecord:@"" completion:nil];
+    [_recordButton setTitle:@"播放录音" forState:UIControlStateNormal];
+}
+
+- (void)buttonUp:(UIButton *)button {
+    if ([LABAudioManager sharedInstance].recorder) {
+        [[LABAudioManager sharedInstance] stopRecord:nil];
+        [button setTitle:nil forState:UIControlStateHighlighted];
+        [button removeTarget:self action:@selector(buttonDown:) forControlEvents:UIControlEventTouchDown];
+        return;
+    }
+    
+    button.selected = !button.selected;
+    if (button.selected) {
+        NSLog(@"显示停止播放");
+        [[LABAudioManager sharedInstance] audioPlay:self.recordFilePath completion:nil];
+    }else {
+        NSLog(@"显示播放录音");
+        [[LABAudioManager sharedInstance] audioStop];
+    }
+}
+
+- (void)buttonCancel:(UIButton *)button {
+    NSLog(@"取消了嘛");
+    if ([LABAudioManager sharedInstance].recorder) {
+        [[LABAudioManager sharedInstance] stopRecord:nil];
+        [button setTitle:@"长按录音" forState:UIControlStateNormal];
+    }else {
+        
+    }
+}
 
 - (UIButton *)recordButton {
     return _recordButton ?: ({
-        _recordButton = [UIButton lab_initButtonTitile:@"开始录音" font:[UIFont systemFontOfSize:18] titleColor:[UIColor whiteColor] backgroundColor:LabColor(@"#52c797")];
+        _recordButton = [UIButton lab_initButtonTitile:@"长按录音" font:[UIFont systemFontOfSize:18] titleColor:[UIColor whiteColor] backgroundColor:LabColor(@"#52c797")];
         _recordButton.frame = CGRectMake(50, LABNavBarHeight + 100, 100, 100);
         [_recordButton setTitle:@"停止录音" forState:UIControlStateSelected];
-        [_recordButton buttonClick:self selector:@selector(recordButtonHandler:)];
+        [_recordButton setTitle:@"正在录音" forState:UIControlStateHighlighted];
+        [_recordButton addTarget:self action:@selector(buttonDown:) forControlEvents:UIControlEventTouchDown];
+        [_recordButton addTarget:self action:@selector(buttonUp:) forControlEvents:UIControlEventTouchUpInside];
+        [_recordButton addTarget:self action:@selector(buttonCancel:) forControlEvents:UIControlEventTouchDragOutside];
         _recordButton.labCenterX = self.view.labWidth / 2;
         [_recordButton lab_addRoundingCorners:UIRectCornerAllCorners cornerRadii:1];
         
@@ -78,17 +120,56 @@
     });
 }
 
-- (UIButton *)playButton {
-    return _playButton ?: ({
-        _playButton = [UIButton lab_initButtonTitile:@"播放录音" font:[UIFont systemFontOfSize:18] titleColor:[UIColor whiteColor] backgroundColor:LabColor(@"#ff6b54")];
-        _playButton.frame = CGRectMake(50, _recordButton.labBottom + 50, 100, 100);
-        [_playButton setTitle:@"停止播放" forState:UIControlStateSelected];
-        [_playButton buttonClick:self selector:@selector(recordButtonHandler:)];
-        _playButton.labCenterX = self.view.labWidth / 2;
-        [_playButton lab_addRoundingCorners:UIRectCornerAllCorners cornerRadii:1];
-        
-        _playButton;
-    });
+
+#pragma mark - delegate
+- (void)audioPlaying:(NSTimeInterval)currentTime totalTimes:(NSTimeInterval)totalTime {
+    NSLog(@"正在播放: %ld", (long)currentTime);
 }
+
+- (void)audioPlayedFailure:(NSError *)error {
+    NSLog(@"播放失败: %@", error.domain);
+    _recordButton.selected = NO;
+}
+
+- (void)audioPlayedSuccess {
+    NSLog(@"播放完成");
+    _recordButton.selected = NO;
+}
+
+- (void)audioPlayedInterruped {
+    NSLog(@"播放中断");
+    _recordButton.selected = NO;
+}
+
+- (void)audioRecording:(NSTimeInterval)currentTime {
+    NSLog(@"正在录制: %ld", (long)currentTime);
+}
+
+- (void)audioRecordPaused {
+    NSLog(@"录制暂停");
+}
+
+- (void)audioRecordContinued:(NSTimeInterval)currentTimer {
+    NSLog(@"继续录制, %ld", (long)currentTimer);
+}
+
+- (void)audioRecordInterruped {
+    NSLog(@"录音中断");
+}
+
+- (void)audioRecordSuccess:(NSString *)recordFilePath totalTime:(NSTimeInterval)totalTime {
+    NSLog(@"录制完成:%@, 总时间 %ld", recordFilePath, (long)totalTime);
+    self.recordFilePath = recordFilePath;
+}
+
+- (void)audioRecordFailure:(NSError *)error {
+    NSLog(@"录制失败:%@", error.domain);
+    _recordButton.selected = NO;
+    [_recordButton setTitle:@"长按录音" forState:UIControlStateNormal];
+    [_recordButton setTitle:@"正在录音" forState:UIControlStateHighlighted];
+    _recordButton.adjustsImageWhenHighlighted = YES;
+    [_recordButton addTarget:self action:@selector(buttonDown:) forControlEvents:UIControlEventTouchDown];
+}
+
 
 @end
