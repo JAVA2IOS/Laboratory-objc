@@ -7,20 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2FCAE11C2279ED90009A954D /* libmp3lame.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FCAE11A2279ED90009A954D /* libmp3lame.a */; };
-		2FCAE11F2279EE52009A954D /* LameForMP3.m in Sources */ = {isa = PBXBuildFile; fileRef = 2FCAE11E2279EE52009A954D /* LameForMP3.m */; };
 		C5A5E78131D00E521269514A /* Pods_Laboratory_objc.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A84FD0E27AEE1FAF19CA118D /* Pods_Laboratory_objc.framework */; };
 		F715EA9321F94B20004A870F /* EmitterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F715EA9221F94B20004A870F /* EmitterViewController.m */; };
 		F715EA9621F98AF3004A870F /* EditableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F715EA9521F98AF3004A870F /* EditableViewController.m */; };
 		F715EA9921F98D0D004A870F /* HomeEditTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F715EA9821F98D0D004A870F /* HomeEditTableCell.m */; };
 		F7160934229E829300729B9A /* StackCardsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F7160933229E829300729B9A /* StackCardsViewController.m */; };
 		F7160938229E842700729B9A /* StackCardslayout.m in Sources */ = {isa = PBXBuildFile; fileRef = F7160937229E842700729B9A /* StackCardslayout.m */; };
-		F71FA2F72271559100459CF8 /* LABAudioManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F71FA2F62271559100459CF8 /* LABAudioManager.m */; };
 		F71FA2FA2271560000459CF8 /* AudioViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F71FA2F92271560000459CF8 /* AudioViewController.m */; };
 		F757E01A21F802F3008919FD /* LaboratoryNavigationDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F757E01921F802F3008919FD /* LaboratoryNavigationDelegate.m */; };
 		F76C976A2275524E00B92905 /* StackCardView.m in Sources */ = {isa = PBXBuildFile; fileRef = F76C97692275524E00B92905 /* StackCardView.m */; };
 		F76C976D2275529E00B92905 /* StackCardCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F76C976C2275529E00B92905 /* StackCardCell.m */; };
-		F76C9770227581B900B92905 /* AYFile.m in Sources */ = {isa = PBXBuildFile; fileRef = F76C976E227581B900B92905 /* AYFile.m */; };
 		F792B71B21F6B6FD00335025 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F792B71A21F6B6FD00335025 /* AppDelegate.m */; };
 		F792B72321F6B6FE00335025 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F792B72221F6B6FE00335025 /* Assets.xcassets */; };
 		F792B72621F6B6FE00335025 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F792B72421F6B6FE00335025 /* LaunchScreen.storyboard */; };
@@ -88,10 +84,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		2FCAE11A2279ED90009A954D /* libmp3lame.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libmp3lame.a; sourceTree = "<group>"; };
-		2FCAE11B2279ED90009A954D /* lame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lame.h; sourceTree = "<group>"; };
-		2FCAE11D2279EE52009A954D /* LameForMP3.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LameForMP3.h; sourceTree = "<group>"; };
-		2FCAE11E2279EE52009A954D /* LameForMP3.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LameForMP3.m; sourceTree = "<group>"; };
 		3038ABE175D426A7D6472B7A /* Pods-Laboratory-objc.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Laboratory-objc.release.xcconfig"; path = "Target Support Files/Pods-Laboratory-objc/Pods-Laboratory-objc.release.xcconfig"; sourceTree = "<group>"; };
 		68D04801BF2ECF9FE5CE9059 /* Pods-Laboratory-objc.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Laboratory-objc.debug.xcconfig"; path = "Target Support Files/Pods-Laboratory-objc/Pods-Laboratory-objc.debug.xcconfig"; sourceTree = "<group>"; };
 		A84FD0E27AEE1FAF19CA118D /* Pods_Laboratory_objc.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Laboratory_objc.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -105,8 +97,6 @@
 		F7160933229E829300729B9A /* StackCardsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = StackCardsViewController.m; sourceTree = "<group>"; };
 		F7160936229E842700729B9A /* StackCardslayout.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StackCardslayout.h; sourceTree = "<group>"; };
 		F7160937229E842700729B9A /* StackCardslayout.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = StackCardslayout.m; sourceTree = "<group>"; };
-		F71FA2F52271559100459CF8 /* LABAudioManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LABAudioManager.h; sourceTree = "<group>"; };
-		F71FA2F62271559100459CF8 /* LABAudioManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LABAudioManager.m; sourceTree = "<group>"; };
 		F71FA2F82271560000459CF8 /* AudioViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AudioViewController.h; sourceTree = "<group>"; };
 		F71FA2F92271560000459CF8 /* AudioViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AudioViewController.m; sourceTree = "<group>"; };
 		F757E01821F802F3008919FD /* LaboratoryNavigationDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LaboratoryNavigationDelegate.h; sourceTree = "<group>"; };
@@ -115,8 +105,6 @@
 		F76C97692275524E00B92905 /* StackCardView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = StackCardView.m; sourceTree = "<group>"; };
 		F76C976B2275529E00B92905 /* StackCardCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StackCardCell.h; sourceTree = "<group>"; };
 		F76C976C2275529E00B92905 /* StackCardCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = StackCardCell.m; sourceTree = "<group>"; };
-		F76C976E227581B900B92905 /* AYFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AYFile.m; sourceTree = "<group>"; };
-		F76C976F227581B900B92905 /* AYFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AYFile.h; sourceTree = "<group>"; };
 		F792B71621F6B6FD00335025 /* Laboratory-objc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Laboratory-objc.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F792B71921F6B6FD00335025 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		F792B71A21F6B6FD00335025 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -212,7 +200,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				C5A5E78131D00E521269514A /* Pods_Laboratory_objc.framework in Frameworks */,
-				2FCAE11C2279ED90009A954D /* libmp3lame.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -233,17 +220,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		2FCAE1192279ED07009A954D /* lameTool */ = {
-			isa = PBXGroup;
-			children = (
-				2FCAE11B2279ED90009A954D /* lame.h */,
-				2FCAE11A2279ED90009A954D /* libmp3lame.a */,
-				2FCAE11D2279EE52009A954D /* LameForMP3.h */,
-				2FCAE11E2279EE52009A954D /* LameForMP3.m */,
-			);
-			path = lameTool;
-			sourceTree = "<group>";
-		};
 		38DC6B684CB075CFC9E59214 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -283,17 +259,6 @@
 				F76C976C2275529E00B92905 /* StackCardCell.m */,
 			);
 			path = CardView;
-			sourceTree = "<group>";
-		};
-		F76C9771227581BD00B92905 /* AudioManager */ = {
-			isa = PBXGroup;
-			children = (
-				F76C976F227581B900B92905 /* AYFile.h */,
-				F76C976E227581B900B92905 /* AYFile.m */,
-				F71FA2F52271559100459CF8 /* LABAudioManager.h */,
-				F71FA2F62271559100459CF8 /* LABAudioManager.m */,
-			);
-			path = AudioManager;
 			sourceTree = "<group>";
 		};
 		F792B70D21F6B6FD00335025 = {
@@ -436,8 +401,6 @@
 		F792B7AD21F6BAA100335025 /* Tool */ = {
 			isa = PBXGroup;
 			children = (
-				2FCAE1192279ED07009A954D /* lameTool */,
-				F76C9771227581BD00B92905 /* AudioManager */,
 				F76C97672275521600B92905 /* CardView */,
 				F792B7AE21F6BAA100335025 /* LABBundleManager.h */,
 				F792B7AF21F6BAA100335025 /* LABBundleManager.m */,
@@ -736,8 +699,6 @@
 				F792B79A21F6BA1000335025 /* BaseTabBarController.m in Sources */,
 				F792B79B21F6BA1000335025 /* LABBaseViewController.m in Sources */,
 				F792B7C921F6BAA200335025 /* LABBundleManager.m in Sources */,
-				2FCAE11F2279EE52009A954D /* LameForMP3.m in Sources */,
-				F71FA2F72271559100459CF8 /* LABAudioManager.m in Sources */,
 				F715EA9321F94B20004A870F /* EmitterViewController.m in Sources */,
 				F7B56AE922324D45008FE498 /* LABPopAnimateTransitioning.m in Sources */,
 				F792B7CB21F6BAA200335025 /* UIColor+Laboratory.m in Sources */,
@@ -749,7 +710,6 @@
 				F7CE9203221A47D9007FFD70 /* NSAttributedString+Laboratory.m in Sources */,
 				F7D11EC422363EA7000898A5 /* EditableCollecitonController.m in Sources */,
 				F7B56AE622324860008FE498 /* LABAlertController.m in Sources */,
-				F76C9770227581B900B92905 /* AYFile.m in Sources */,
 				F71FA2FA2271560000459CF8 /* AudioViewController.m in Sources */,
 				F715EA9621F98AF3004A870F /* EditableViewController.m in Sources */,
 				F792B7C821F6BAA200335025 /* LaboratoryAnimatiedTransitioning.m in Sources */,

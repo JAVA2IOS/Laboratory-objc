@@ -15,7 +15,7 @@ static NSString * tabCardNoDataString = @"TABCARDNODATASTRING";
 
 @interface TABCardView (){
     
-    __strong TABBaseCardView * tempView;
+    TABBaseCardView * tempView;
     float sizePercent;                                                  // 顶部卡片拖动中，底部卡片缩放系数
 }
 
@@ -153,7 +153,7 @@ static NSString * tabCardNoDataString = @"TABCARDNODATASTRING";
             for (UIView *subV in self.subviews) {
                 if ([subV isKindOfClass:[TABBaseCardView class]] ||
                     [subV.layer.name isEqualToString:tabCardNoDataString]) {
-                    [subV removeFromSuperview];
+//                    [subV removeFromSuperview];
                 }
             }
         }
@@ -229,10 +229,11 @@ static NSString * tabCardNoDataString = @"TABCARDNODATASTRING";
                 cardView.center = CGPointMake(self.center.x + self.offsetX*(_showCardsNumber-1-i) - self.frame.origin.x, self.center.y + self.offsetY*(_showCardsNumber-1-i) - self.frame.origin.y);
                 // 缩放效果
                 cardView.transform = CGAffineTransformMakeScale(1-sizePercent*(_showCardsNumber-i-1), 1-sizePercent*(_showCardsNumber-i-1));
-                cardView.layer.cornerRadius = self.cardCornerRadius;
-                cardView.layer.masksToBounds = YES;
-                cardView.alpha = [self.alphaArray[i] floatValue];
-                cardView.layer.name = tabCardNoDataString;
+//                cardView.layer.cornerRadius = self.cardCornerRadius;
+//                cardView.layer.masksToBounds = YES;
+//                cardView.alpha = [self.alphaArray[i] floatValue];
+//                cardView.layer.name = tabCardNoDataString;
+                [cardView lab_addRoundingCorners:UIRectCornerAllCorners cornerRadii:self.cardCornerRadius];
                 
                 [self addSubview:cardView];
             }

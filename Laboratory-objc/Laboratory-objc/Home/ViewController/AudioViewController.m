@@ -7,9 +7,9 @@
 //
 
 #import "AudioViewController.h"
-#import "LABAudioManager.h"
+//#import "LABAudioManager.h"
 
-@interface AudioViewController ()<LABAudioManagerDelegate>
+@interface AudioViewController ()/*<LABAudioManagerDelegate>*/
 
 @property (nonatomic, retain) UIButton *recordButton;
 @property (nonatomic, retain) UIButton *playButton;
@@ -28,53 +28,44 @@
     
     [self.view addSubview:self.recordButton];
 
-    [LABAudioManager sharedInstance].audioDelegate = self;
+//    [LABAudioManager sharedInstance].audioDelegate = self;
 }
 
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-    [[NSNotificationCenter defaultCenter] postNotificationName:AVAudioSessionInterruptionNotification object:nil];
-    [self.view addSubview:self.playButton];
-//    [[LABAudioManager sharedInstance] configureRecorderDirectory:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/Audio/Record"]];
-    
+/*
+ - (void)viewWillDisappear:(BOOL)animated {
+ [super viewWillDisappear:animated];
+ [[NSNotificationCenter defaultCenter] postNotificationName:AVAudioSessionInterruptionNotification object:nil];
+ [self.view addSubview:self.playButton];
+ //    [[LABAudioManager sharedInstance] configureRecorderDirectory:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/Audio/Record"]];
+ 
+ }
+ 
+ - (void)recordButtonHandler:(UIButton *)button {
+ if (button == _recordButton) {
+ if (button.highlighted) {
+ NSLog(@"高亮");
+ }else {
+ NSLog(@"不高亮");
+ }
+ 
+return;
 }
 
-- (void)recordButtonHandler:(UIButton *)button {
-    if (button == _recordButton) {
-        if (button.highlighted) {
-            NSLog(@"高亮");
-        }else {
-            NSLog(@"不高亮");
-        }
-        /*
-         if (button.selected) {
-         [[LABAudioManager sharedInstance] startRecord:@"" completion:^(NSError *error) {
-         if (!error) {
-         button.selected = NO;
-         }
-         }];
-         }else {
-         [[LABAudioManager sharedInstance] stopRecord:nil];
-         }
-         */
-        return;
+if (button == _playButton) {
+    button.selected = !button.selected;
+    if (button.selected) {
+        [[LABAudioManager sharedInstance] audioPlay:self.recordFilePath completion:^(NSError *error) {
+            if (!error) {
+                button.selected = NO;
+            }else {
+                button.selected = YES;
+                NSLog(@"文件不存在");
+            }
+        }];
+    }else {
+        [[LABAudioManager sharedInstance] audioStop];
     }
-    
-    if (button == _playButton) {
-        button.selected = !button.selected;
-        if (button.selected) {
-            [[LABAudioManager sharedInstance] audioPlay:self.recordFilePath completion:^(NSError *error) {
-                if (!error) {
-                    button.selected = NO;
-                }else {
-                    button.selected = YES;
-                    NSLog(@"文件不存在");
-                }
-            }];
-        }else {
-            [[LABAudioManager sharedInstance] audioStop];
-        }
-    }
+}
 }
 
 - (void)buttonDown:(UIButton *)button {
@@ -177,6 +168,7 @@
     _recordButton.adjustsImageWhenHighlighted = YES;
     [_recordButton addTarget:self action:@selector(buttonDown:) forControlEvents:UIControlEventTouchDown];
 }
+ */
 
 
 @end

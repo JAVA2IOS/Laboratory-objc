@@ -27,29 +27,32 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = LabColor(@"ffffff");
-    
-    _customCards = [[StackCardView alloc] initWithFrame:CGRectMake(0, self.labNavgationBar.labBottom, self.view.labWidth, self.view.labWidth)];
+
+    _customCards = [[StackCardView alloc] initWithFrame:CGRectMake(40, self.labNavgationBar.labBottom + 40, self.view.labWidth - 80, self.view.labWidth - 80)];
     [self.view addSubview:_customCards];
     _customCards.stackDelegate = self;
+    _customCards.backgroundColor = kBackColor;
     [_customCards reloadCardsView];
     
-//    self.view.backgroundColor = kBackColor;
-//
-//
-//
-//    self.cardView = [[TABCardView alloc] initWithFrame:CGRectMake(40, (kScreenHeight - 320)/2, kScreenWidth - 120, 320)
-//                                       showCardsNumber:4];
-//    self.cardView.isShowNoDataView = YES;
-//    self.cardView.noDataView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"占位图"]];
-//    self.cardView.delegate = self;
-//    [self.view addSubview:self.cardView];
-//
-//    // 模拟请求数据
-//    [self performSelector:@selector(getData) withObject:nil afterDelay:3.0];
+    /*
+     self.view.backgroundColor = kBackColor;
+     self.cardView = [[TABCardView alloc] initWithFrame:CGRectMake(40, (kScreenHeight - 320)/2, kScreenWidth - 120, 320)
+     showCardsNumber:4];
+     self.cardView.isShowNoDataView = YES;
+     self.cardView.noDataView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"占位图"]];
+     self.cardView.delegate = self;
+     self.cardView.offsetY = 5;
+     self.cardView.offsetX = 0;
+     [self.view addSubview:self.cardView];
+     */
+
+    // 模拟请求数据
+    [self performSelector:@selector(getData) withObject:nil afterDelay:3.0];
 }
 
 - (StackCardCell *)stackCardsView:(StackCardView *)cardView cellForCurrentIndex:(NSInteger)index {
     StackCardCell *cell = [cardView cellForIndex:index reusableIdentifier:@"hahha"];
+    cell.backgroundColor = [UIColor randomColor];
     
     return cell;
 }
