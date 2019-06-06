@@ -12,14 +12,21 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface StackCardCell : UIView
 
+@property (nonatomic, assign) NSInteger index;
+
+@property (nonatomic, retain, readonly) UILabel *label;
+
 /**
- 复用标志符
+ 可复用的标志符
  */
 @property (nonatomic, copy, readonly) NSString *identifier;
 
-@property (nonatomic, assign, readonly) NSInteger index;
+/**
+ 可复用性标志符
 
-- (instancetype)initWithIndex:(NSInteger)index reusableIdentifier:(NSString *)reusableIdentifier;
+ @return 可复用性标志符
+ */
++ (NSString *)reusableIdenfier;
 
 @end
 

@@ -153,7 +153,7 @@ static NSString * tabCardNoDataString = @"TABCARDNODATASTRING";
             for (UIView *subV in self.subviews) {
                 if ([subV isKindOfClass:[TABBaseCardView class]] ||
                     [subV.layer.name isEqualToString:tabCardNoDataString]) {
-//                    [subV removeFromSuperview];
+                    [subV removeFromSuperview];
                 }
             }
         }
@@ -387,4 +387,13 @@ static NSString * tabCardNoDataString = @"TABCARDNODATASTRING";
     return _cardPan;
 }
 
+
+
+- (void)loadNextCards {
+    
+}
+
+- (void)loadPreviousCards {
+    
+}
 @end
