@@ -152,8 +152,6 @@ typedef NS_ENUM(NSInteger, StackCardLoadStatus) {
 
 - (void)reloadData;
 
-- (void)reloadCellWithIndexPath:(NSIndexPath *)indexPath;
-
 /**
  选中某个卡片视图，有问题
  
