@@ -14,19 +14,16 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, assign) NSInteger index;
 
-@property (nonatomic, retain, readonly) UILabel *label;
+@property (nonatomic, retain) NSIndexPath *indexPath;
+
+@property (nonatomic, retain, readonly) UIView *contentView;
 
 /**
  可复用的标志符
  */
 @property (nonatomic, copy, readonly) NSString *identifier;
 
-/**
- 可复用性标志符
-
- @return 可复用性标志符
- */
-+ (NSString *)reusableIdenfier;
++ (instancetype)initWithIdentifer:(NSString *)idenfitier atIndexPath:(NSIndexPath *)indexPath frame:(CGRect)frame;
 
 @end
 

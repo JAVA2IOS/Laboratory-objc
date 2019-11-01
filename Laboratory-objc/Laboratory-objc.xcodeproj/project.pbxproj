@@ -62,6 +62,7 @@
 		F7B56AE922324D45008FE498 /* LABPopAnimateTransitioning.m in Sources */ = {isa = PBXBuildFile; fileRef = F7B56AE822324D45008FE498 /* LABPopAnimateTransitioning.m */; };
 		F7CE9203221A47D9007FFD70 /* NSAttributedString+Laboratory.m in Sources */ = {isa = PBXBuildFile; fileRef = F7CE9202221A47D9007FFD70 /* NSAttributedString+Laboratory.m */; };
 		F7D11EC422363EA7000898A5 /* EditableCollecitonController.m in Sources */ = {isa = PBXBuildFile; fileRef = F7D11EC322363EA7000898A5 /* EditableCollecitonController.m */; };
+		F7D57FB22367E2A40085C7D6 /* NewCardCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F7D57FB12367E2A40085C7D6 /* NewCardCell.m */; };
 		F7FBEFC521F6F4DB00E2B362 /* UITableViewCell+Laboratory.m in Sources */ = {isa = PBXBuildFile; fileRef = F7FBEFC421F6F4DB00E2B362 /* UITableViewCell+Laboratory.m */; };
 		F7FBEFC921F6F64800E2B362 /* HomeTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F7FBEFC821F6F64800E2B362 /* HomeTableViewCell.m */; };
 /* End PBXBuildFile section */
@@ -188,6 +189,8 @@
 		F7CE9202221A47D9007FFD70 /* NSAttributedString+Laboratory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSAttributedString+Laboratory.m"; sourceTree = "<group>"; };
 		F7D11EC222363EA7000898A5 /* EditableCollecitonController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EditableCollecitonController.h; sourceTree = "<group>"; };
 		F7D11EC322363EA7000898A5 /* EditableCollecitonController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EditableCollecitonController.m; sourceTree = "<group>"; };
+		F7D57FB02367E2A40085C7D6 /* NewCardCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NewCardCell.h; sourceTree = "<group>"; };
+		F7D57FB12367E2A40085C7D6 /* NewCardCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NewCardCell.m; sourceTree = "<group>"; };
 		F7FBEFC321F6F4DB00E2B362 /* UITableViewCell+Laboratory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UITableViewCell+Laboratory.h"; sourceTree = "<group>"; };
 		F7FBEFC421F6F4DB00E2B362 /* UITableViewCell+Laboratory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UITableViewCell+Laboratory.m"; sourceTree = "<group>"; };
 		F7FBEFC721F6F64800E2B362 /* HomeTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HomeTableViewCell.h; sourceTree = "<group>"; };
@@ -244,6 +247,8 @@
 				F7A20D04229F68BB00EBC5F7 /* CardView.m */,
 				F7160936229E842700729B9A /* StackCardslayout.h */,
 				F7160937229E842700729B9A /* StackCardslayout.m */,
+				F7D57FB02367E2A40085C7D6 /* NewCardCell.h */,
+				F7D57FB12367E2A40085C7D6 /* NewCardCell.m */,
 			);
 			path = StackCards;
 			sourceTree = "<group>";
@@ -715,6 +720,7 @@
 				F792B7C821F6BAA200335025 /* LaboratoryAnimatiedTransitioning.m in Sources */,
 				F7A20D06229F68BC00EBC5F7 /* CardView.m in Sources */,
 				F7A20CF6229F683D00EBC5F7 /* TABCardView.m in Sources */,
+				F7D57FB22367E2A40085C7D6 /* NewCardCell.m in Sources */,
 				F792B7D021F6BAA200335025 /* NSString+Laboratory.m in Sources */,
 				F76C976D2275529E00B92905 /* StackCardCell.m in Sources */,
 				F792B7CE21F6BAA200335025 /* UILabel+Laboratory.m in Sources */,

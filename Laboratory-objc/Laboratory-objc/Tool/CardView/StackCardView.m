@@ -8,39 +8,61 @@
 
 #import "StackCardView.h"
 
-@interface StackCardView()
-/**
- 卡片视图的缓存池，用来复用，显示的时候取出来，消失的时候加入到缓存池中
- */
-@property (nonatomic, retain) NSMutableArray *cachedCardsPool;
+@interface StackCardConfigure()
+@property (nonatomic, assign, readwrite) BOOL empty;
+@property (nonatomic, copy, readwrite) NSString *version;
+@end
 
-@property (nonatomic, retain) UIPanGestureRecognizer *pan;
+@implementation StackCardConfigure
+- (NSString *)version {
+    return @"1.0";
+}
 
+@end
+
+
+@interface StackCardView() <UIGestureRecognizerDelegate> {
+    CGPoint panPreviousPoint;  // 滑动一开始的点
+    BOOL panStatus; // 类似加一个锁，保证手势滑动的时候一次有响应一次结束的事件(很重要，否则计算不准确)
+}
 /**
- 缓存的卡片数据
+ 正在显示的cell
  */
-@property (nonatomic, assign) NSInteger cachedCardsData;
+@property (nonatomic, retain) NSMutableArray<__kindof StackCardCell *> *visibleCells;
+
+@property (nonatomic, retain) UIPanGestureRecognizer *panGesture;
+/// 为每个动作添加状态，主要防止加载上一页和下一页多次不间断触发造成计算逻辑错误
+@property (nonatomic, assign, readwrite) StackCardLoadStatus status;
+
+@property (nonatomic, retain, readwrite) StackCardConfigure *configure;
+
+/// 注册过的可以复用的cell
+@property (nonatomic, retain) NSMutableDictionary<NSString *, Class> *registClassDictionary;
+/// 可复用的cell缓存池
+/*
+ {
+    "identifier" : NSArray[cell, cell ...]
+ }
+ */
+@property (nonatomic, retain) NSMutableDictionary *registReuslableCellPools;
+
+#pragma mark 以下属性在计算时需要使用
+/// 当前最顶部的cell显示的坐标
+@property (nonatomic, retain) NSIndexPath *currentIndexPath;
+@property (nonatomic) CGPoint cardCenter;
 /**
- 实际显示卡片个数，多两个个，用来预加载两张卡片
+ 实际显示的卡片个数，正常的加载的卡片比该个数多一个，多余的一个一般放在最后，并且与倒数第二个重复叠加
  */
 @property (nonatomic, assign) NSInteger displayCount;
 
-/**
- 当前显示的卡片下标
- */
-@property (nonatomic, assign) NSInteger currentDisplayIndex;
+/// 从缩放程度.7~1之间总共垂直的间距(用于计算每个卡片在垂直方向的y坐标，间距等分)
+@property (nonatomic, assign) CGFloat scaleDistanceSpacing;
 
-/**
- 动画时间
- */
-@property (nonatomic, assign) CGFloat animateDuration;
+/// 最后一个卡片缩放时的目标y坐标
+@property (nonatomic, assign) CGFloat lastScaleCardCenterY;
 
-/**
- 用来防止极短时间内重复调用
- */
-@property (nonatomic, assign) BOOL animateStatus;
-
-@property (nonatomic) CGPoint cardCenter;
+/// 当前卡片列表所有的section
+@property (nonatomic, assign) NSInteger preferredSection;
 
 @end
 
@@ -48,412 +70,598 @@
 
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
-        _currentDisplayIndex = 0;
-        _animateDuration = .4;
-        _cachedCardsPool = [[NSMutableArray alloc] init];
-        [self addGestureRecognizer:self.pan];
+        [self initialParameters];
+        _visibleCells = [[NSMutableArray alloc] init];
+        _registReuslableCellPools = [[NSMutableDictionary alloc] init];
+        _registClassDictionary = [[NSMutableDictionary alloc] init];
+        _currentIndexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+        
+        [self addGestureRecognizer:self.panGesture];
     }
     
     return self;
 }
 
-- (void)reloadCardsView {
-    [self numberOfDisplayingCards];
-    [self stackCachedCardsData];
+/// 初始化参数系数
+- (void)initialParameters {
+    if (_configure == nil) {
+        _configure = [[StackCardConfigure alloc] init];
+        _configure.animatedDuration = .15;
+        _configure.panGestureEnable = YES;
+        _configure.panLimitedDistance = fabs(self.bounds.size.width / 3);
+        _configure.panMinimunCardCenterX = -20;
+    }
+    _status = StackCardLoadStatusNone;
     
-    [self initCards];
-    [self selectIndex:_currentDisplayIndex animated:NO];
+    _cardCenter = CGPointMake(self.bounds.size.width / 2, self.bounds.size.height / 2);
+    [self numberOfDisplayingCards];
+    _preferredSection = [self sections];
+    
+    // 每个卡片垂直方向的间距等分
+    NSInteger averageCount = _displayCount - 1;
+    averageCount = MAX(1, averageCount);
+    _scaleDistanceSpacing = [self cardOffsetFromDelegate] * averageCount;
+    // 每份缩放的程度
+    float scaleDistance = (float)(1 - [self lastCellScale]) / averageCount;
+    float scale = 1 - scaleDistance * _displayCount;
+    scale = MAX([self lastCellScale], scale);
+    CGRect frame = [self cellFrame];
+    CGFloat scaleHeight = CGRectGetHeight(frame) / 2 * scale; // 缩放后的高度
+    _lastScaleCardCenterY = _cardCenter.y + CGRectGetHeight(frame) / 2 - scaleHeight +  _scaleDistanceSpacing;
+    
 }
 
-- (void)selectIndex:(NSInteger)index animated:(BOOL)animated {
-    NSInteger targetIndex = index;
-    targetIndex = MIN(targetIndex, _cachedCardsData - 1);   // 限制最大值的范围
-    targetIndex = MAX(0, targetIndex);
+- (void)pangeGestureHandler:(UIPanGestureRecognizer *)pan {
+    CGPoint currentPoint = [pan locationInView:self];
+    CGPoint translationPoint = [pan translationInView:self];
     
-    NSInteger actualDisplayNumbers = _displayCount + 2;
+    CGFloat directions = translationPoint.x;
+    StackScrollDirection direction = StackScrollDirectionClockwise;
+    if (directions < 0) {
+        direction = StackScrollDirectionCounterClockwise;
+    }
     
-    // 目标坐标到当前显示坐标的卡片个数
-    NSInteger distanceCards = _currentDisplayIndex - targetIndex;
-    if (distanceCards == 0) {
+    switch (pan.state) {
+        case UIGestureRecognizerStateBegan:
+        {
+            panPreviousPoint = CGPointZero;
+        }
+            break;
+        case UIGestureRecognizerStateChanged:
+            panStatus = YES;
+            [self movedComponents:currentPoint translatePoint:translationPoint direction:direction];
+            break;
+        case UIGestureRecognizerStateEnded:
+        case UIGestureRecognizerStateFailed:
+        case UIGestureRecognizerStateCancelled:
+        {
+            if (panStatus) {
+                if ([self canSwipe:_panGesture direction:direction]) {
+                    CGPoint velocity = [pan velocityInView:self];
+                    [self panGestureEnded:currentPoint translatePoint:translationPoint velocity:velocity];
+                }else {
+                    if (direction == StackScrollDirectionClockwise) {
+                        if (_currentIndexPath.section == 0
+                            && _currentIndexPath.row == 0) {
+                        }else {
+                            _currentIndexPath = [self nextIndexPath];
+                        }
+                    }
+                    
+                    [self restoreCancelledCell:direction];
+                }
+                [pan setTranslation:CGPointZero inView:pan.view];
+                panStatus = NO;
+            }
+        }
+            break;
+            
+        default:
+            break;
+    }
+    
+    panPreviousPoint = currentPoint;
+}
+
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
+    if (gestureRecognizer == _panGesture) {
+        CGPoint velocity = [_panGesture velocityInView:self];
+        return fabs(velocity.x) > fabs(velocity.y);
+    }
+    
+    return YES;
+}
+
+- (void)movedComponents:(CGPoint)currentPoint translatePoint:(CGPoint)translatePoint direction:(StackScrollDirection)direction {
+    CGFloat distance = currentPoint.x - panPreviousPoint.x;
+    CGFloat directions = translatePoint.x;
+    
+    if (![self canSwipe:_panGesture direction:direction]) {
+        // 禁用滑动手势时，卡片只能滑动三分之一的宽度
+        if (fabs(directions) >= _configure.panLimitedDistance) {
+            return;
+        }
+    }
+
+    // 上一页
+    if (direction == StackScrollDirectionClockwise) {
+        [self translatedWithDirectionClockwise:distance currentPoint:currentPoint];
+        return;
+    }else {
+        [self translatedWithDirectionCountClockwise:distance currentPoint:currentPoint];
         return;
     }
-    if (distanceCards < 0) {
-        if (labs(distanceCards) == 1) {
-        
-            NSMutableArray *mutCopyArray = [[NSMutableArray alloc] initWithArray:_cachedCardsPool];
-            // 滑动一个卡片，每个卡片向上滑动一个卡片距离
-            for (int currentExist = 0; currentExist < actualDisplayNumbers; currentExist ++) {
-                NSInteger displayIndex = currentExist - 1;
-                NSInteger cellIndex = (_currentDisplayIndex + displayIndex) % (_cachedCardsData);
-                BOOL hide = NO;
-                if (_currentDisplayIndex + displayIndex >= _cachedCardsData) {
-                    hide = YES;
-                }
-                
-                if (cellIndex < 0) {
-                    cellIndex = (_cachedCardsData + cellIndex) % (_cachedCardsData);
-                }
-                // 获取当前在目前位置的cell
-                NSLog(@"现在显示的坐标:%ld, 显示的坐标:%ld", cellIndex, displayIndex);
-                StackCardCell *currentCell = [self reusableCellAtIndex:cellIndex displayIndex:currentExist];
-                
-                // 缩放当前的卡片视图
-                [self makeNextScaleForCurrentCards:currentCell atIndex:cellIndex displayIndex:displayIndex + distanceCards animated:animated hideCurrentCell:hide];
+}
 
-                // 将当前的cell移动到首位
-                if (displayIndex <= -1) {
-                    [mutCopyArray removeObject:currentCell];
-                    [mutCopyArray addObject:currentCell];
-                }
-                
-                // 将当前的cell移动到首位
-                if (displayIndex > _displayCount) {
-                    [mutCopyArray removeObject:currentCell];
-                    [mutCopyArray insertObject:currentCell atIndex:0];
-                }
-            }
-            _cachedCardsPool = nil;
-            _cachedCardsPool = [[NSMutableArray alloc] initWithArray:mutCopyArray];
+- (void)panGestureEnded:(CGPoint)currentPoint translatePoint:(CGPoint)translatePoint velocity:(CGPoint)veloctiyPoint {
+    // 计算减速到0为止的卡片滑动的目标坐标
+    CGFloat directions = translatePoint.x;
+    CGFloat targetDistance = veloctiyPoint.x - currentPoint.x;
+    float a = -200.f;
+    float t = -(float)fabs(veloctiyPoint.x) / a;
+    CGFloat s = fabs(veloctiyPoint.x) * t + a * pow(t, 2) / 2.f;
+    targetDistance = s;
+    
+    StackScrollDirection direction = StackScrollDirectionClockwise;
+    if (directions < 0) {
+        direction = StackScrollDirectionCounterClockwise;
+    }
+    
+    if (fabs(directions) + fabs(targetDistance) > _configure.panLimitedDistance) {
+        if (_currentIndexPath.section == 0
+            && _currentIndexPath.row == 0
+            && direction == StackScrollDirectionClockwise) {
+            [self restoreCancelledCell:direction];
+            return;
         }
-        _currentDisplayIndex = targetIndex;
-        [self cardCellDidChangedAtIndex];
+        if (_visibleCells.count >= 1 && direction == StackScrollDirectionCounterClockwise) {
+            NSIndexPath *lastIndexPath = ((StackCardCell *)_visibleCells.lastObject).indexPath;
+            NSComparisonResult result = [lastIndexPath compare:_currentIndexPath];
+            if (result == NSOrderedSame) {
+                [self restoreCancelledCell:direction];
+                return;
+            }
+        }
         
+        // 滑动过去
+        [self translationSuccessedCell:direction];
     }else {
-        NSMutableArray *mutCopyArray = [[NSMutableArray alloc] initWithArray:_cachedCardsPool];
-        if (labs(distanceCards) == 1) {
-            for (int currentExist = 0; currentExist < actualDisplayNumbers; currentExist ++) {
-                NSInteger displayIndex = currentExist - 1;
-                // 循环
-                NSInteger cellIndex = (_currentDisplayIndex + displayIndex) % (_cachedCardsData);
-                BOOL hide = NO;
-                if (_currentDisplayIndex + displayIndex >= _cachedCardsData) {
-                    hide = YES;
-                }
-                if (cellIndex < 0) {
-                    cellIndex = (_cachedCardsData + cellIndex) % (_cachedCardsData);
-                }
-                NSLog(@"当前坐标:%ld, 显示的坐标:%ld", cellIndex, displayIndex);
-                StackCardCell *currentCell = [self reusableCardCellAtIndex:cellIndex displayIndex:currentExist];
+        if (direction == StackScrollDirectionClockwise) {
+            _currentIndexPath = [self nextIndexPath];
+        }
+        
+        // 恢复原样
+        [self restoreCancelledCell:direction];
+    }
+}
+
+// 上一页
+- (void)translatedWithDirectionClockwise:(CGFloat)distance currentPoint:(CGPoint)currentPoint {
+    CGPoint selfCenterPoint = _cardCenter;
+    StackCardCell *topCell = _visibleCells.firstObject;
+    NSIndexPath *lastIndexPath = [self lastIndexPath];
+    
+    if (topCell.center.x >= selfCenterPoint.x
+        && topCell.center.y >= selfCenterPoint.y) {
+        // 新增一个cell，如果cell存在不增加
+        BOOL containStatus = NO;
+        for (StackCardCell *visibleCell in _visibleCells) {
+            if (visibleCell.indexPath.section == lastIndexPath.section
+                && visibleCell.indexPath.row == lastIndexPath.row) {
+                containStatus = YES;
+                break;
+            }
+        }
+        if (!containStatus) {
+            StackCardCell *newCell = [self dequeueReusableCell:lastIndexPath];
+            [self addSubview:newCell];
+            [self bringSubviewToFront:newCell];
+            [self movedCellIntoVisiblePool:newCell];
+            CGAffineTransform rotationTransform = CGAffineTransformMakeRotation(- M_PI_4 / 4);
+            newCell.transform = rotationTransform;
+            newCell.center = CGPointMake(_configure.panMinimunCardCenterX, selfCenterPoint.y);
+            // 移除最后一个cell
+            if (_visibleCells.count > (_displayCount + 1)) {
+                [self movedCellIntoCachedPools:_visibleCells.lastObject];
+            }
+        }
+    }
+    
+    NSMutableArray *newVisibleCells = [_visibleCells mutableCopy];
+    for (StackCardCell *subView in newVisibleCells) {
+        CGPoint centerPoint = subView.center;
+        
+        if ((centerPoint.x + distance) <= selfCenterPoint.x
+            && centerPoint.y <= selfCenterPoint.y) {
+            CGFloat x = [self rotationProportion:currentPoint];
+            centerPoint.x += x;
+            // 已经滑到左边了
+            centerPoint.x = MIN(selfCenterPoint.x, centerPoint.x);
+            subView.transform = CGAffineTransformIdentity;
+            
+            CGFloat k = (- M_PI_4 / 4) / (_configure.panMinimunCardCenterX - selfCenterPoint.x);
+            CGFloat m = - selfCenterPoint.x * k;
+            
+            CGFloat rotation = centerPoint.x * k + m;
+            
+            CGAffineTransform rotationTransform = CGAffineTransformMakeRotation(rotation);
+            subView.transform = rotationTransform;
+        }else {
+            if (centerPoint.x < selfCenterPoint.x) {
+                centerPoint.x += [self rotationProportion:currentPoint];
+                centerPoint.x = MIN(selfCenterPoint.x, centerPoint.x);
+                centerPoint.x = MAX(_configure.panMinimunCardCenterX, centerPoint.x);
+                subView.transform = CGAffineTransformIdentity;
+            }else {
+                float movedDistance = [self scaleDistanceProportion:currentPoint];
+                centerPoint.y += movedDistance;
+                centerPoint.y = MAX(selfCenterPoint.y, centerPoint.y);
+                centerPoint.y = MIN(_lastScaleCardCenterY, centerPoint.y);
+                float lastScale = 1 - [self lastCellScale];
+                CGFloat scaleDistance = _lastScaleCardCenterY - selfCenterPoint.y;
+                CGFloat k = -(float)lastScale / scaleDistance;
+                CGFloat m = 1 - selfCenterPoint.y * k;
+                float scale = centerPoint.y * k + m;
                 
-                [self makePreviousScaleForCurrentCards:currentCell atIndex:cellIndex displayIndex:displayIndex + distanceCards animated:animated hideCurrentCell:hide];
-                
-                if (currentCell) {
-                    if (![_cachedCardsPool containsObject:currentCell]) {
-                        [_cachedCardsPool addObject:currentCell];
-                        [mutCopyArray addObject:currentCell];
+                CGAffineTransform scaleTransform = CGAffineTransformMakeScale(scale, scale);
+                subView.transform = scaleTransform;
+            }
+        }
+        subView.center = centerPoint;
+        
+        if (subView.center.x >= _configure.panMinimunCardCenterX && subView.center.x <= selfCenterPoint.x
+            && subView.center.y == selfCenterPoint.y) {
+            _currentIndexPath = ((StackCardCell *)_visibleCells.firstObject).indexPath;
+        }
+    }
+}
+
+// 下一页
+- (void)translatedWithDirectionCountClockwise:(CGFloat)distance currentPoint:(CGPoint)currentPoint {
+    CGPoint selfCenterPoint = _cardCenter;
+    NSIndexPath *nextIndexPath = [self estimatedBottomCardIndexPath];
+
+    // 新增一个cell，如果cell存在不增加
+    BOOL containStatus = NO;
+    for (StackCardCell *visibleCell in _visibleCells) {
+        if (visibleCell.indexPath.section == nextIndexPath.section
+            && visibleCell.indexPath.row == nextIndexPath.row) {
+            containStatus = YES;
+            break;
+        }
+    }
+    
+    if (!containStatus) {
+        StackCardCell *newCell = [self dequeueReusableCell:nextIndexPath];
+        [self addSubview:newCell];
+        [self sendSubviewToBack:newCell];
+        [self makeTargetScaleCoefficient:newCell];
+        [self movedCellIntoVisiblePool:newCell];
+    }
+    
+    NSMutableArray *newVisibleCells = [_visibleCells mutableCopy];
+    NSInteger lastRow = [self numberOfRowsInSection:_preferredSection - 1];
+    
+    for (StackCardCell *subView in newVisibleCells) {
+        CGPoint centerPoint = subView.center;
+        // section 在目标范围内，以及 row也要在范围内可以滚动，超过范围不滚动
+        if (subView.indexPath.section >= nextIndexPath.section) {
+            if (subView.indexPath.section == nextIndexPath.section) {
+                if (subView.indexPath.row >= nextIndexPath.row) {
+                    if (nextIndexPath.row == lastRow - 1
+                        && _visibleCells.count <= _displayCount) {
+                    }else {
+                        continue;
                     }
                 }
-                // 将当前的cell移动到首位
-                if (displayIndex < -1) {
-                    NSLog(@"放到尾部");
-                    [mutCopyArray removeObject:currentCell];
-                    [mutCopyArray addObject:currentCell];
-                }
-                
-                // 将当前的cell移动到首位
-                if (displayIndex >= _displayCount) {
-                    NSLog(@"移动到首部");
-                    [mutCopyArray removeObject:currentCell];
-                    [mutCopyArray insertObject:currentCell atIndex:0];
-                }
+            }else {
+                continue;
             }
         }
-        _cachedCardsPool = nil;
-        _cachedCardsPool = [[NSMutableArray alloc] initWithArray:mutCopyArray];
         
-        _currentDisplayIndex = targetIndex;
-        [self cardCellDidChangedAtIndex];
-    }
-}
-
-- (void)loadNextCard {
-    if (_animateStatus) {
-        return;
-    }
-    _animateStatus = YES;
-    WeakSelf(self)
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(_animateDuration * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        weakself.animateStatus = NO;
-    });
-    NSInteger targetIndex = (MIN(_cachedCardsData - 1,_currentDisplayIndex + 1)) % _cachedCardsData;
-    [self selectIndex:targetIndex animated:YES];
-}
-
-- (void)loadPreviousCard {
-    if (_animateStatus) {
-        return;
-    }
-    _animateStatus = YES;
-    WeakSelf(self)
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(_animateDuration * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        weakself.animateStatus = NO;
-    });
-    NSInteger targetIndex = (MAX(0, _currentDisplayIndex - 1)) % _cachedCardsData;
-    [self selectIndex:targetIndex animated:YES];
-}
-
-
-#pragma mark - 视图缩放
-
-/**
- 缩放当前的cell视图
- 
- @param cell 当前显示的cell
- @param index 当前所在的序号
- @param displayIndex 显示的序号, 比如当前显示为最上层的卡片
- @param animated 是否动画显示
- @param hide 隐藏
- */
-- (void)makePreviousScaleForCurrentCards:(StackCardCell *)cell atIndex:(NSInteger)index displayIndex:(NSInteger)displayIndex animated:(BOOL)animated hideCurrentCell:(BOOL)hide {
-    float scale = [self scaleTargetIndex:displayIndex];
-    CGFloat targetCenterY = [self currentTargetCenterY:cell displayIndex:displayIndex];
-    
-    CGPoint point = CGPointMake(cell.labCenterX, targetCenterY);
-    CGAffineTransform scaleTransform = CGAffineTransformMakeScale(scale, scale);
-    
-    CGFloat duration = _animateDuration;
-    // 动画速度主要是为了首尾卡片切换时，提前放置层级顺序，其他正常显示的卡片动画时间正常
-    if (displayIndex > _displayCount) {
-        duration = MIN(0, duration - labs(displayIndex) * .1);
-    }
-    CGFloat dely = 0;
-    if (displayIndex < 0) {
-        dely = .1;
-    }
-    
-    if (index > self.cachedCardsData) {
-        cell.alpha = 0;
-    }
-    WeakSelf(self)
-    [UIView animateWithDuration:animated ? duration : 0 delay:dely options:UIViewAnimationOptionCurveEaseIn animations:^{
-        cell.center = point;
-        cell.transform = scaleTransform;
-        if (hide) {
-            cell.alpha = 0;
-        }else if (index > weakself.cachedCardsData) {
-            cell.alpha = 0;
-        }else {
-            cell.alpha = [self alphaAfterScalingAnimated:displayIndex cellIndex:index];
-        }
-    } completion:^(BOOL finished) {
-        if (displayIndex < 0) {
-            if (displayIndex == -1) {
-                // -1 理论上应该表示最顶层的卡片，显示顺序为-1 , 0, ....,
-                [self bringSubviewToFront:cell];
-            }
-        }else if (displayIndex >= weakself.displayCount) {
-            // 底层多推出了一张，需要将该视图放置到最顶层去
-            if (displayIndex == weakself.displayCount + 1) {
-                [self makePreviousScaleForCurrentCards:cell atIndex:weakself.currentDisplayIndex - 1 displayIndex:-1 animated:NO hideCurrentCell:hide];
-            }
+        if ((centerPoint.x + distance) <= selfCenterPoint.x
+            && centerPoint.y <= selfCenterPoint.y) {
+            CGFloat x = [self rotationProportion:currentPoint];
+            centerPoint.x += x;
+            // 已经滑到左边了
+            centerPoint.x = MIN(selfCenterPoint.x, centerPoint.x);
+            subView.transform = CGAffineTransformIdentity;
             
-            // 设置为最底层视图，即尾部视图
-            if (displayIndex == weakself.displayCount) {
+            CGFloat k = (- M_PI_4 / 4) / (_configure.panMinimunCardCenterX - selfCenterPoint.x);
+            CGFloat m = - selfCenterPoint.x * k;
+            
+            CGFloat rotation = centerPoint.x * k + m;
+            
+            CGAffineTransform rotationTransform = CGAffineTransformMakeRotation(rotation);
+            subView.transform = rotationTransform;
+        }else {
+            if (centerPoint.x < selfCenterPoint.x) {
+                centerPoint.x += [self rotationProportion:currentPoint];
+                centerPoint.x = MIN(selfCenterPoint.x, centerPoint.x);
+                centerPoint.x = MAX(_configure.panMinimunCardCenterX, centerPoint.x);
+                subView.transform = CGAffineTransformIdentity;
+            }else {
+                float movedDistance = [self scaleDistanceProportion:currentPoint];
+                centerPoint.y += movedDistance;
+                centerPoint.y = MAX(selfCenterPoint.y, centerPoint.y);
+                centerPoint.y = MIN(_lastScaleCardCenterY, centerPoint.y);
+                float lastScale = 1 - [self lastCellScale];
+                CGFloat scaleDistance = _lastScaleCardCenterY - selfCenterPoint.y;
+                CGFloat k = -(float)lastScale / scaleDistance;
+                CGFloat m = 1 - selfCenterPoint.y * k;
+                float scale = centerPoint.y * k + m;
+                
+                CGAffineTransform scaleTransform = CGAffineTransformMakeScale(scale, scale);
+                subView.transform = scaleTransform;
             }
         }
-    }];
-}
-
-/**
- 缩放当前的cell视图
-
- @param cell 当前显示的cell
- @param index 当前所在的序号
- @param displayIndex 显示的序号, 比如当前显示为最上层的卡片
- @param animated 是否动画显示
- @param hide 隐藏
- */
-- (void)makeNextScaleForCurrentCards:(StackCardCell *)cell atIndex:(NSInteger)index displayIndex:(NSInteger)displayIndex animated:(BOOL)animated hideCurrentCell:(BOOL)hide {
-    float scale = [self scaleTargetIndex:displayIndex];
-    CGFloat targetCenterY = [self currentTargetCenterY:cell displayIndex:displayIndex];
-    
-    CGPoint point = CGPointMake(cell.labCenterX, targetCenterY);
-    CGAffineTransform scaleTransform = CGAffineTransformMakeScale(scale, scale);
-    
-    CGFloat duration = _animateDuration;
-    CGFloat dely = 0;
-    if (displayIndex >= 0) {
-        dely = .1;
-    }
-    WeakSelf(self)
-    [UIView animateWithDuration:animated ? duration : 0 delay:dely options:UIViewAnimationOptionCurveEaseOut animations:^{
-        cell.center = point;
-        cell.transform = scaleTransform;
-        if (hide) {
-            cell.alpha = 0;
-        }else if (index > weakself.cachedCardsData) {
-            cell.alpha = 0;
-        }else {
-            cell.alpha = [self alphaAfterScalingAnimated:displayIndex cellIndex:index];
-        }
-    } completion:^(BOOL finished) {
-        [weakself updateReusableCell:cell currentDisplayIndex:displayIndex atIndex:index];
-    }];
-}
-
-- (void)updateReusableCell:(StackCardCell *)cell currentDisplayIndex:(NSInteger)displayIndex atIndex:(NSInteger)index {
-    
-    if (displayIndex < 0) {
-        if (displayIndex == -1) {
-            // -1 理论上应该表示最顶层的卡片，显示顺序为-1 , 0, ....,
-            [self bringSubviewToFront:cell];
+        subView.center = centerPoint;
+        
+        
+        // 超过了直接移除
+        if (subView.center.x <= _configure.panMinimunCardCenterX) {
+            [self movedCellIntoCachedPools:subView];
         }
         
-        if (displayIndex <= -2) {
-            // -2 表示向下翻了一页，此时最顶层坐标为-2，需要将该视图放置最底层，变为尾部的卡片
-            [self sendSubviewToBack:cell];
-            [self makeNextScaleForCurrentCards:cell atIndex:_currentDisplayIndex + _displayCount displayIndex:_displayCount animated:NO hideCurrentCell:NO];
+        if (subView.center.x >= _configure.panMinimunCardCenterX && subView.center.x <= selfCenterPoint.x
+            && subView.center.y == selfCenterPoint.y) {
+            _currentIndexPath = ((StackCardCell *)_visibleCells.firstObject).indexPath;
+        }
+        
+        if (subView.indexPath.section == nextIndexPath.section &&
+            subView.indexPath.row > nextIndexPath.row) {
+            [self movedCellIntoCachedPools:subView];
         }
     }
 }
 
+/// 切换成功，完成剩余动画
+- (void)translationSuccessedCell:(StackScrollDirection)direction {
+    NSMutableArray *newVisibleCells = [_visibleCells mutableCopy];
+    // 滑动过去
+    if (direction == StackScrollDirectionCounterClockwise) {
+        _currentIndexPath = [self nextIndexPath];
+        
+        for (StackCardCell *visibleCell in newVisibleCells) {
+            NSComparisonResult result = [visibleCell.indexPath compare:_currentIndexPath];
+            [UIView animateWithDuration:_configure.animatedDuration delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+                // 已经滑到左边了
+                if (result == NSOrderedAscending) {
+                    CGPoint centerPoint = visibleCell.center;
+                    CGAffineTransform rotationTransform = CGAffineTransformMakeRotation(- M_PI_4 / 4);
+                    visibleCell.center = CGPointMake(self->_configure.panMinimunCardCenterX, centerPoint.y);
+                    visibleCell.transform = rotationTransform;
+                }else {
+                    [self makeTargetScaleCoefficient:visibleCell];
+                }
+            } completion:^(BOOL finished) {
+                if (finished) {
+                    if (result == NSOrderedAscending) {
+                        // 将顶部cell移动到缓存池当中
+                        [self movedCellIntoCachedPools:visibleCell];
+                    }
+                }
+            }];
+        }
+    }else {
+        // 上一页
+        for (StackCardCell *visibleCell in newVisibleCells) {
+            // 旋转
+            [UIView animateWithDuration:_configure.animatedDuration delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+                // 已经滑到中间
+                [self makeTargetScaleCoefficient:visibleCell];
+            } completion:^(BOOL finished) {
+                if (finished) {
+                }
+            }];
+        }
+    }
+}
 
-- (void)panHandle:(UIPanGestureRecognizer *)pan {}
+/// 还原
+- (void)restoreCancelledCell:(StackScrollDirection)direction {
+    NSMutableArray *newVisibleCells = [_visibleCells mutableCopy];
+    for (StackCardCell *visibleCell in newVisibleCells) {
+        NSComparisonResult result = [visibleCell.indexPath compare:self->_currentIndexPath];
+        [UIView animateWithDuration:_configure.animatedDuration delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+            if (result == NSOrderedAscending && direction == StackScrollDirectionClockwise) {
+                CGPoint centerPoint = visibleCell.center;
+                CGAffineTransform rotationTransform = CGAffineTransformMakeRotation(- M_PI_4 / 4);
+                visibleCell.center = CGPointMake(self->_configure.panMinimunCardCenterX, centerPoint.y);
+                visibleCell.transform = rotationTransform;
+                return;
+            }
+            [self makeTargetScaleCoefficient:visibleCell];
+        } completion:^(BOOL finished) {
+            if (finished) {
+                if (result == NSOrderedAscending
+                    && direction == StackScrollDirectionClockwise) {
+                    // 将顶部cell移动到缓存池当中
+                    [self movedCellIntoCachedPools:visibleCell];
+                }
+            }
+        }];
+    }
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+    if ([[self superview].gestureRecognizers containsObject:otherGestureRecognizer]) {
+//        MJRefreshLog(@"包含了其他手势，禁用");
+    }
+    return ![[self superview].gestureRecognizers containsObject:otherGestureRecognizer];
+}
 
 
 #pragma mark - 数据获取
-- (void)stackCachedCardsData {
-    _cachedCardsData = [_stackDelegate numberOfCardsDataForCards:self];
+
+/// 获取上一个卡片的坐标
+- (NSIndexPath *)lastIndexPath {
+    NSInteger lastTargetSections = _currentIndexPath.section;
+    NSInteger lastTargetRows = _currentIndexPath.row;
+    if (_currentIndexPath.row >= 1) {
+        lastTargetRows = _currentIndexPath.row - 1;
+    }else {
+        if (_currentIndexPath.section > 0) {
+            lastTargetSections = _currentIndexPath.section - 1;
+            NSInteger row = [self numberOfRowsInSection:lastTargetSections];
+            lastTargetRows = row - 1;
+        }
+    }
+    
+    return [NSIndexPath indexPathForRow:lastTargetRows inSection:lastTargetSections];
+}
+
+/// 根据当前显示的indexPath获取下一个卡片的坐标
+- (NSIndexPath *)nextIndexPath {
+    // 将_currenIndexPath赋值到下一个
+    NSInteger nextTargetSections = _currentIndexPath.section;
+    NSInteger nextTargetRows = _currentIndexPath.row;
+    
+    if (nextTargetSections < (_preferredSection - 1)) {
+        if (nextTargetRows + 1 < [self numberOfRowsInSection:nextTargetSections]) {
+            nextTargetRows += 1;
+        }else {
+            nextTargetSections += 1;
+            nextTargetRows = 0;
+        }
+    }else if (nextTargetSections == _preferredSection - 1) {
+        if (nextTargetRows + 1 < [self numberOfRowsInSection:nextTargetSections]) {
+            nextTargetRows += 1;
+        }
+    }
+    
+    return [NSIndexPath indexPathForRow:nextTargetRows inSection:nextTargetSections];
+}
+
+/// 当前显示卡片组中再插入一张卡片到最底层所在的坐标位置
+- (NSIndexPath *)estimatedBottomCardIndexPath {
+    NSInteger nextTargetSections = 0;
+    NSInteger nextTargetRows = 0;
+    NSInteger count = 0;
+    for (NSInteger sectionIndex = _currentIndexPath.section; sectionIndex < _preferredSection; sectionIndex++) {
+        NSInteger originRows = [self numberOfRowsInSection:sectionIndex];
+        NSInteger rows = originRows;
+        if (sectionIndex == _currentIndexPath.section) {
+            rows -= (_currentIndexPath.row + 1);
+        }
+
+        count += rows;
+        if (count >= _displayCount) {
+            count -= rows;
+            count = _displayCount - count;
+            nextTargetRows = count - 1;
+            if (sectionIndex == _currentIndexPath.section) {
+                nextTargetRows += (_currentIndexPath.row + 1);
+            }
+            break;
+        }
+
+        nextTargetSections += 1;
+        if ((nextTargetSections + _currentIndexPath.section) >= _preferredSection) {
+            nextTargetSections -= 1;
+            nextTargetRows = originRows - 1;
+            break;
+        }
+    }
+
+    nextTargetSections += _currentIndexPath.section;
+
+    return [NSIndexPath indexPathForRow:nextTargetRows inSection:nextTargetSections];
 }
 
 #pragma mark 显示个数获取
-- (void)numberOfDisplayingCards {
+- (NSInteger)numberOfDisplayingCards {
     if (_stackDelegate && [_stackDelegate respondsToSelector:@selector(numberOfDisplayingCards)]) {
         self.displayCount = [_stackDelegate numberOfDisplayingCards];
     }else {
         self.displayCount = 3;
     }
+    
+    return self.displayCount;
+}
+
+- (NSInteger)numberOfRowsInSection:(NSInteger)section {
+    return [_stackDelegate stackcard:self numberOfItemsInSection:section];
+}
+
+- (NSInteger)sections {
+    if (_stackDelegate && [_stackDelegate respondsToSelector:@selector(numberOfSectionsInStackCard:)]) {
+        return [_stackDelegate numberOfSectionsInStackCard:self];
+    }
+    
+    return 1;
 }
 
 #pragma mark 卡片切换
-- (void)cardCellDidChangedAtIndex{
-    if (_stackDelegate && [_stackDelegate respondsToSelector:@selector(stackCardView:didSelectAtIndex:)]) {
-        [_stackDelegate stackCardView:self didSelectAtIndex:_currentDisplayIndex];
-    }
-}
 
 #pragma mark cell获取
-- (StackCardCell *)reusableCardCellAtIndex:(NSInteger)index displayIndex:(NSInteger)displayIndex {
-    return [self reusableCellAtIndex:index displayIndex:displayIndex];
-}
-
-- (StackCardCell *)reusableCellAtIndex:(NSInteger)index displayIndex:(NSInteger)displayIndex {
-    return [_stackDelegate stackCardsView:self cellForCurrentIndex:index displayIndex:displayIndex];
-}
-
-- (StackCardCell *)cellForIndex:(NSInteger)index atDisplayIndex:(NSInteger)displayIndex {
-    StackCardCell *cell = nil;
-    
-    /*
-     复用问题
-     */
-    if (_cachedCardsPool.count > displayIndex) {
-        cell = _cachedCardsPool[displayIndex];
-    }
-    
-    if (cell == nil) {
-        cell = [[StackCardCell alloc] initWithFrame:[self cellFrame]];
-        cell.index = index;
-        cell.alpha = 0;
-        [self addSubview:cell];
-        [self sendSubviewToBack:cell];
-    }
+- (StackCardCell *)dequeueReusableCell:(NSIndexPath *)targetIndexPath {
+    StackCardCell *cell = [_stackDelegate stackCardsView:self cellForCurrentIndexPath:targetIndexPath];
     
     return cell;
 }
 
-#pragma mark 偏移量
+#pragma mark 每个卡片垂直方向上的偏移量
 - (CGFloat)cardOffsetFromDelegate {
-    if (_stackDelegate && [_stackDelegate respondsToSelector:@selector(cardOffsetFromDelegate)]) {
-        return [_stackDelegate distanceOfCellOffset:self];
+    if (_stackDelegate && [_stackDelegate respondsToSelector:@selector(distanceOfPerCellOffset:)]) {
+        return [_stackDelegate distanceOfPerCellOffset:self];
     }
     
-    return 5;
+    return 10;
 }
 
-#pragma mark 卡片的尺寸
+#pragma mark 卡片的尺寸(通过设置卡片的内边距来确定卡片的大小)
 - (UIEdgeInsets)paddingInsets {
     if (_stackDelegate && [_stackDelegate respondsToSelector:@selector(edgeInsetsForCell:)]) {
         return [_stackDelegate edgeInsetsForCell:self];
     }
-    return UIEdgeInsetsMake(5, 5, 5, 5);
+    return UIEdgeInsetsMake(35, 35, 35, 35);
 }
 
 - (CGRect)cellFrame {
     UIEdgeInsets inset = [self paddingInsets];
-
+    
     return CGRectMake(inset.left, inset.top, self.bounds.size.width - inset.left - inset.right, self.bounds.size.height - inset.top - inset.bottom);
-}
-
-#pragma mark cell的透明度设置
-
-/**
- 动画缩放之后此时cell的透明度
- 
- @param displayIndex 显示坐标
- @param cellIndex cell实际的坐标
- @return 透明度
- */
-- (float)alphaAfterScalingAnimated:(NSInteger)displayIndex cellIndex:(NSInteger)cellIndex {
-    if (displayIndex < 0 || displayIndex >= _displayCount) {
-        return 0;
-    }
-    
-    return [self scaleTargetIndex:displayIndex];
-}
-
-#pragma mark - 初始化当前页面
-/**
- 初始化加载卡片组
- */
-- (void)initCards {
-    // 获取当前卡片组, 限制个数n
-    NSInteger actualDisplayNumbers = MAX(0, _displayCount + 2);
-    
-    CGRect displayFrame = [self cellFrame];
-    _cardCenter = CGPointMake(CGRectGetWidth(displayFrame) / 2 + CGRectGetMinX(displayFrame), CGRectGetHeight(displayFrame) / 2  + CGRectGetMinY(displayFrame));
-
-    NSMutableArray *mutCopyArray = [[NSMutableArray alloc] initWithArray:_cachedCardsPool];
-    
-    for (int currentIndex = 0; currentIndex < actualDisplayNumbers; currentIndex ++) {
-        NSInteger displayIndex = currentIndex - 1;
-        NSInteger cellIndex = (_currentDisplayIndex + displayIndex) % (_cachedCardsData);
-        BOOL hide = NO;
-        if (_currentDisplayIndex + displayIndex >= _cachedCardsData || (_currentDisplayIndex + displayIndex) < 0) {
-            hide = YES;
-        }
-        if (displayIndex < 0) {
-            cellIndex = (_cachedCardsData + displayIndex) % _cachedCardsData;
-        }
-        
-        NSLog(@"当前坐标:%ld, 显示的坐标:%ld", cellIndex, displayIndex);
-        // 获取cell
-        StackCardCell *currentCell = [self reusableCellAtIndex:cellIndex displayIndex:currentIndex];
-        
-        if (currentCell) {
-            if (![_cachedCardsPool containsObject:currentCell]) {
-                [_cachedCardsPool addObject:currentCell];
-                [mutCopyArray addObject:currentCell];
-            }
-        }
-        
-        // 缩放当前的卡片视图
-        [self makeNextScaleForCurrentCards:currentCell atIndex:cellIndex displayIndex:displayIndex animated:NO hideCurrentCell:hide];
-        
-        // 将当前的cell移动到首位
-        if (displayIndex >= actualDisplayNumbers) {
-            NSLog(@"将最尾部卡片移动到首部");
-            [mutCopyArray removeObject:currentCell];
-            [mutCopyArray insertObject:currentCell atIndex:0];
-        }
-    }
-    
-    _cachedCardsPool = nil;
-    _cachedCardsPool = [[NSMutableArray alloc] initWithArray:mutCopyArray];
 }
 
 
 #pragma mark 视图缩放参数动态计算
+
+/// 旋转的角度
+/// @param point 当前滑动的点
+- (float)rotationProportion:(CGPoint)point {
+    CGFloat currentMovedDistance = point.x - panPreviousPoint.x;
+    // y = k * x + m
+    CGFloat touchMovedDistance = CGRectGetWidth(self.bounds);
+    CGFloat maxCardPointCenterX = CGRectGetWidth(self.bounds) / 2;
+    CGFloat minCardPointCenterX = _configure.panMinimunCardCenterX;
+
+    float k = -(float)(minCardPointCenterX - maxCardPointCenterX) / touchMovedDistance;
+    
+    float y = k * currentMovedDistance;
+    
+    return y;
+}
+
+/// 卡片缩放的程度
+/// @param point 当前手势滑动的点，手势触发所在的点
+- (float)scaleDistanceProportion:(CGPoint)point {
+    CGFloat currentMovedDistance = point.x - panPreviousPoint.x;
+    
+    CGRect frame = [self cellFrame];
+    CGFloat targetOffset = [self cardOffsetFromDelegate] * 2;
+    float scale = [self lastCellScale];
+    CGFloat scaleHeight = CGRectGetHeight(frame) / 2 * scale; // 缩放后的高度
+    CGFloat maxCardMovedDistance = (float)CGRectGetHeight(frame) / 2 - scaleHeight + targetOffset;
+    CGFloat touchMovedDistance = CGRectGetWidth(self.bounds);
+    
+    float k = (float)maxCardMovedDistance / (touchMovedDistance * 2);
+    
+    return (float)currentMovedDistance * k;
+}
+
+
+/// 最后一个卡片缩放的程度，默认.7
 - (float)lastCellScale {
     if (_stackDelegate && [_stackDelegate respondsToSelector:@selector(lastCellScaleForCards:)]) {
         return [_stackDelegate lastCellScaleForCards:self];
@@ -462,43 +670,443 @@
     return .7;
 }
 
-- (CGFloat)scaleTargetIndex:(NSInteger)displayIndex {
-    float lastScale = 1 - [self lastCellScale];
-    float scale = 1 - (float)displayIndex * ((float)lastScale / MAX(1, _displayCount - 1));
-    
-    return scale;
-}
 
-- (CGFloat)currentTargetCenterY:(StackCardCell *)cell displayIndex:(NSInteger)displayIndex {
-    float scale = [self scaleTargetIndex:displayIndex];
-    CGFloat targetOffset = [self cardOffsetFromDelegate] * displayIndex;
-    CGFloat scaleHeight = cell.bounds.size.height / 2 * scale; // 缩放后的高度
-    CGFloat targetCenterY = _cardCenter.y + cell.bounds.size.height / 2 - scaleHeight + targetOffset;
-    
-    return targetCenterY;
-}
-
-
-- (UIPanGestureRecognizer *)pan {
-    if (!_pan) {
-        _pan = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(panHandle:)];
+- (BOOL)canSwipe:(UIPanGestureRecognizer *)panGesture direction:(StackScrollDirection)direction {
+    if (!_configure.panGestureEnable) {
+        return NO;
+    }
+    if (_stackDelegate && [_stackDelegate respondsToSelector:@selector(stackCardView:shouldSwipeCell:atIndexPath:direction:)]) {
+        return [_stackDelegate stackCardView:self shouldSwipeCell:_visibleCells.firstObject atIndexPath:_currentIndexPath direction:direction];
     }
     
-    return _pan;
+    return YES;
+}
+
+
+#pragma mark - public
+- (void)loadNextCard {
+    if (![self canSwipe:_panGesture direction:StackScrollDirectionCounterClockwise]) {
+        return;
+    }
+    
+    if (_status == StackCardLoadStatusPreviousCard) {
+        return;
+    }
+    
+    _status = StackCardLoadStatusNextCard;
+    
+
+    [self selectIndexPath:[self nextIndexPath] animated:YES];
+    _status = StackCardLoadStatusNone;
+}
+
+- (void)loadPreviousCard {
+    if (![self canSwipe:_panGesture direction:StackScrollDirectionClockwise]) {
+        return;
+    }
+    
+    if (_status == StackCardLoadStatusNextCard) {
+        return;
+    }
+    _status = StackCardLoadStatusPreviousCard;
+
+    [self selectIndexPath:[self lastIndexPath] animated:YES];
+    _status = StackCardLoadStatusNone;
+}
+
+/// 单纯的收起卡片
+- (void)shrinkCards:(BOOL)animated {
+    for (StackCardCell *currentCell in _visibleCells) {
+        [currentCell.layer removeAllAnimations];
+        [UIView animateWithDuration:animated ? _configure.animatedDuration : 0 delay:0 options:UIViewAnimationOptionCurveEaseIn animations:^{
+            currentCell.transform = CGAffineTransformIdentity;
+            currentCell.center = self->_cardCenter;
+        } completion:nil];
+    }
+}
+
+/// 将cell移动到缓存池中，回收当前不显示的cell
+/// @param cell 待移动的cell
+- (void)movedCellIntoCachedPools:(StackCardCell *)cell {
+    if ([_visibleCells containsObject:cell]) {
+        [_visibleCells removeObject:cell];
+    }
+//    MJRefreshLog(@"移除的坐标%p: [%ld, %ld]", cell, cell.indexPath.section, cell.indexPath.row);
+    NSMutableArray *cachedPool = [_registReuslableCellPools[cell.identifier] mutableCopy];
+    [cachedPool addObject:cell];
+    [cell removeFromSuperview];
+    _registReuslableCellPools[cell.identifier] = cachedPool;
+}
+
+/// 将cell移动到可视的数组中
+/// @param cell 待移动的cell
+- (void)movedCellIntoVisiblePool:(StackCardCell *)cell {
+    if (![_visibleCells containsObject:cell]) {
+        [_visibleCells addObject:cell];
+    }
+    [_visibleCells sortUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+        StackCardCell *firstCell = (StackCardCell *)obj1;
+        StackCardCell *lastCell = (StackCardCell *)obj2;
+        if (firstCell.indexPath.section <= lastCell.indexPath.section) {
+            if (firstCell.indexPath.section == lastCell.indexPath.section) {
+                return firstCell.indexPath.row >= lastCell.indexPath.row;
+            }else {
+                return NSOrderedAscending;
+            }
+        }else {
+            return NSOrderedDescending;
+        }
+    }];
+}
+
+- (void)registerClass:(Class)stackCellClass reusableIdentifer:(NSString *)reusableIdentifier {
+    if (reusableIdentifier
+        && reusableIdentifier.length > 0
+        && stackCellClass) {
+        [_registClassDictionary setObject:stackCellClass forKey:reusableIdentifier];
+        [_registReuslableCellPools setObject:@[] forKey:reusableIdentifier];
+    }
+}
+
+- (StackCardCell *)dequeueReusableIdentifier:(NSString *)reusableIdentifier indexPath:(NSIndexPath *)indexPath {
+    
+    Class cellClass = [_registClassDictionary objectForKey:reusableIdentifier];
+    NSMutableArray *reusableCellPool = [_registReuslableCellPools[reusableIdentifier] mutableCopy];
+    if (reusableCellPool.count > 0) {
+        StackCardCell *cell = reusableCellPool.firstObject;
+        cell.indexPath = indexPath;
+        [reusableCellPool removeObject:cell];
+        _registReuslableCellPools[reusableIdentifier] = reusableCellPool;
+        
+        return cell;
+    }
+    
+    if ([[cellClass new] isKindOfClass:[StackCardCell class]]) {
+        StackCardCell *cell = [cellClass initWithIdentifer:reusableIdentifier atIndexPath:indexPath frame:[self cellFrame]];
+
+        return cell;
+    }
+    
+    return nil;
+}
+
+- (void)makeTargetScaleCoefficient:(StackCardCell *)cell {
+    CGPoint selfCenterPoint = CGPointMake(self.labWidth / 2, self.labHeight / 2);
+    NSIndexPath *index = cell.indexPath;
+    NSComparisonResult result = [index compare:_currentIndexPath];
+    if (result == NSOrderedAscending) {
+        CGAffineTransform rotationTransform = CGAffineTransformMakeRotation(- M_PI_4 / 4);
+        selfCenterPoint.x = _configure.panMinimunCardCenterX;
+        cell.transform = rotationTransform;
+        cell.center = selfCenterPoint;
+        return;
+    }else {
+        CGRect frame = [self cellFrame];
+        NSInteger distanceCount = index.row;
+        if (index.section == _currentIndexPath.section) {
+            distanceCount = labs(index.row - _currentIndexPath.row);
+        }else {
+            for (NSInteger startSection = _currentIndexPath.section; startSection < index.section; startSection++) {
+                NSInteger targetRows = [self numberOfRowsInSection:startSection];
+                if (startSection == _currentIndexPath.section) {
+                    targetRows -= _currentIndexPath.row;
+                }
+                distanceCount += targetRows;
+            }
+        }
+        
+        NSInteger indexDistance = distanceCount;
+        NSInteger targetDisplayCount = [self numberOfDisplayingCards];
+        indexDistance = MIN(indexDistance, targetDisplayCount - 1);
+        CGFloat targetOffset = [self cardOffsetFromDelegate] * indexDistance;
+        float scaleDistance = (float)(1 - [self lastCellScale]) / (targetDisplayCount - 1);
+        
+        float scale = 1 - scaleDistance * indexDistance;
+        scale = MAX([self lastCellScale], scale);
+        CGFloat scaleHeight = CGRectGetHeight(frame) / 2 * scale; // 缩放后的高度
+        CGFloat targetCenterY = selfCenterPoint.y + CGRectGetHeight(frame) / 2 - scaleHeight + targetOffset;
+        CGAffineTransform scaleTransform = CGAffineTransformMakeScale(scale, scale);
+        cell.transform = scaleTransform;
+        selfCenterPoint.y = targetCenterY;
+        cell.center = selfCenterPoint;
+    }
+}
+
+- (void)reloadData {
+    [self initialParameters];
+    
+    NSInteger count = 0;
+    
+    for (NSInteger sectionIndex = 0; sectionIndex < _preferredSection; sectionIndex++) {
+        NSInteger row = [self numberOfRowsInSection:sectionIndex];
+        count += row;
+        
+        if (sectionIndex == _currentIndexPath.section) {
+            if (_currentIndexPath.row >= row) {
+                _currentIndexPath = [NSIndexPath indexPathForRow:row - 1 inSection:sectionIndex];
+            }
+        }else if (sectionIndex == _preferredSection - 1) {
+            if (_currentIndexPath.section >= sectionIndex) {
+                _currentIndexPath = [NSIndexPath indexPathForRow:0 inSection:sectionIndex];
+            }
+        }
+    }
+    
+    _configure.empty = count == 0;
+    _panGesture.enabled = !_configure.empty;
+    
+    if (_configure.empty) {
+        _currentIndexPath = nil;
+    }
+    
+    NSMutableArray *mutVisibleArray = [_visibleCells mutableCopy];
+    // 移除数据
+    for (StackCardCell *visibleCell in mutVisibleArray) {
+        [self movedCellIntoCachedPools:visibleCell];
+    }
+    
+    if (!_configure.empty){
+        NSInteger currentIndex = 0;
+
+        for (int section = (int)_currentIndexPath.section; section < _preferredSection; section ++) {
+            NSInteger rows = [self numberOfRowsInSection:section];
+            NSInteger startIndex = 0;
+            if (section == _currentIndexPath.section) {
+                startIndex = _currentIndexPath.row;
+            }
+            
+            for (NSInteger row = startIndex; row < rows; row ++) {
+                if (currentIndex > _displayCount) {
+                    break;
+                }
+                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:section];
+                StackCardCell *cell = [self dequeueReusableCell:indexPath];
+                [self addSubview:cell];
+                [self sendSubviewToBack:cell];
+                [UIView animateWithDuration:_configure.animatedDuration delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+                    [self makeTargetScaleCoefficient:cell];
+                } completion:nil];
+                [self movedCellIntoVisiblePool:cell];
+                currentIndex++;
+            }
+            
+            if (currentIndex > _displayCount) {
+                break;
+            }
+        }
+    }
+}
+
+- (void)scrollToLastIndexPath {
+    NSInteger rows = [self numberOfRowsInSection:_preferredSection - 1];
+    [self selectIndexPath:[NSIndexPath indexPathForRow:rows - 1 inSection:_preferredSection - 1] animated:YES];
+}
+
+- (void)selectIndexPath:(NSIndexPath *)indexPath animated:(BOOL)animated {
+    // 确保index不会超出范围
+    if (indexPath.section >= _preferredSection) {
+        NSInteger rows = [self numberOfRowsInSection:_preferredSection - 1];
+        indexPath = [NSIndexPath indexPathForRow:rows - 1 inSection:_preferredSection - 1];
+    }else {
+        NSInteger targetRows = [self numberOfRowsInSection:indexPath.section];
+        if (indexPath.row >= targetRows) {
+            indexPath = [NSIndexPath indexPathForRow:targetRows - 1 inSection:indexPath.section];
+        }
+    }
+    
+    NSComparisonResult result = [indexPath compare:_currentIndexPath];
+    // 在当前显示的卡片前面
+    if (result == NSOrderedAscending) {
+        NSInteger totalCount = 0;
+        if (indexPath.section == _currentIndexPath.section) {
+            totalCount = _currentIndexPath.row - indexPath.row;
+        }else {
+            for (NSInteger startSection = indexPath.section; startSection <= _currentIndexPath.section; startSection ++) {
+                NSInteger currentRows = [self numberOfRowsInSection:startSection];
+                if (startSection == indexPath.section) {
+                    currentRows -= (indexPath.row + 1);
+                }
+                
+                if (startSection == _currentIndexPath.section) {
+                    currentRows = _currentIndexPath.row + 1;
+                }
+                
+                totalCount += currentRows;
+            }
+        }
+        
+        NSInteger newCellCount = MIN(totalCount, _displayCount + 1);
+
+        // 新增cell
+        for (NSInteger newIndex = newCellCount; newIndex > 0; newIndex--) {
+            NSInteger restCount = newIndex;
+            NSInteger targetSection = indexPath.section;
+            NSInteger targetRow = indexPath.row;
+            if (indexPath.section == _currentIndexPath.section) {
+                targetRow = indexPath.row + newIndex - 1;
+            }else {
+                for (NSInteger startSection = indexPath.section; startSection <= _currentIndexPath.section; startSection ++) {
+                    NSInteger currentRows = [self numberOfRowsInSection:startSection];
+                    if (startSection == indexPath.section) {
+                        currentRows -= indexPath.row;
+                    }
+                    
+                    if (restCount > currentRows) {
+                        // 在下一个section
+                        restCount = restCount - currentRows;
+                        targetSection += 1;
+                        continue;
+                    }
+                    targetRow = restCount - 1;
+                    if (startSection == indexPath.section) {
+                        targetRow += indexPath.row;
+                    }
+                    break;
+                }
+            }
+            
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:targetRow inSection:targetSection];
+            BOOL contained = NO;
+            for (StackCardCell *currentCell in _visibleCells) {
+                NSComparisonResult result = [currentCell.indexPath compare:indexPath];
+                if (result == NSOrderedSame) {
+                    contained = YES;
+                    break;
+                }
+            }
+            if (!contained) {
+                StackCardCell *cell = [self dequeueReusableCell:indexPath];
+                [self addSubview:cell];
+                [self bringSubviewToFront:cell];
+                cell.transform = CGAffineTransformMakeRotation(- M_PI_4 / 4);
+                cell.center = CGPointMake(_configure.panMinimunCardCenterX, _cardCenter.y);
+                [self movedCellIntoVisiblePool:cell];
+            }
+        }
+        
+        // 移除多余的cell
+        NSMutableArray *array = [_visibleCells mutableCopy];
+        _currentIndexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section];
+        
+        for (StackCardCell *cell in array) {
+            [UIView animateWithDuration:_configure.animatedDuration delay:0 options:UIViewAnimationOptionCurveEaseIn animations:^{
+                [self makeTargetScaleCoefficient:cell];
+            } completion:^(BOOL finished) {
+                if (finished) {
+                    NSIndexPath *bottomIndexPath = [self estimatedBottomCardIndexPath];
+                    NSComparisonResult cardResult = [cell.indexPath compare:bottomIndexPath];
+                    if (cardResult == NSOrderedDescending) {
+//                        MJRefreshLog(@"最后一张卡片坐标(%ld, %ld)", bottomIndexPath.section, bottomIndexPath.row);
+                        [self movedCellIntoCachedPools:cell];
+                    }
+                }
+            }];
+        }
+    }else if (result == NSOrderedDescending) {
+        // 在当前显示卡片的后面
+        
+        // 新增cell
+        NSInteger totalCount = 0;
+        
+        NSIndexPath *currentBottomIndexPath = ((StackCardCell *)_visibleCells.lastObject).indexPath;
+        
+        if (indexPath.section == _currentIndexPath.section) {
+            totalCount = labs(_currentIndexPath.row - indexPath.row);
+        }else {
+            for (NSInteger startSection = _currentIndexPath.section; startSection <= indexPath.section; startSection ++) {
+                NSInteger currentRows = [self numberOfRowsInSection:startSection];
+                if (startSection == _currentIndexPath.section) {
+                    currentRows -= (_currentIndexPath.row + 1);
+                }
+                
+                if (startSection == indexPath.section) {
+                    currentRows = indexPath.row + 1;
+                }
+                
+                totalCount += currentRows;
+            }
+        }
+        
+        NSInteger diffCount = totalCount - _displayCount;
+        
+        // 滑动在_displayCount个卡片以后,需要新增_displayCount个卡片在最底部，并且移除当前所显示的所有卡片
+        NSInteger targetCount = _displayCount + 1;
+        if (diffCount < 0) {
+            // 滑动在_displayCount个以内, 移除totalCount卡片，并且新增totalcount卡片
+            targetCount = totalCount;
+        }
+        
+        for (NSInteger newIndex = 1; newIndex <= targetCount; newIndex++) {
+            // 计算出目标的坐标
+            NSInteger targetSection = currentBottomIndexPath.section;
+            NSInteger targetRow = currentBottomIndexPath.row;
+            NSInteger restCount = newIndex;
+            for (NSInteger endSection = currentBottomIndexPath.section; endSection < _preferredSection; endSection++) {
+                targetSection = endSection;
+                NSInteger endRows = [self numberOfRowsInSection:endSection];
+                if (endSection == currentBottomIndexPath.section) {
+                    endRows -= (currentBottomIndexPath.row + 1);
+                }
+                
+                if (restCount <= endRows) {
+                    targetRow = restCount - 1;
+                    if (endSection == currentBottomIndexPath.section) {
+                        targetRow = currentBottomIndexPath.row + restCount;
+                    }
+                    break;
+                }
+                
+                restCount -= endRows;
+            }
+                            
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:targetRow inSection:targetSection];
+            BOOL contained = NO;
+            for (StackCardCell *currentCell in _visibleCells) {
+                NSComparisonResult result = [currentCell.indexPath compare:indexPath];
+                if (result == NSOrderedSame) {
+                    contained = YES;
+                    break;
+                }
+            }
+            if (!contained) {
+                StackCardCell *cell = [self dequeueReusableCell:indexPath];
+                [self addSubview:cell];
+                [self sendSubviewToBack:cell];
+                [self makeTargetScaleCoefficient:cell];
+                [self movedCellIntoVisiblePool:cell];
+            }
+        }
+        
+        // 添加移动动画，并且移除多余的视图
+        NSMutableArray *array = [_visibleCells mutableCopy];
+        _currentIndexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section];
+        
+        for (StackCardCell *currentCell in array) {
+            [UIView animateWithDuration:_configure.animatedDuration delay:0 options:UIViewAnimationOptionCurveEaseIn animations:^{
+                [self makeTargetScaleCoefficient:currentCell];
+            } completion:^(BOOL finished) {
+                NSComparisonResult cardResult = [currentCell.indexPath compare:self->_currentIndexPath];
+                if (cardResult == NSOrderedAscending) {
+                    [self movedCellIntoCachedPools:currentCell];
+                }
+            }];
+        }
+    }
 }
 
 
 #pragma mark - getter
-- (StackCardCell *)selectedCell {
-    NSString *filterString = [NSString stringWithFormat:@"index = %ld", (long)_currentDisplayIndex];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:filterString];
-    
-    NSArray *array = [_cachedCardsPool filteredArrayUsingPredicate:predicate];
-    if (array.count > 0) {
-        return array.firstObject;
+- (UIPanGestureRecognizer *)panGesture {
+    if (!_panGesture) {
+        _panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(pangeGestureHandler:)];
+        _panGesture.delegate = self;
     }
     
-    return nil;
+    return _panGesture;
+}
+
+- (StackCardCell *)selectedCell {
+    return _visibleCells.firstObject;
 }
 
 @end

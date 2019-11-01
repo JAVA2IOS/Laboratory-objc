@@ -16,8 +16,11 @@
 #import "TABDefine.h"
 
 #import "StackCardView.h"
+#import "NewCardCell.h"
 
-@interface StackCardsViewController ()<TABCardViewDelegate, StackCardViewDelegate>
+@interface StackCardsViewController ()<TABCardViewDelegate, StackCardViewDelegate> {
+    NSArray *cardArray;
+}
 @property (nonatomic,strong) TABCardView * cardView;
 @property (nonatomic,strong) StackCardView *customCards;
 @end
@@ -27,48 +30,53 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = LabColor(@"ffffff");
-
+    cardArray = @[@[@"0,0", @"0,1", @"0,2", @"0,3"], @[@"1.0", @"1,1"], @[@"2.0", @"2.1"]];
+    
+    UIScrollView *scrollContainer = [[UIScrollView alloc] initWithFrame:CGRectMake(0, LABTopHeight, self.view.labWidth, self.view.labHeight - LABTopHeight)];
+    scrollContainer.contentSize = CGSizeMake(self.view.labWidth, self.view.labHeight);
+    [self.view addSubview:scrollContainer];
+    
     _customCards = [[StackCardView alloc] initWithFrame:CGRectMake(40, self.labNavgationBar.labBottom + 10, self.view.labWidth - 80, self.view.labWidth - 80)];
-    [self.view addSubview:_customCards];
     _customCards.stackDelegate = self;
-    [_customCards reloadCardsView];
+    [_customCards registerClass:[StackCardCell class] reusableIdentifer:NSStringFromClass([StackCardCell class])];
+    [_customCards registerClass:[NewCardCell class] reusableIdentifer:NSStringFromClass([NewCardCell class])];
     
-    UIButton *previousButton = [UIButton lab_initButtonTitile:@"上一张" fontSize:16 titleColor:[UIColor blackColor] backgroundColor:[UIColor whiteColor]];
-    previousButton.frame = CGRectMake(10, _customCards.labBottom + 20, 100, 50);
-    [self.view addSubview:previousButton];
-    [previousButton addTarget:self action:@selector(previousCard) forControlEvents:UIControlEventTouchUpInside];
+    [scrollContainer addSubview:_customCards];
+    _customCards.backgroundColor = [UIColor randomColor];
+    [_customCards reloadData];
     
-    UIButton *nextButton = [UIButton lab_initButtonTitile:@"下一张" fontSize:16 titleColor:[UIColor blackColor] backgroundColor:[UIColor whiteColor]];
-    nextButton.frame = CGRectMake(self.view.labWidth - 110, _customCards.labBottom + 20, 100, 50);
-    [self.view addSubview:nextButton];
-    [nextButton addTarget:self action:@selector(next) forControlEvents:UIControlEventTouchUpInside];
+    CGFloat buttonWidth = self.view.labWidth / 3;
+    UIButton *refreshButton = [UIButton lab_initButton:CGRectMake(self.view.labCenterX - buttonWidth / 2, _customCards.labBottom + 30, buttonWidth, 50) title:@"加载" font:[UIFont systemFontOfSize:18] titleColor:[UIColor blackColor] backgroundColor:[UIColor whiteColor]];
+    [refreshButton buttonClick:self selector:@selector(refreshCards)];
     
-    UIButton *refreshButton = [UIButton lab_initButtonTitile:@"刷新" fontSize:16 titleColor:[UIColor blackColor] backgroundColor:[UIColor whiteColor]];
-    refreshButton.frame = CGRectMake(self.view.labWidth - 110, previousButton.labBottom + 20, 100, 50);
-    [self.view addSubview:refreshButton];
-    [refreshButton addTarget:self action:@selector(refreshCards) forControlEvents:UIControlEventTouchUpInside];
-    /*
-     self.cardView = [[TABCardView alloc] initWithFrame:CGRectMake(40, nextButton.labBottom, kScreenWidth - 120, 320)
-     showCardsNumber:4];
-     self.cardView.isShowNoDataView = YES;
-     self.cardView.noDataView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"占位图"]];
-     self.cardView.offsetY = 10;
-     self.cardView.offsetX = 0;
-     self.cardView.delegate = self;
-     [self.view addSubview:self.cardView];
-     // 模拟请求数据
-     */
-    [self performSelector:@selector(getData) withObject:nil afterDelay:3.0];
-
+    [scrollContainer addSubview:refreshButton];
+    
+    UIButton *lastButton = [UIButton lab_initButton:CGRectMake(0, _customCards.labBottom + 30, buttonWidth, 50) title:@"上一页" font:[UIFont systemFontOfSize:18] titleColor:[UIColor blackColor] backgroundColor:[UIColor whiteColor]];
+    [lastButton buttonClick:self selector:@selector(previousCard)];
+    
+    [scrollContainer addSubview:lastButton];
+    
+    UIButton *nextButton = [UIButton lab_initButton:CGRectMake(buttonWidth * 2, _customCards.labBottom + 30, buttonWidth, 50) title:@"下一页" font:[UIFont systemFontOfSize:18] titleColor:[UIColor blackColor] backgroundColor:[UIColor whiteColor]];
+    [nextButton buttonClick:self selector:@selector(next)];
+    
+    [scrollContainer addSubview:nextButton];
+    
+    UIButton *reloadButton = [UIButton lab_initButton:CGRectMake(self.view.labCenterX - buttonWidth / 2, refreshButton.labBottom + 30, buttonWidth, 50) title:@"刷新" font:[UIFont systemFontOfSize:18] titleColor:[UIColor blackColor] backgroundColor:[UIColor whiteColor]];
+    [reloadButton buttonClick:self selector:@selector(reloadCard)];
+    
+    [scrollContainer addSubview:reloadButton];
 }
 
 - (void)refreshCards {
-    [_customCards reloadCardsView];
+//    [_customCards selectIndexPath:[NSIndexPath indexPathForRow:1 inSection:0] animated:YES];
+    [_customCards scrollToLastIndexPath];
+}
+
+- (void)reloadCard {
+    [_customCards reloadData];
 }
 
 - (void)next {
-//    [_customCards selectIndex:10 animated:YES];
-//    [_customCards loadPreviousCard];
     [_customCards loadNextCard];
 }
 
@@ -76,15 +84,35 @@
     [_customCards loadPreviousCard];
 }
 
-- (StackCardCell *)stackCardsView:(StackCardView *)cardView cellForCurrentIndex:(NSInteger)index displayIndex:(NSInteger)displayIndex {
-    StackCardCell *cell = [cardView cellForIndex:index atDisplayIndex:displayIndex];
-    cell.label.text = [NSString stringWithFormat:@"%ld", index];
+//- (BOOL)stackCardView:(StackCardView *)cardsView shouldSwipeCell:(__kindof StackCardCell *)cell atIndexPath:(NSIndexPath *)indexPath direction:(StackScrollDirection)direction {
+//    if (indexPath.section == 0 && indexPath.row == 2) {
+//        return direction == StackScrollDirectionCounterClockwise;
+//    }
+//    
+//    return YES;
+//}
+
+- (StackCardCell *)stackCardsView:(StackCardView *)cardView cellForCurrentIndexPath:(NSIndexPath *)indexPath {
+    NewCardCell *cell = [cardView dequeueReusableIdentifier:NSStringFromClass([NewCardCell class]) indexPath:indexPath];
+    cell.label.text = [NSString stringWithFormat:@"(%ld, %ld)", indexPath.section, indexPath.row];
+    if (indexPath.section == 0) {
+        cell.contentView.backgroundColor = [UIColor whiteColor];
+    }else if (indexPath.section == 1) {
+        cell.contentView.backgroundColor = [UIColor yellowColor];
+    }else {
+        cell.contentView.backgroundColor = [UIColor whiteColor];
+    }
     
     return cell;
 }
 
-- (NSInteger)numberOfCardsDataForCards:(StackCardView *)cardsView {
-    return 20;
+- (NSInteger)stackcard:(StackCardView *)cardsView numberOfItemsInSection:(NSInteger)section {
+    NSArray *stringArray = cardArray[section];
+    return stringArray.count;
+}
+
+- (NSInteger)numberOfSectionsInStackCard:(StackCardView *)cardsView {
+    return cardArray.count;
 }
 
 - (NSInteger)numberOfDisplayingCards {
@@ -106,7 +134,6 @@
 #pragma mark - Target Method
 
 - (void)getData {
-    [_customCards selectIndex:2 animated:NO];
 //
 //    NSMutableArray *array = [[NSMutableArray alloc] init];
 //    for (int i = 0; i < 10; i ++) {

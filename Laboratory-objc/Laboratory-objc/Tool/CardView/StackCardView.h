@@ -13,37 +13,45 @@
 /**
  滚动的方向
 
- - StackScrollDirectionClockwise: 顺时针
- - StackScrollDirectionCounterClockwise: 逆时针
+ - StackScrollDirectionClockwise: 顺时针，上一页
+ - StackScrollDirectionCounterClockwise: 逆时针，下一页
  */
 typedef NS_ENUM(NSInteger, StackScrollDirection) {
-    StackScrollDirectionClockwise,
-    StackScrollDirectionCounterClockwise,
+    StackScrollDirectionClockwise,  /// 顺时针，上一页
+    StackScrollDirectionCounterClockwise,   /// 逆时针，下一页
+};
+
+typedef NS_ENUM(NSInteger, StackCardLoadStatus) {
+    StackCardLoadStatusNone,    /// 目前暂无滑动以及点击状态
+//    StackCardLoadStatusPanGesture,  /// 滑动手势触发状态
+    StackCardLoadStatusNextCard,    /// 调用下一卡片状态
+    StackCardLoadStatusPreviousCard,    /// 调用上一卡片状态
 };
 
 @protocol StackCardViewDelegate <NSObject>
 
-/**
- 当前卡片视图的数据源，是叠加的，不是覆盖
+- (NSInteger)stackcard:(StackCardView *)cardsView numberOfItemsInSection:(NSInteger)section;
 
- @param cardsView 当前的卡片视图
- @return 新增的数据源
- */
-- (NSInteger)numberOfCardsDataForCards:(StackCardView *)cardsView;
-
-- (StackCardCell *)stackCardsView:(StackCardView *)cardView cellForCurrentIndex:(NSInteger)index displayIndex:(NSInteger)displayIndex;
+- (__kindof StackCardCell *)stackCardsView:(StackCardView *)cardView cellForCurrentIndexPath:(NSIndexPath *)indexPath;
 
 @optional
-/**
- 切换到指定卡片后响应
- 
- @param cardsView 卡片视图
- @param index 选中的卡片下标
- */
-- (void)stackCardView:(StackCardView *)cardsView didSelectAtIndex:(NSInteger)index;
+
+- (NSInteger)numberOfSectionsInStackCard:(StackCardView *)cardsView;
+
+/// 手势或者切换卡片是否禁用
+/// @param cardsView 卡片列表视图
+/// @param cell 当前的选中的卡片
+/// @param indexPath 当前选中的卡片的坐标
+/// @param direction 滑动的方向
+- (BOOL)stackCardView:(StackCardView *)cardsView shouldSwipeCell:(__kindof StackCardCell *)cell atIndexPath:(NSIndexPath *)indexPath direction:(StackScrollDirection)direction;
+
+/// 选中卡片后响应(未使用)
+/// @param cardsView 卡片列表视图
+/// @param indexPath 选中的卡片坐标
+- (void)stackCardView:(StackCardView *)cardsView didSelectAtIndexPath:(NSIndexPath *)indexPath;
 
 /**
- 一次性显示卡片的个数，默认3个
+ 一次性显示卡片的个数，默认3
 
  @return 卡片个数
  */
@@ -55,7 +63,7 @@ typedef NS_ENUM(NSInteger, StackScrollDirection) {
  @param cardsView 卡片视图
  @return 偏移量
  */
-- (CGFloat)distanceOfCellOffset:(StackCardView *)cardsView;
+- (CGFloat)distanceOfPerCellOffset:(StackCardView *)cardsView;
 
 /**
  最后一个显示的cell视图的缩放程度，缩放程度从1开始往后渐变，默认0.7
@@ -65,7 +73,7 @@ typedef NS_ENUM(NSInteger, StackScrollDirection) {
 - (CGFloat)lastCellScaleForCards:(StackCardView *)cardsView;
 
 /**
- cell到容器的内边距，默认(5, 5, 5, 5)
+ cell到容器的内边距padding，默认(5, 5, 5, 5)
  
  @param cardsView 卡片视图
  @return 内边距
@@ -74,47 +82,47 @@ typedef NS_ENUM(NSInteger, StackScrollDirection) {
 
 @end
 
+
+/// 卡片样式选择
+@interface StackCardConfigure : NSObject
+@property (nonatomic, copy, readonly) NSString *version;
+/// 卡片的滑动动画持续时间，默认.15s
+@property (nonatomic, assign) NSTimeInterval animatedDuration;
+/// 是否使用滑动手势，默认YES
+@property (nonatomic, assign) BOOL panGestureEnable;
+
+/// 判断滑动是否成功的距离，默认 stackcard.width / 3
+@property (nonatomic, assign) CGFloat panLimitedDistance;
+
+/// 默认滑动到最左边消失的最小卡片中点x坐标，默认 -20
+@property (nonatomic, assign) CGFloat panMinimunCardCenterX;
+
+/// 数据是否为空
+@property (nonatomic, assign, readonly) BOOL empty;
+
+@end
+
+
 /**
  卡片堆叠
- 
- note: 关于卡片复用问题，目前只支持单一的卡片复用，多种卡片暂不考虑
  不支持:
     循环滚动；
     滚动到指定卡片位置；
+    每个卡片frame动态改变
  支持：
     上一页/下一页 (0^0)
  */
-@interface StackCardView : UIScrollView
+@interface StackCardView : UIView
 
 @property (nonatomic, weak) id<StackCardViewDelegate> stackDelegate;
 
-/**
- 当前选中的cell
- */
 @property (nonatomic, retain) StackCardCell *selectedCell;
-
+/// 调用状态
+@property (nonatomic, assign, readonly) StackCardLoadStatus status;
 /**
- 当前需要复用的cell
-
- @param index cell需要显示的下标
- @param displayIndex 实际显示的位置
- @return 复用的cell
+ 配置
  */
-- (StackCardCell *)cellForIndex:(NSInteger)index atDisplayIndex:(NSInteger)displayIndex;
-
-/**
- 选中某个卡片视图，有问题
-
- @param index 选中的卡片视图
- @param animated 是否动画展示
- */
-- (void)selectIndex:(NSInteger)index animated:(BOOL)animated;
-
-/**
- 重新加载卡片
- */
-- (void)reloadCardsView;
-
+@property (nonatomic, retain, readonly) StackCardConfigure *configure;
 /**
  加载下一页
  */
@@ -124,6 +132,38 @@ typedef NS_ENUM(NSInteger, StackScrollDirection) {
  加载上一页
  */
 - (void)loadPreviousCard;
+
+/**
+ 收起卡片
+
+ @param animated 动画效果
+ */
+- (void)shrinkCards:(BOOL)animated;
+
+/// 注册复用cell的标志符
+/// @param stackCellClass 复用的cell类
+/// @param reusableIdentifier 复用的标志符
+- (void)registerClass:(Class)stackCellClass reusableIdentifer:(NSString *)reusableIdentifier;
+
+/// 复用cell
+/// @param reusableIdentifier 复用的标识
+/// @param indexPath 当前的坐标
+- (__kindof StackCardCell *)dequeueReusableIdentifier:(NSString *)reusableIdentifier indexPath:(NSIndexPath *)indexPath;
+
+- (void)reloadData;
+
+- (void)reloadCellWithIndexPath:(NSIndexPath *)indexPath;
+
+/**
+ 选中某个卡片视图，有问题
+ 
+ @param indexPath 指定选中的坐标
+ @param animated 是否动画展示
+ */
+- (void)selectIndexPath:(NSIndexPath *)indexPath animated:(BOOL)animated;
+
+/// 滚动到最后一张卡片
+- (void)scrollToLastIndexPath;
 
 @end
 
