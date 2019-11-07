@@ -12,8 +12,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface StackCardCell : UIView
 
-@property (nonatomic, assign) NSInteger index;
-
 @property (nonatomic, retain) NSIndexPath *indexPath;
 
 @property (nonatomic, retain, readonly) UIView *contentView;
