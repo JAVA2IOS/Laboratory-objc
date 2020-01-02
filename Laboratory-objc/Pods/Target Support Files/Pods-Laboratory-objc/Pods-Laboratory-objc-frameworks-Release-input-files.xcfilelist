@@ -1,0 +1,4 @@
+${PODS_ROOT}/Target Support Files/Pods-Laboratory-objc/Pods-Laboratory-objc-frameworks.sh
+${BUILT_PRODUCTS_DIR}/MBProgressHUD/MBProgressHUD.framework
+${BUILT_PRODUCTS_DIR}/MJRefresh/MJRefresh.framework
+${BUILT_PRODUCTS_DIR}/SocketRocket/SocketRocket.framework

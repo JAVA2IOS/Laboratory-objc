@@ -8,8 +8,9 @@
 
 #import "BaseTabBarController.h"
 #import "HomeViewController.h"
+#import "IMTestController.h"
 
-@interface BaseTabBarController ()
+@interface BaseTabBarController ()<UITabBarControllerDelegate>
 
 @end
 
@@ -19,6 +20,7 @@
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
     [self configureTabbarController];
+    self.delegate = self;
 }
 
 #pragma mark - Navigation
@@ -26,7 +28,17 @@
     HomeViewController *homeVC = [[HomeViewController alloc] init];
     homeVC.title = @"主页";
     LABNavigationController *nav = [[LABNavigationController alloc] initWithRootViewController:homeVC];
-    self.viewControllers = @[nav];
+    
+    IMTestController *territoryVC = [[IMTestController alloc] init];
+    territoryVC.title = @"未知";
+    LABNavigationController *territoryNav = [[LABNavigationController alloc] initWithRootViewController:territoryVC];
+    self.viewControllers = @[nav, territoryNav];
+}
+
+- (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController {
+    if ([viewController isKindOfClass:[IMTestController class]]) {
+//        [IMSocket connect];
+    }
 }
 
 @end

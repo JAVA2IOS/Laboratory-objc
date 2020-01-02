@@ -2,10 +2,14 @@ platform :ios, '9.0'
 inhibit_all_warnings!
 use_frameworks!
 
+source 'https://github.com/CocoaPods/Specs.git'
+
 target 'Laboratory-objc' do
 
 pod 'MBProgressHUD', '~> 1.1.0'
 
 pod 'MJRefresh', '~> 3.1.15.7'
+
+pod 'SocketRocket'
 
 end

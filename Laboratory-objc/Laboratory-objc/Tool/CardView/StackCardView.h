@@ -22,15 +22,18 @@ typedef NS_ENUM(NSInteger, StackScrollDirection) {
 };
 
 typedef NS_ENUM(NSInteger, StackCardLoadStatus) {
-    StackCardLoadStatusNone,    /// 目前暂无滑动以及点击状态
+    /// 目前暂无滑动以及点击状态
+    StackCardLoadStatusNone,
 //    StackCardLoadStatusPanGesture,  /// 滑动手势触发状态
-    StackCardLoadStatusNextCard,    /// 调用下一卡片状态
-    StackCardLoadStatusPreviousCard,    /// 调用上一卡片状态
+    /// 调用下一卡片状态
+    StackCardLoadStatusNextCard,
+    /// 调用上一卡片状态
+    StackCardLoadStatusPreviousCard,
 };
 
 @protocol StackCardViewDelegate <NSObject>
 
-- (NSInteger)stackcard:(StackCardView *)cardsView numberOfItemsInSection:(NSInteger)section;
+- (NSInteger)stackCardView:(StackCardView *)cardsView numberOfItemsInSection:(NSInteger)section;
 
 - (__kindof StackCardCell *)stackCardsView:(StackCardView *)cardView cellForCurrentIndexPath:(NSIndexPath *)indexPath;
 
@@ -44,6 +47,13 @@ typedef NS_ENUM(NSInteger, StackCardLoadStatus) {
 /// @param indexPath 当前选中的卡片的坐标
 /// @param direction 滑动的方向
 - (BOOL)stackCardView:(StackCardView *)cardsView shouldSwipeCell:(__kindof StackCardCell *)cell atIndexPath:(NSIndexPath *)indexPath direction:(StackScrollDirection)direction;
+
+/// 使用手势切换时响应当前方法，可用于分页加载
+/// @param cardsView 卡片列表视图
+/// @param cell 当前选中的卡片
+/// @param indexPath 当前选中卡片的坐标
+/// @param direction 滑动方向
+- (void)stackCardView:(StackCardView *)cardsView didSwitchedUsedPangestureCell:(__kindof StackCardCell *)cell atIndexPath:(NSIndexPath *)indexPath direction:(StackScrollDirection)direction;
 
 /// 选中卡片后响应(未使用)
 /// @param cardsView 卡片列表视图
@@ -153,7 +163,7 @@ typedef NS_ENUM(NSInteger, StackCardLoadStatus) {
 - (void)reloadData;
 
 /**
- 选中某个卡片视图，有问题
+ 选中某个卡片视图
  
  @param indexPath 指定选中的坐标
  @param animated 是否动画展示
@@ -162,6 +172,14 @@ typedef NS_ENUM(NSInteger, StackCardLoadStatus) {
 
 /// 滚动到最后一张卡片
 - (void)scrollToLastIndexPath;
+
+/// 移除指定某几个数据(未实现方法)
+/// @param indexPaths 指定移除的数据坐标
+- (void)removeIndexPaths:(NSArray<NSIndexPath *> *)indexPaths;
+
+/// 移除某一个section的所有数据(需要排除每个section的rows = 0的情况)
+/// @param section 待移除的section的数据
+- (void)removeItemsInSection:(NSInteger)section;
 
 @end
 

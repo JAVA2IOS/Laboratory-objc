@@ -23,6 +23,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (instancetype)initWithIdentifer:(NSString *)idenfitier atIndexPath:(NSIndexPath *)indexPath frame:(CGRect)frame;
 
++ (NSString *)reusableIdentifier;
+
 @end
 
 NS_ASSUME_NONNULL_END

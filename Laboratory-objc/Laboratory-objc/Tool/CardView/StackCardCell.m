@@ -39,4 +39,8 @@
     });
 }
 
++ (NSString *)reusableIdentifier {
+    return [NSString stringWithFormat:@"%@_stackResuableIdentifier", NSStringFromClass([self class])];
+}
+
 @end

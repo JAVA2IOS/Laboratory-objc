@@ -84,13 +84,14 @@
     [_customCards loadPreviousCard];
 }
 
-//- (BOOL)stackCardView:(StackCardView *)cardsView shouldSwipeCell:(__kindof StackCardCell *)cell atIndexPath:(NSIndexPath *)indexPath direction:(StackScrollDirection)direction {
-//    if (indexPath.section == 0 && indexPath.row == 2) {
-//        return direction == StackScrollDirectionCounterClockwise;
-//    }
-//    
-//    return YES;
-//}
+- (BOOL)stackCardView:(StackCardView *)cardsView shouldSwipeCell:(__kindof StackCardCell *)cell atIndexPath:(NSIndexPath *)indexPath direction:(StackScrollDirection)direction {
+    if (direction == StackScrollDirectionCounterClockwise) {
+        NSArray *stringArray = cardArray[indexPath.section];
+        return indexPath.row != stringArray.count - 1;
+    }
+    
+    return YES;
+}
 
 - (StackCardCell *)stackCardsView:(StackCardView *)cardView cellForCurrentIndexPath:(NSIndexPath *)indexPath {
     NewCardCell *cell = [cardView dequeueReusableIdentifier:NSStringFromClass([NewCardCell class]) indexPath:indexPath];
@@ -106,7 +107,7 @@
     return cell;
 }
 
-- (NSInteger)stackcard:(StackCardView *)cardsView numberOfItemsInSection:(NSInteger)section {
+- (NSInteger)stackCardView:(StackCardView *)cardsView numberOfItemsInSection:(NSInteger)section {
     NSArray *stringArray = cardArray[section];
     return stringArray.count;
 }
@@ -148,37 +149,5 @@
 }
 
 #pragma mark - TABCardViewDelegate
-
-- (void)tabCardViewCurrentIndex:(NSInteger)index {
-    NSLog(@"当前处于卡片数组下标:%ld",(long)index);
-}
-/*
- StackCardslayout *layout = [[StackCardslayout alloc] init];
- //    layout.itemSize = CGSizeMake(500, 500);
- 
- UICollectionView *collection = [[UICollectionView alloc] initWithFrame:CGRectMake(0, LABNavBarHeight, SCREENWIDTH, SCREENHEIGHT - LABNavBarHeight) collectionViewLayout:layout];
- collection.delegate = self;
- collection.dataSource = self;
- [collection registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"hhdd"];
- collection.backgroundColor = [UIColor whiteColor];
- 
- [self.view addSubview:collection];
- }
- 
- - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
- return CGSizeMake(collectionView.labWidth, collectionView.labWidth);
- }
- 
- - (nonnull __kindof UICollectionViewCell *)collectionView:(nonnull UICollectionView *)collectionView cellForItemAtIndexPath:(nonnull NSIndexPath *)indexPath {
- UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"hhdd" forIndexPath:indexPath];
- cell.backgroundColor = [UIColor randomColor];
- 
- return cell;
- }
- 
- - (NSInteger)collectionView:(nonnull UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
- return 4;
- }
- */
 
 @end

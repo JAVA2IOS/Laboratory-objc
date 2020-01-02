@@ -9,3 +9,4 @@
 #import "LABBaseViewController.h"
 #import "LABNavigationController.h"
 #import "LABBundleManager.h"
+#import "IMSocket.h"

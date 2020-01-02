@@ -15,7 +15,22 @@
 
 @implementation StackCardConfigure
 - (NSString *)version {
-    return @"1.0";
+    return @"0.0.1";
+}
+
+- (double)calculateTheRelativeMovingDistance:(CGFloat)currentMovingDistance targetDistance:(CGFloat)targetDistance {
+    CGFloat distance = self.panLimitedDistance;
+    if (distance <= 0) {
+        distance = 1;
+    }
+
+    double loga = (double)(log(targetDistance) - 1) / distance;
+    
+    double y = (double)log(currentMovingDistance) / loga  - (double)1 / loga;
+    
+    MJRefreshLog(@"当前y值:%f, 距离%f, 目标距离%f, 卡片位移距离:%f", y, currentMovingDistance, targetDistance, self.panLimitedDistance);
+    
+    return y;
 }
 
 @end
@@ -91,11 +106,17 @@
         _configure.panLimitedDistance = fabs(self.bounds.size.width / 3);
         _configure.panMinimunCardCenterX = -20;
     }
+    
     _status = StackCardLoadStatusNone;
     
-    _cardCenter = CGPointMake(self.bounds.size.width / 2, self.bounds.size.height / 2);
+    CGRect frame = [self cellFrame];
+    
+    _cardCenter = CGPointMake(CGRectGetWidth(frame) / 2 + CGRectGetMinX(frame), CGRectGetMinY(frame) + CGRectGetHeight(frame) / 2);
     [self numberOfDisplayingCards];
     _preferredSection = [self sections];
+    if (!_currentIndexPath && _preferredSection > 0) {
+        _currentIndexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+    }
     
     // 每个卡片垂直方向的间距等分
     NSInteger averageCount = _displayCount - 1;
@@ -105,7 +126,6 @@
     float scaleDistance = (float)(1 - [self lastCellScale]) / averageCount;
     float scale = 1 - scaleDistance * _displayCount;
     scale = MAX([self lastCellScale], scale);
-    CGRect frame = [self cellFrame];
     CGFloat scaleHeight = CGRectGetHeight(frame) / 2 * scale; // 缩放后的高度
     _lastScaleCardCenterY = _cardCenter.y + CGRectGetHeight(frame) / 2 - scaleHeight +  _scaleDistanceSpacing;
     
@@ -149,8 +169,16 @@
                     }
                     
                     [self restoreCancelledCell:direction];
+                    
+                    if (fabs(directions) >= _configure.panLimitedDistance / 4 * 3) {
+                        // 超过当前距离才会响应
+                        if (_stackDelegate && [_stackDelegate respondsToSelector:@selector(stackCardView:didSwitchedUsedPangestureCell:atIndexPath:direction:)]) {
+                            [_stackDelegate stackCardView:self didSwitchedUsedPangestureCell:_visibleCells.firstObject atIndexPath:_currentIndexPath direction:direction];
+                        }
+                    }
                 }
                 [pan setTranslation:CGPointZero inView:pan.view];
+                
                 panStatus = NO;
             }
         }
@@ -178,6 +206,13 @@
     
     if (![self canSwipe:_panGesture direction:direction]) {
         // 禁用滑动手势时，卡片只能滑动三分之一的宽度
+        double currenDistance = [_configure calculateTheRelativeMovingDistance:fabs(directions) targetDistance:self.bounds.size.width];
+        if (direction == StackScrollDirectionCounterClockwise) {
+            CGFloat previousX = currentPoint.x - directions;
+            currentPoint = CGPointMake(previousX - currenDistance, currentPoint.y);
+            MJRefreshLog(@"当前坐标(%f, %f)", currentPoint.x, currentPoint.y);
+        }
+        
         if (fabs(directions) >= _configure.panLimitedDistance) {
             return;
         }
@@ -227,7 +262,10 @@
         [self translationSuccessedCell:direction];
     }else {
         if (direction == StackScrollDirectionClockwise) {
-            _currentIndexPath = [self nextIndexPath];
+            NSComparisonResult result = [_currentIndexPath compare:[NSIndexPath indexPathForRow:0 inSection:0]];
+            if (result != NSOrderedSame) {
+                _currentIndexPath = [self nextIndexPath];
+            }
         }
         
         // 恢复原样
@@ -456,6 +494,7 @@
             }];
         }
     }
+    [self selectIndexPathHandler:_currentIndexPath];
 }
 
 /// 还原
@@ -482,13 +521,12 @@
             }
         }];
     }
+    
+    [self selectIndexPathHandler:_currentIndexPath];
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
-    if ([[self superview].gestureRecognizers containsObject:otherGestureRecognizer]) {
-//        MJRefreshLog(@"包含了其他手势，禁用");
-    }
-    return ![[self superview].gestureRecognizers containsObject:otherGestureRecognizer];
+    return ![otherGestureRecognizer.view isKindOfClass:[UIScrollView class]];
 }
 
 
@@ -496,13 +534,31 @@
 
 /// 获取上一个卡片的坐标
 - (NSIndexPath *)lastIndexPath {
-    NSInteger lastTargetSections = _currentIndexPath.section;
-    NSInteger lastTargetRows = _currentIndexPath.row;
-    if (_currentIndexPath.row >= 1) {
-        lastTargetRows = _currentIndexPath.row - 1;
+//    NSInteger lastTargetSections = _currentIndexPath.section;
+//    NSInteger lastTargetRows = _currentIndexPath.row;
+//    if (_currentIndexPath.row >= 1) {
+//        lastTargetRows = _currentIndexPath.row - 1;
+//    }else {
+//        if (_currentIndexPath.section > 0) {
+//            lastTargetSections = _currentIndexPath.section - 1;
+//            NSInteger row = [self numberOfRowsInSection:lastTargetSections];
+//            lastTargetRows = row - 1;
+//        }
+//    }
+    
+    return [self estimatedLastIndexPath:_currentIndexPath];
+}
+
+/// 获取指定坐标的上一个坐标
+/// @param indexPath 当前坐标
+- (NSIndexPath *)estimatedLastIndexPath:(NSIndexPath *)indexPath {
+    NSInteger lastTargetSections = indexPath.section;
+    NSInteger lastTargetRows = indexPath.row;
+    if (indexPath.row >= 1) {
+        lastTargetRows = indexPath.row - 1;
     }else {
-        if (_currentIndexPath.section > 0) {
-            lastTargetSections = _currentIndexPath.section - 1;
+        if (indexPath.section > 0) {
+            lastTargetSections = indexPath.section - 1;
             NSInteger row = [self numberOfRowsInSection:lastTargetSections];
             lastTargetRows = row - 1;
         }
@@ -511,11 +567,49 @@
     return [NSIndexPath indexPathForRow:lastTargetRows inSection:lastTargetSections];
 }
 
+/// 获取上一组卡片的最开始的坐标(当前坐标的卡片 间距 前_displayCount 张卡片的坐标)
+/// @param indexPath 当前坐标
+- (NSIndexPath *)estimatedLastPageFirstIndexPath:(NSIndexPath *)indexPath {
+    NSInteger lastTargetSections = indexPath.section;
+    NSInteger lastTargetRows = indexPath.row;
+    if (indexPath.row >= _displayCount) {
+        lastTargetRows = indexPath.row - _displayCount;
+    }else {
+        NSInteger restCount = _displayCount - indexPath.row + 1;
+        if (indexPath.section > 0) {
+            lastTargetSections = indexPath.section - 1;
+            for (NSInteger section = lastTargetSections; section >= 0; section--) {
+                NSInteger rows = [self numberOfRowsInSection:section];
+                if (restCount - rows < 0) {
+                    lastTargetRows = rows - restCount;
+                    break;
+                }else {
+                    restCount = restCount - rows;
+                }
+            }
+            
+            // 表示到(0, 0)的卡片不足_displayCount张卡片
+            if (restCount != 0) {
+                lastTargetRows = 0;
+                lastTargetSections = 0;
+            }
+        }else {
+            lastTargetRows = 0;
+            lastTargetSections = 0;
+        }
+    }
+    
+    return [NSIndexPath indexPathForRow:lastTargetRows inSection:lastTargetSections];
+}
+
 /// 根据当前显示的indexPath获取下一个卡片的坐标
 - (NSIndexPath *)nextIndexPath {
-    // 将_currenIndexPath赋值到下一个
-    NSInteger nextTargetSections = _currentIndexPath.section;
-    NSInteger nextTargetRows = _currentIndexPath.row;
+    return [self estimatedNextPath:_currentIndexPath];
+}
+
+- (NSIndexPath *)estimatedNextPath:(NSIndexPath *)currentIndexPath {
+    NSInteger nextTargetSections = currentIndexPath.section;
+    NSInteger nextTargetRows = currentIndexPath.row;
     
     if (nextTargetSections < (_preferredSection - 1)) {
         if (nextTargetRows + 1 < [self numberOfRowsInSection:nextTargetSections]) {
@@ -581,7 +675,7 @@
 }
 
 - (NSInteger)numberOfRowsInSection:(NSInteger)section {
-    return [_stackDelegate stackcard:self numberOfItemsInSection:section];
+    return [_stackDelegate stackCardView:self numberOfItemsInSection:section];
 }
 
 - (NSInteger)sections {
@@ -593,6 +687,12 @@
 }
 
 #pragma mark 卡片切换
+
+- (void)selectIndexPathHandler:(NSIndexPath *)indexPath {
+    if (_stackDelegate && [_stackDelegate respondsToSelector:@selector(stackCardView:didSelectAtIndexPath:)]) {
+        return [_stackDelegate stackCardView:self didSelectAtIndexPath:indexPath];
+    }
+}
 
 #pragma mark cell获取
 - (StackCardCell *)dequeueReusableCell:(NSIndexPath *)targetIndexPath {
@@ -747,15 +847,7 @@
     [_visibleCells sortUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
         StackCardCell *firstCell = (StackCardCell *)obj1;
         StackCardCell *lastCell = (StackCardCell *)obj2;
-        if (firstCell.indexPath.section <= lastCell.indexPath.section) {
-            if (firstCell.indexPath.section == lastCell.indexPath.section) {
-                return firstCell.indexPath.row >= lastCell.indexPath.row;
-            }else {
-                return NSOrderedAscending;
-            }
-        }else {
-            return NSOrderedDescending;
-        }
+        return [firstCell.indexPath compare:lastCell.indexPath];
     }];
 }
 
@@ -791,7 +883,7 @@
 }
 
 - (void)makeTargetScaleCoefficient:(StackCardCell *)cell {
-    CGPoint selfCenterPoint = CGPointMake(self.labWidth / 2, self.labHeight / 2);
+    CGPoint selfCenterPoint = _cardCenter;
     NSIndexPath *index = cell.indexPath;
     NSComparisonResult result = [index compare:_currentIndexPath];
     if (result == NSOrderedAscending) {
@@ -799,6 +891,7 @@
         selfCenterPoint.x = _configure.panMinimunCardCenterX;
         cell.transform = rotationTransform;
         cell.center = selfCenterPoint;
+        cell.contentView.alpha = 1;
         return;
     }else {
         CGRect frame = [self cellFrame];
@@ -818,6 +911,7 @@
         NSInteger indexDistance = distanceCount;
         NSInteger targetDisplayCount = [self numberOfDisplayingCards];
         indexDistance = MIN(indexDistance, targetDisplayCount - 1);
+        cell.contentView.alpha = indexDistance > 1 ? 0 : 1;
         CGFloat targetOffset = [self cardOffsetFromDelegate] * indexDistance;
         float scaleDistance = (float)(1 - [self lastCellScale]) / (targetDisplayCount - 1);
         
@@ -883,9 +977,7 @@
                 StackCardCell *cell = [self dequeueReusableCell:indexPath];
                 [self addSubview:cell];
                 [self sendSubviewToBack:cell];
-                [UIView animateWithDuration:_configure.animatedDuration delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
-                    [self makeTargetScaleCoefficient:cell];
-                } completion:nil];
+                [self makeTargetScaleCoefficient:cell];
                 [self movedCellIntoVisiblePool:cell];
                 currentIndex++;
             }
@@ -965,17 +1057,17 @@
                 }
             }
             
-            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:targetRow inSection:targetSection];
+            NSIndexPath *newIndexPath = [NSIndexPath indexPathForRow:targetRow inSection:targetSection];
             BOOL contained = NO;
             for (StackCardCell *currentCell in _visibleCells) {
-                NSComparisonResult result = [currentCell.indexPath compare:indexPath];
+                NSComparisonResult result = [currentCell.indexPath compare:newIndexPath];
                 if (result == NSOrderedSame) {
                     contained = YES;
                     break;
                 }
             }
             if (!contained) {
-                StackCardCell *cell = [self dequeueReusableCell:indexPath];
+                StackCardCell *cell = [self dequeueReusableCell:newIndexPath];
                 [self addSubview:cell];
                 [self bringSubviewToFront:cell];
                 cell.transform = CGAffineTransformMakeRotation(- M_PI_4 / 4);
@@ -989,18 +1081,25 @@
         _currentIndexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section];
         
         for (StackCardCell *cell in array) {
-            [UIView animateWithDuration:_configure.animatedDuration delay:0 options:UIViewAnimationOptionCurveEaseIn animations:^{
-                [self makeTargetScaleCoefficient:cell];
-            } completion:^(BOOL finished) {
-                if (finished) {
-                    NSIndexPath *bottomIndexPath = [self estimatedBottomCardIndexPath];
-                    NSComparisonResult cardResult = [cell.indexPath compare:bottomIndexPath];
-                    if (cardResult == NSOrderedDescending) {
-//                        MJRefreshLog(@"最后一张卡片坐标(%ld, %ld)", bottomIndexPath.section, bottomIndexPath.row);
-                        [self movedCellIntoCachedPools:cell];
+            NSIndexPath *bottomIndexPath = [self estimatedBottomCardIndexPath];
+            NSComparisonResult cardResult = [cell.indexPath compare:bottomIndexPath];
+            if (animated) {
+                [UIView animateWithDuration:_configure.animatedDuration delay:0 options:UIViewAnimationOptionCurveEaseIn animations:^{
+                    [self makeTargetScaleCoefficient:cell];
+                } completion:^(BOOL finished) {
+                    if (finished) {
+                        if (cardResult == NSOrderedDescending) {
+                            //                        MJRefreshLog(@"最后一张卡片坐标(%ld, %ld)", bottomIndexPath.section, bottomIndexPath.row);
+                            [self movedCellIntoCachedPools:cell];
+                        }
                     }
+                }];
+            }else {
+                [self makeTargetScaleCoefficient:cell];
+                if (cardResult == NSOrderedDescending) {
+                    [self movedCellIntoCachedPools:cell];
                 }
-            }];
+            }
         }
     }else if (result == NSOrderedDescending) {
         // 在当前显示卡片的后面
@@ -1029,29 +1128,32 @@
         
         NSInteger diffCount = totalCount - _displayCount;
         
+        
         // 滑动在_displayCount个卡片以后,需要新增_displayCount个卡片在最底部，并且移除当前所显示的所有卡片
+        NSIndexPath *startIndexPath = [self estimatedLastIndexPath:indexPath];
         NSInteger targetCount = _displayCount + 1;
         if (diffCount < 0) {
             // 滑动在_displayCount个以内, 移除totalCount卡片，并且新增totalcount卡片
             targetCount = totalCount;
+            startIndexPath = [NSIndexPath indexPathForRow:currentBottomIndexPath.row inSection:currentBottomIndexPath.section];
         }
         
         for (NSInteger newIndex = 1; newIndex <= targetCount; newIndex++) {
             // 计算出目标的坐标
-            NSInteger targetSection = currentBottomIndexPath.section;
-            NSInteger targetRow = currentBottomIndexPath.row;
+            NSInteger targetSection = startIndexPath.section;
+            NSInteger targetRow = startIndexPath.row;
             NSInteger restCount = newIndex;
-            for (NSInteger endSection = currentBottomIndexPath.section; endSection < _preferredSection; endSection++) {
+            for (NSInteger endSection = startIndexPath.section; endSection < _preferredSection; endSection++) {
                 targetSection = endSection;
                 NSInteger endRows = [self numberOfRowsInSection:endSection];
-                if (endSection == currentBottomIndexPath.section) {
-                    endRows -= (currentBottomIndexPath.row + 1);
+                if (endSection == startIndexPath.section) {
+                    endRows -= (startIndexPath.row + 1);
                 }
                 
                 if (restCount <= endRows) {
                     targetRow = restCount - 1;
-                    if (endSection == currentBottomIndexPath.section) {
-                        targetRow = currentBottomIndexPath.row + restCount;
+                    if (endSection == startIndexPath.section) {
+                        targetRow = startIndexPath.row + restCount;
                     }
                     break;
                 }
@@ -1059,17 +1161,17 @@
                 restCount -= endRows;
             }
                             
-            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:targetRow inSection:targetSection];
+            NSIndexPath *newIndexPath = [NSIndexPath indexPathForRow:targetRow inSection:targetSection];
             BOOL contained = NO;
             for (StackCardCell *currentCell in _visibleCells) {
-                NSComparisonResult result = [currentCell.indexPath compare:indexPath];
+                NSComparisonResult result = [currentCell.indexPath compare:newIndexPath];
                 if (result == NSOrderedSame) {
                     contained = YES;
                     break;
                 }
             }
             if (!contained) {
-                StackCardCell *cell = [self dequeueReusableCell:indexPath];
+                StackCardCell *cell = [self dequeueReusableCell:newIndexPath];
                 [self addSubview:cell];
                 [self sendSubviewToBack:cell];
                 [self makeTargetScaleCoefficient:cell];
@@ -1082,15 +1184,115 @@
         _currentIndexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section];
         
         for (StackCardCell *currentCell in array) {
-            [UIView animateWithDuration:_configure.animatedDuration delay:0 options:UIViewAnimationOptionCurveEaseIn animations:^{
+            NSComparisonResult cardResult = [currentCell.indexPath compare:self->_currentIndexPath];
+            if (animated) {
+                [UIView animateWithDuration:_configure.animatedDuration delay:0 options:UIViewAnimationOptionCurveEaseIn animations:^{
+                    [self makeTargetScaleCoefficient:currentCell];
+                } completion:^(BOOL finished) {
+                    if (cardResult == NSOrderedAscending) {
+                        [self movedCellIntoCachedPools:currentCell];
+                    }
+                }];
+            }else {
                 [self makeTargetScaleCoefficient:currentCell];
-            } completion:^(BOOL finished) {
-                NSComparisonResult cardResult = [currentCell.indexPath compare:self->_currentIndexPath];
                 if (cardResult == NSOrderedAscending) {
                     [self movedCellIntoCachedPools:currentCell];
                 }
-            }];
+            }
         }
+    }
+    
+    [self selectIndexPathHandler:_currentIndexPath];
+}
+
+- (void)removeIndexPaths:(NSArray<NSIndexPath *> *)indexPaths {
+    
+}
+
+- (void)removeItemsInSection:(NSInteger)section {
+    if (section < 0 || section >= _preferredSection) {
+        return;
+    }
+    
+    [self initialParameters];
+
+    // 移除当前所有的超过当前section的cell
+    NSMutableArray *newVisibleCells = [_visibleCells mutableCopy];
+    for (StackCardCell *currentCell in newVisibleCells) {
+        if (currentCell.indexPath.section >= section) {
+            [self movedCellIntoCachedPools:currentCell];
+        }else {
+            continue;
+        }
+    }
+    
+    if (_visibleCells.count > 0) {
+        NSIndexPath *lastPageIndexPath = [self estimatedLastPageFirstIndexPath:_visibleCells.lastObject.indexPath];
+        [self selectIndexPath:lastPageIndexPath animated:YES];
+        
+        // 还有cell，直接补全剩下的cell
+        NSInteger restCount = _displayCount - _visibleCells.count + 1;
+        if (restCount > 0) {
+            NSIndexPath *nextIndexPath = _visibleCells.lastObject.indexPath;
+            for (NSInteger i = 0; i < restCount; i++) {
+                nextIndexPath = [self estimatedNextPath:nextIndexPath];
+                BOOL contained = NO;
+                for (StackCardCell *currentCell in _visibleCells) {
+                    NSComparisonResult result = [currentCell.indexPath compare:nextIndexPath];
+                    if (result == NSOrderedSame) {
+                        contained = YES;
+                        break;
+                    }
+                }
+                if (!contained) {
+                    StackCardCell *cell = [self dequeueReusableCell:nextIndexPath];
+                    [self addSubview:cell];
+                    [self sendSubviewToBack:cell];
+                    [self movedCellIntoVisiblePool:cell];
+                    [UIView animateWithDuration:_configure.animatedDuration delay:0 options:UIViewAnimationOptionCurveEaseIn animations:^{
+                        [self makeTargetScaleCoefficient:cell];
+                    } completion:^(BOOL finished) {
+                    }];
+                }
+            }
+        }
+    }else {
+        if (section >= _preferredSection - 1
+            && section != 0) {
+            // 填补上一个section
+            NSInteger rows = [self numberOfRowsInSection:_preferredSection - 1];
+            NSIndexPath *estimatedPageIndex = [self estimatedLastPageFirstIndexPath:[NSIndexPath indexPathForRow:rows - 1 inSection:_preferredSection - 1]];
+            [self selectIndexPath:estimatedPageIndex animated:YES];
+        }else {
+            NSInteger currentIndex = 0;
+            for (int sectionIndex = (int)section; sectionIndex < _preferredSection; sectionIndex ++) {
+                NSInteger rows = [self numberOfRowsInSection:sectionIndex];
+                NSInteger startIndex = 0;
+                if (sectionIndex == _currentIndexPath.section) {
+                    startIndex = _currentIndexPath.row;
+                }
+                for (NSInteger row = startIndex; row < rows; row ++) {
+                    if (currentIndex > _displayCount) {
+                        break;
+                    }
+                    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:sectionIndex];
+                    StackCardCell *cell = [self dequeueReusableCell:indexPath];
+                    [self addSubview:cell];
+                    [self sendSubviewToBack:cell];
+                    [UIView animateWithDuration:_configure.animatedDuration delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+                        [self makeTargetScaleCoefficient:cell];
+                    } completion:nil];
+                    [self movedCellIntoVisiblePool:cell];
+                    currentIndex++;
+                }
+                
+                if (currentIndex > _displayCount) {
+                    break;
+                }
+            }
+            [self selectIndexPathHandler:_currentIndexPath];
+        }
+
     }
 }
 
