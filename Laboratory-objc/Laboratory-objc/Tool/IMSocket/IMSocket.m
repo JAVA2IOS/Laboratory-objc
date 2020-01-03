@@ -41,7 +41,7 @@
 - (instancetype)init {
     if (self = [super init]) {
         
-        NSURLComponents *urlComponents = [NSURLComponents componentsWithString:[NSString stringWithFormat:@"http://%@:%@/api/v0/ws", IMSocketAddress, @(IMSocketPort)]];
+        NSURLComponents *urlComponents = [NSURLComponents componentsWithString:[NSString stringWithFormat:@"http://%@:%@/api/v0/ws?uid=12&name=user", IMSocketAddress, @(IMSocketPort)]];
 
         self.url = [NSURL URLWithString:urlComponents.string];
     }
@@ -63,7 +63,7 @@
 
 + (void)configureUrl:(NSString *)url port:(NSNumber *)port schema:(NSString *)schema {
     [[self class] close];
-    NSURLComponents *urlComponents = [NSURLComponents componentsWithString:[NSString stringWithFormat:@"%@://%@:%@/api/v0/ws", schema, url, port]];
+    NSURLComponents *urlComponents = [NSURLComponents componentsWithString:[NSString stringWithFormat:@"%@://%@:%@/api/v0/ws?uid=12&name=user", schema, url, port]];
     
     [IMSocket sharedInstance].url = [NSURL URLWithString:urlComponents.string];
 }
@@ -134,10 +134,6 @@
     _url = [url copy];
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:_url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:20];
-    NSMutableDictionary *parameters = [request.allHTTPHeaderFields mutableCopy];
-    parameters[@"uid"] = @"idOne";
-    parameters[@"name"] = @"haha";
-    request.allHTTPHeaderFields = [[NSDictionary alloc] initWithDictionary:parameters];
 
     _webSocket = [[SRWebSocket alloc] initWithURLRequest:request protocols:@[@"chat"]];
     [_webSocket setDelegate:self];
