@@ -11,10 +11,11 @@
 #import "IGUserModel.h"
 #import "UserSectionController.h"
 
-@interface IGListViewController () <IGListAdapterDataSource>
+@interface IGListViewController () <IGListAdapterDataSource, IGListAdapterMoveDelegate, UICollectionViewDelegate>
 @property (nonatomic, retain) IGListCollectionView *listView;
 /// 数据源配置
 @property (nonatomic, retain) IGListAdapter *adapter;
+@property (nonatomic, retain) IGListAdapterUpdater *updater;
 @property (nonatomic, retain) NSArray *userModels;
 @property (nonatomic, retain) NSArray *sectionModels;
 @end
@@ -30,14 +31,27 @@
     [self.view addSubview:self.listView];
     
     // 数据与UI关联
-    IGListAdapterUpdater *updater = [[IGListAdapterUpdater alloc] init];
-    _adapter = [[IGListAdapter alloc] initWithUpdater:updater viewController:self];
+    _updater = [[IGListAdapterUpdater alloc] init];
+    _adapter = [[IGListAdapter alloc] initWithUpdater:_updater viewController:self];
     _adapter.dataSource = self;
+    _adapter.moveDelegate = self;
     _adapter.collectionView = self.listView;
+}
+
+- (void)buttonClick {
+    [self.listView beginInteractiveMovementForItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
 }
 
 
 #pragma mark - IGListUpdatingDelegate
+- (void)listAdapter:(IGListAdapter *)listAdapter moveObject:(id)object from:(NSArray *)previousObjects to:(NSArray *)objects {
+    NSLog(@"移动了吗:");
+    NSMutableArray *array = [[NSMutableArray alloc] init];
+    for (IGUserModel *user in objects) {
+        [array addObject:user];
+    }
+    _userModels = [[NSArray alloc] initWithArray:array];
+}
 
 
 #pragma mark - IGListAdapterDelegate

@@ -12,6 +12,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface UserCollectionCell : UICollectionViewCell
+@property (nonatomic, retain) UILabel *titleLabel;
 @property (nonatomic, retain) IGUserModel *userModel;
 @end
 

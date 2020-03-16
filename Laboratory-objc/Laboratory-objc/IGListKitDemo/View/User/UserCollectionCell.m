@@ -10,7 +10,6 @@
 #import "IGUserModel.h"
 
 @interface UserCollectionCell()
-@property (nonatomic, retain) UILabel *titleLabel;
 @property (nonatomic, retain) UILabel *idLabel;
 @end
 
