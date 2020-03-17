@@ -34,6 +34,16 @@
     return 1;
 }
 
+- (BOOL)canMoveItemAtIndex:(NSInteger)index {
+    NSLog(@"child moved hahahha");
+    return YES;
+}
+
+- (void)moveObjectFromIndex:(NSInteger)sourceIndex toIndex:(NSInteger)destinationIndex {
+    NSLog(@"从[%d]移动到[%d]", (int)sourceIndex, (int)destinationIndex);
+}
+
+
 - (CGSize)sizeForItemAtIndex:(NSInteger)index {
     return CGSizeMake(self.collectionContext.containerSize.width, 40);
 }
@@ -41,12 +51,14 @@
 - (UICollectionViewCell *)cellForItemAtIndex:(NSInteger)index {
     UserCollectionCell *cell = [self.collectionContext dequeueReusableCellOfClass:[UserCollectionCell class] forSectionController:self atIndex:index];
     cell.userModel = _user;
+    cell.titleLabel.text = [cell.titleLabel.text stringByAppendingFormat:@"- %d", (int)index];
 
     return cell;
 }
 
 
 - (void)didSelectItemAtIndex:(NSInteger)index {
+    [self.collectionContext cellForItemAtIndex:index sectionController:self];
     /*
      [self.collectionContext performBatchAnimated:YES updates:^(id<IGListBatchContext>  _Nonnull batchContext) {
      // 数据更新
@@ -59,6 +71,11 @@
      
      } completion:nil];
      */
+    [self.collectionContext performBatchAnimated:YES updates:^(id<IGListBatchContext>  _Nonnull batchContext) {
+        [batchContext moveSectionControllerInteractive:self fromIndex:0 toIndex:2];
+    } completion:^(BOOL finished) {
+
+    }];
 }
 
 - (void)didDeselectItemAtIndex:(NSInteger)index {

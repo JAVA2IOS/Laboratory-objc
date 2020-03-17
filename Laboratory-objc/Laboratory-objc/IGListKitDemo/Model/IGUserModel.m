@@ -33,7 +33,12 @@
     userTwo.uesrId = 5163808365;
     userTwo.name = @"DC电影报道";
     
-    return @[userOne, userTwo];
+    IGUserModel *userThree = [[IGUserModel alloc] init];
+    userThree.idstr = @"5163808365";
+    userThree.uesrId = 5163808365;
+    userThree.name = @"DC电影报道";
+    
+    return @[userOne, userTwo, userThree];
 }
 
 @end
