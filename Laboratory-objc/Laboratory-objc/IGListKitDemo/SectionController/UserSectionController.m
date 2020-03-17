@@ -61,4 +61,16 @@
      */
 }
 
+- (void)didDeselectItemAtIndex:(NSInteger)index {
+    
+}
+
+- (void)didHighlightItemAtIndex:(NSInteger)index {
+    
+}
+
+- (void)didUnhighlightItemAtIndex:(NSInteger)index {
+    
+}
+
 @end
