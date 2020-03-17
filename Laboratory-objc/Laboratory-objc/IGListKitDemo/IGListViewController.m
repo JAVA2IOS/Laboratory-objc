@@ -11,7 +11,7 @@
 #import "IGUserModel.h"
 #import "UserSectionController.h"
 
-@interface IGListViewController () <IGListAdapterDataSource, IGListAdapterMoveDelegate, UICollectionViewDelegate>
+@interface IGListViewController () <IGListAdapterDataSource>
 @property (nonatomic, retain) IGListCollectionView *listView;
 /// 数据源配置
 @property (nonatomic, retain) IGListAdapter *adapter;
@@ -34,12 +34,15 @@
     _updater = [[IGListAdapterUpdater alloc] init];
     _adapter = [[IGListAdapter alloc] initWithUpdater:_updater viewController:self];
     _adapter.dataSource = self;
-    _adapter.moveDelegate = self;
     _adapter.collectionView = self.listView;
+    
+    UIButton *button = [UIButton lab_initButton:CGRectMake(10, LABTopHeight + 30, 100, 50) title:@"切换" font:[UIFont systemFontOfSize:12] titleColor:[UIColor whiteColor] backgroundColor:[UIColor redColor]];
+    [button addTarget:self action:@selector(buttonClick) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:button];
 }
 
 - (void)buttonClick {
-    [self.listView beginInteractiveMovementForItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+    [self.listView moveItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] toIndexPath:[NSIndexPath indexPathForRow:3 inSection:0]];
 }
 
 
@@ -71,12 +74,46 @@
     return nil;
 }
 
+- (void)handleLongPressGesture:(UILongPressGestureRecognizer *)longGesture {
+    CGPoint currentPoint = [longGesture locationInView:self.listView];
+    switch (longGesture.state) {
+        case UIGestureRecognizerStateBegan:
+        {
+            NSIndexPath *currentIndexPath = [self.listView indexPathForItemAtPoint:currentPoint];
+            
+            if (currentIndexPath) {
+                [self.listView beginInteractiveMovementForItemAtIndexPath:currentIndexPath];
+            }
+        }
+            break;
+        case UIGestureRecognizerStateChanged:
+        {
+            [self.listView updateInteractiveMovementTargetPosition:CGPointMake(0, currentPoint.y)];
+        }
+            break;
+        case UIGestureRecognizerStateEnded:
+        {
+            [self.listView endInteractiveMovement];
+        }
+            break;
+            
+        default:
+        {
+            [self.listView cancelInteractiveMovement];
+        }
+            break;
+    }
+}
+
 
 #pragma mark - getter
 - (IGListCollectionView *)listView {
     return _listView ?: ({
         _listView = [[IGListCollectionView alloc] initWithFrame:CGRectMake(0, LABTopHeight, self.view.labWidth, self.view.labHeight - LABTopHeight)];
         _listView.backgroundColor = [UIColor whiteColor];
+        UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] init];
+        [longPress addTarget:self action:@selector(handleLongPressGesture:)];
+        [_listView addGestureRecognizer:longPress];
         
         _listView;
     });

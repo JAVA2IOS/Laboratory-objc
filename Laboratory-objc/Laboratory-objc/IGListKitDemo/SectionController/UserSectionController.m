@@ -19,6 +19,8 @@
 - (instancetype)init {
     if (self = [super init]) {
         self.inset = UIEdgeInsetsMake(10, 0, 0, 0);
+        self.minimumLineSpacing = 10;
+        self.minimumInteritemSpacing = self.collectionContext.containerSize.width;
     }
     
     return self;
@@ -31,11 +33,10 @@
 }
 
 - (NSInteger)numberOfItems {
-    return 1;
+    return 8;
 }
 
 - (BOOL)canMoveItemAtIndex:(NSInteger)index {
-    NSLog(@"child moved hahahha");
     return YES;
 }
 
@@ -43,9 +44,8 @@
     NSLog(@"从[%d]移动到[%d]", (int)sourceIndex, (int)destinationIndex);
 }
 
-
 - (CGSize)sizeForItemAtIndex:(NSInteger)index {
-    return CGSizeMake(self.collectionContext.containerSize.width, 40);
+    return CGSizeMake(self.collectionContext.containerSize.width / 8 * (index + 1), 40);
 }
 
 - (UICollectionViewCell *)cellForItemAtIndex:(NSInteger)index {
@@ -55,7 +55,6 @@
 
     return cell;
 }
-
 
 - (void)didSelectItemAtIndex:(NSInteger)index {
     [self.collectionContext cellForItemAtIndex:index sectionController:self];
@@ -72,9 +71,9 @@
      } completion:nil];
      */
     [self.collectionContext performBatchAnimated:YES updates:^(id<IGListBatchContext>  _Nonnull batchContext) {
-        [batchContext moveSectionControllerInteractive:self fromIndex:0 toIndex:2];
+        [batchContext moveInSectionController:self fromIndex:0 toIndex:1];
     } completion:^(BOOL finished) {
-
+        
     }];
 }
 

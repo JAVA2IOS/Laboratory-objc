@@ -31,14 +31,24 @@
     IGUserModel *userTwo = [[IGUserModel alloc] init];
     userTwo.idstr = @"5163808365";
     userTwo.uesrId = 5163808365;
-    userTwo.name = @"DC电影报道";
+    userTwo.name = @"DC电影报道1";
     
     IGUserModel *userThree = [[IGUserModel alloc] init];
     userThree.idstr = @"5163808365";
     userThree.uesrId = 5163808365;
-    userThree.name = @"DC电影报道";
+    userThree.name = @"DC电影报道2";
     
-    return @[userOne, userTwo, userThree];
+    IGUserModel *userFour = [[IGUserModel alloc] init];
+    userFour.idstr = @"5163808365";
+    userFour.uesrId = 5163808365;
+    userFour.name = @"DC电影报道3";
+    
+    IGUserModel *userFive = [[IGUserModel alloc] init];
+    userFive.idstr = @"5163808365";
+    userFive.uesrId = 5163808365;
+    userFive.name = @"DC电影报道5";
+    
+    return @[userOne];
 }
 
 @end
