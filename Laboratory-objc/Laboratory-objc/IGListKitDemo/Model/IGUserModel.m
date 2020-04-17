@@ -15,11 +15,11 @@
 
 @implementation IGUserModel
 - (id<NSObject>)diffIdentifier {
-    return self;
+    return self.idstr;
 }
 
 - (BOOL)isEqualToDiffableObject:(id<IGListDiffable>)object {
-    return [self isEqual:object];
+    return [self.idstr isEqualToString:((IGUserModel *)object).idstr];
 }
 
 + (NSArray<IGUserModel *> *)userModels {
@@ -29,26 +29,26 @@
     userOne.name = @"游戏肥宅200斤";
     
     IGUserModel *userTwo = [[IGUserModel alloc] init];
-    userTwo.idstr = @"5163808365";
+    userTwo.idstr = @"51638083650";
     userTwo.uesrId = 5163808365;
     userTwo.name = @"DC电影报道1";
     
     IGUserModel *userThree = [[IGUserModel alloc] init];
-    userThree.idstr = @"5163808365";
+    userThree.idstr = @"51638083651";
     userThree.uesrId = 5163808365;
     userThree.name = @"DC电影报道2";
     
     IGUserModel *userFour = [[IGUserModel alloc] init];
-    userFour.idstr = @"5163808365";
+    userFour.idstr = @"51638083652";
     userFour.uesrId = 5163808365;
     userFour.name = @"DC电影报道3";
     
     IGUserModel *userFive = [[IGUserModel alloc] init];
-    userFive.idstr = @"5163808365";
+    userFive.idstr = @"51638083653";
     userFive.uesrId = 5163808365;
     userFive.name = @"DC电影报道5";
     
-    return @[userOne];
+    return @[userOne, userTwo, userThree, userFour, userFive];
 }
 
 @end

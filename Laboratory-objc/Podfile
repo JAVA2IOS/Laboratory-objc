@@ -14,4 +14,8 @@ pod 'SocketRocket'
 
 pod 'IGListKit', '~> 4.0.0'
 
+pod 'YYModel'
+
+pod 'YYText'
+
 end

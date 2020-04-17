@@ -20,7 +20,7 @@
     if (self = [super init]) {
         self.inset = UIEdgeInsetsMake(10, 0, 0, 0);
         self.minimumLineSpacing = 10;
-        self.minimumInteritemSpacing = self.collectionContext.containerSize.width;
+//        self.minimumInteritemSpacing = self.collectionContext.containerSize.width;
     }
     
     return self;
@@ -32,10 +32,6 @@
     }
 }
 
-- (NSInteger)numberOfItems {
-    return 8;
-}
-
 - (BOOL)canMoveItemAtIndex:(NSInteger)index {
     return YES;
 }
@@ -45,7 +41,7 @@
 }
 
 - (CGSize)sizeForItemAtIndex:(NSInteger)index {
-    return CGSizeMake(self.collectionContext.containerSize.width / 8 * (index + 1), 40);
+    return CGSizeMake(self.collectionContext.containerSize.width, 40);
 }
 
 - (UICollectionViewCell *)cellForItemAtIndex:(NSInteger)index {
@@ -57,24 +53,19 @@
 }
 
 - (void)didSelectItemAtIndex:(NSInteger)index {
-    [self.collectionContext cellForItemAtIndex:index sectionController:self];
+//    [self.collectionContext performBatchAnimated:YES updates:^(id<IGListBatchContext>  _Nonnull batchContext) {
     /*
-     [self.collectionContext performBatchAnimated:YES updates:^(id<IGListBatchContext>  _Nonnull batchContext) {
      // 数据更新
      // _user = ...
      // 逻辑更新
      // 插入
      [batchContext insertInSectionController:self atIndexes:[NSIndexSet indexSetWithIndex:0]];
      // 删除
-     [batchContext deleteInSectionController:self atIndexes:[NSIndexSet indexSetWithIndex:0]];
+     [batchContext deleteInSectionController:self atIndexes:[NSIndexSet indexSetWithIndex:self.section]];
      
-     } completion:nil];
+     //        [batchContext moveInSectionController:self fromIndex:0 toIndex:1];
      */
-    [self.collectionContext performBatchAnimated:YES updates:^(id<IGListBatchContext>  _Nonnull batchContext) {
-        [batchContext moveInSectionController:self fromIndex:0 toIndex:1];
-    } completion:^(BOOL finished) {
-        
-    }];
+//    } completion:nil];
 }
 
 - (void)didDeselectItemAtIndex:(NSInteger)index {
