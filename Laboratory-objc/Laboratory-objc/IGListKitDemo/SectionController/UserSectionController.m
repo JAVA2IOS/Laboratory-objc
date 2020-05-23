@@ -19,6 +19,8 @@
 - (instancetype)init {
     if (self = [super init]) {
         self.inset = UIEdgeInsetsMake(10, 0, 0, 0);
+        self.minimumLineSpacing = 10;
+//        self.minimumInteritemSpacing = self.collectionContext.containerSize.width;
     }
     
     return self;
@@ -30,19 +32,13 @@
     }
 }
 
-- (NSInteger)numberOfItems {
-    return 1;
-}
-
 - (BOOL)canMoveItemAtIndex:(NSInteger)index {
-    NSLog(@"child moved hahahha");
     return YES;
 }
 
 - (void)moveObjectFromIndex:(NSInteger)sourceIndex toIndex:(NSInteger)destinationIndex {
     NSLog(@"从[%d]移动到[%d]", (int)sourceIndex, (int)destinationIndex);
 }
-
 
 - (CGSize)sizeForItemAtIndex:(NSInteger)index {
     return CGSizeMake(self.collectionContext.containerSize.width, 40);
@@ -56,26 +52,32 @@
     return cell;
 }
 
-
 - (void)didSelectItemAtIndex:(NSInteger)index {
-    [self.collectionContext cellForItemAtIndex:index sectionController:self];
+//    [self.collectionContext performBatchAnimated:YES updates:^(id<IGListBatchContext>  _Nonnull batchContext) {
     /*
-     [self.collectionContext performBatchAnimated:YES updates:^(id<IGListBatchContext>  _Nonnull batchContext) {
      // 数据更新
      // _user = ...
      // 逻辑更新
      // 插入
      [batchContext insertInSectionController:self atIndexes:[NSIndexSet indexSetWithIndex:0]];
      // 删除
-     [batchContext deleteInSectionController:self atIndexes:[NSIndexSet indexSetWithIndex:0]];
+     [batchContext deleteInSectionController:self atIndexes:[NSIndexSet indexSetWithIndex:self.section]];
      
-     } completion:nil];
+     //        [batchContext moveInSectionController:self fromIndex:0 toIndex:1];
      */
-    [self.collectionContext performBatchAnimated:YES updates:^(id<IGListBatchContext>  _Nonnull batchContext) {
-        [batchContext moveSectionControllerInteractive:self fromIndex:0 toIndex:2];
-    } completion:^(BOOL finished) {
+//    } completion:nil];
+}
 
-    }];
+- (void)didDeselectItemAtIndex:(NSInteger)index {
+    
+}
+
+- (void)didHighlightItemAtIndex:(NSInteger)index {
+    
+}
+
+- (void)didUnhighlightItemAtIndex:(NSInteger)index {
+    
 }
 
 @end

@@ -69,6 +69,9 @@
 		F7A6981C23A0839500647009 /* IMSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = F7A6981B23A0839500647009 /* IMSocket.m */; };
 		F7A6982023A095BE00647009 /* IMTestController.m in Sources */ = {isa = PBXBuildFile; fileRef = F7A6981F23A095BE00647009 /* IMTestController.m */; };
 		F7A6C2E823A876C3007645F0 /* QHKeyboardView.m in Sources */ = {isa = PBXBuildFile; fileRef = F7A6C2E723A876C3007645F0 /* QHKeyboardView.m */; };
+		F7AED4722449A8740072A577 /* UserBindingSection.m in Sources */ = {isa = PBXBuildFile; fileRef = F7AED4712449A8740072A577 /* UserBindingSection.m */; };
+		F7AED4752449A8870072A577 /* IGListBindingController.m in Sources */ = {isa = PBXBuildFile; fileRef = F7AED4742449A8870072A577 /* IGListBindingController.m */; };
+		F7AED47B2449AB490072A577 /* UserBindingSectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F7AED47A2449AB490072A577 /* UserBindingSectionCell.m */; };
 		F7B56AE622324860008FE498 /* LABAlertController.m in Sources */ = {isa = PBXBuildFile; fileRef = F7B56AE522324860008FE498 /* LABAlertController.m */; };
 		F7B56AE922324D45008FE498 /* LABPopAnimateTransitioning.m in Sources */ = {isa = PBXBuildFile; fileRef = F7B56AE822324D45008FE498 /* LABPopAnimateTransitioning.m */; };
 		F7BB760823A0BED500871928 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F7BB760723A0BED500871928 /* CFNetwork.framework */; };
@@ -217,6 +220,12 @@
 		F7A6981F23A095BE00647009 /* IMTestController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IMTestController.m; sourceTree = "<group>"; };
 		F7A6C2E623A876C3007645F0 /* QHKeyboardView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QHKeyboardView.h; sourceTree = "<group>"; };
 		F7A6C2E723A876C3007645F0 /* QHKeyboardView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QHKeyboardView.m; sourceTree = "<group>"; };
+		F7AED4702449A8740072A577 /* UserBindingSection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UserBindingSection.h; sourceTree = "<group>"; };
+		F7AED4712449A8740072A577 /* UserBindingSection.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UserBindingSection.m; sourceTree = "<group>"; };
+		F7AED4732449A8870072A577 /* IGListBindingController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IGListBindingController.h; sourceTree = "<group>"; };
+		F7AED4742449A8870072A577 /* IGListBindingController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IGListBindingController.m; sourceTree = "<group>"; };
+		F7AED4792449AB490072A577 /* UserBindingSectionCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UserBindingSectionCell.h; sourceTree = "<group>"; };
+		F7AED47A2449AB490072A577 /* UserBindingSectionCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UserBindingSectionCell.m; sourceTree = "<group>"; };
 		F7B56AE422324860008FE498 /* LABAlertController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LABAlertController.h; sourceTree = "<group>"; };
 		F7B56AE522324860008FE498 /* LABAlertController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LABAlertController.m; sourceTree = "<group>"; };
 		F7B56AE722324D45008FE498 /* LABPopAnimateTransitioning.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LABPopAnimateTransitioning.h; sourceTree = "<group>"; };
@@ -317,6 +326,8 @@
 				F766DC2823BF2B9600C3B16A /* Model */,
 				F766DC2523BF28E200C3B16A /* IGListViewController.h */,
 				F766DC2623BF28E200C3B16A /* IGListViewController.m */,
+				F7AED4732449A8870072A577 /* IGListBindingController.h */,
+				F7AED4742449A8870072A577 /* IGListBindingController.m */,
 			);
 			path = IGListKitDemo;
 			sourceTree = "<group>";
@@ -345,6 +356,8 @@
 			children = (
 				F766DC2E23BF2EFA00C3B16A /* UserSectionController.h */,
 				F766DC2F23BF2EFA00C3B16A /* UserSectionController.m */,
+				F7AED4702449A8740072A577 /* UserBindingSection.h */,
+				F7AED4712449A8740072A577 /* UserBindingSection.m */,
 			);
 			path = SectionController;
 			sourceTree = "<group>";
@@ -354,6 +367,8 @@
 			children = (
 				F766DC3223BF30A700C3B16A /* UserCollectionCell.h */,
 				F766DC3323BF30A700C3B16A /* UserCollectionCell.m */,
+				F7AED4792449AB490072A577 /* UserBindingSectionCell.h */,
+				F7AED47A2449AB490072A577 /* UserBindingSectionCell.m */,
 			);
 			path = User;
 			sourceTree = "<group>";
@@ -831,7 +846,9 @@
 				F7FBEFC921F6F64800E2B362 /* HomeTableViewCell.m in Sources */,
 				F7A6C2E823A876C3007645F0 /* QHKeyboardView.m in Sources */,
 				F766DC2D23BF2DF700C3B16A /* IGUserModel.m in Sources */,
+				F7AED47B2449AB490072A577 /* UserBindingSectionCell.m in Sources */,
 				F7160938229E842700729B9A /* StackCardslayout.m in Sources */,
+				F7AED4752449A8870072A577 /* IGListBindingController.m in Sources */,
 				F76C976A2275524E00B92905 /* StackCardView.m in Sources */,
 				F715EA9921F98D0D004A870F /* HomeEditTableCell.m in Sources */,
 				F7A20CF5229F683D00EBC5F7 /* TABBaseCardView.m in Sources */,
@@ -849,6 +866,7 @@
 				F766DC2723BF28E200C3B16A /* IGListViewController.m in Sources */,
 				F757E01A21F802F3008919FD /* LaboratoryNavigationDelegate.m in Sources */,
 				F792B7D221F6BAA200335025 /* UIViewController+Laboratory.m in Sources */,
+				F7AED4722449A8740072A577 /* UserBindingSection.m in Sources */,
 				F7CE9203221A47D9007FFD70 /* NSAttributedString+Laboratory.m in Sources */,
 				F7D11EC422363EA7000898A5 /* EditableCollecitonController.m in Sources */,
 				F7A6982023A095BE00647009 /* IMTestController.m in Sources */,

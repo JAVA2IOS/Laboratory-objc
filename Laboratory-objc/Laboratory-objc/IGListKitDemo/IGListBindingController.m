@@ -1,17 +1,18 @@
 //
-//  IGListViewController.m
+//  IGListBindingController.m
 //  Laboratory-objc
 //
-//  Created by q huang on 2020/1/3.
+//  Created by q huang on 2020/4/17.
 //  Copyright © 2020 CodeZ. All rights reserved.
 //
 
-#import "IGListViewController.h"
-#import <IGListKit.h>
-#import "IGUserModel.h"
-#import "UserSectionController.h"
+#import "IGListBindingController.h"
+#import <IGListKit/IGListKit.h>
+#import "UserBindingSection.h"
 
-@interface IGListViewController () <IGListAdapterDataSource, IGListAdapterMoveDelegate>
+#import "IGUserModel.h"
+
+@interface IGListBindingController ()<IGListAdapterDelegate, IGListAdapterDataSource, IGListAdapterMoveDelegate>
 @property (nonatomic, retain) IGListCollectionView *listView;
 /// 数据源配置
 @property (nonatomic, retain) IGListAdapter *adapter;
@@ -20,8 +21,7 @@
 @property (nonatomic, retain) NSArray *sectionModels;
 @end
 
-@implementation IGListViewController
-
+@implementation IGListBindingController
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -55,16 +55,22 @@
 
 
 #pragma mark - IGListAdapterDelegate
+- (void)listAdapter:(nonnull IGListAdapter *)listAdapter didEndDisplayingObject:(nonnull id)object atIndex:(NSInteger)index {
+    
+}
+
+- (void)listAdapter:(nonnull IGListAdapter *)listAdapter willDisplayObject:(nonnull id)object atIndex:(NSInteger)index {
+    
+}
+
 - (NSArray<id<IGListDiffable>> *)objectsForListAdapter:(IGListAdapter *)listAdapter {
     return _userModels;
 }
 
 - (IGListSectionController *)listAdapter:(IGListAdapter *)listAdapter sectionControllerForObject:(id)object {
-    if ([object isKindOfClass:[IGUserModel class]]) {
-        return [UserSectionController new];
-    }
-
-    return nil;
+    UserBindingSection *section = [[UserBindingSection alloc] init];
+    section.userModels = _userModels;
+    return section;
 }
 
 - (UIView *)emptyViewForListAdapter:(IGListAdapter *)listAdapter {
@@ -77,6 +83,7 @@
         case UIGestureRecognizerStateBegan:
         {
             NSIndexPath *currentIndexPath = [self.listView indexPathForItemAtPoint:currentPoint];
+            NSLog(@"当前坐标(%ld, %ld)", (long)currentIndexPath.section, (long)currentIndexPath.row);
             
             if (currentIndexPath) {
                 [self.listView beginInteractiveMovementForItemAtIndexPath:currentIndexPath];
@@ -116,4 +123,6 @@
     });
 }
 
+
 @end
+
