@@ -46,7 +46,7 @@
 - (UIButton *)leftNavigationBarItem {
     if (!_leftNavigationBarItem) {
         _leftNavigationBarItem = [UIButton lab_initButton:CGRectMake(0, LABStatusBarHeight, LABNavBarHeight, LABNavBarHeight) image:LABBundleImage(LABImageBundleSourceType_Navigation_backDarkArrow)];
-        WeakSelf(self)
+        Weak(self)
         [_leftNavigationBarItem buttonClickCompletion:^{
             if (weakself.navigationBarItemBlock) {
                 weakself.navigationBarItemBlock(LABNavigationBarItemTypeBackButton);
@@ -60,7 +60,7 @@
 - (UIButton *)rightNavigationBarItem {
     if (!_rightNavigationBarItem) {
         _rightNavigationBarItem = [UIButton lab_initButton:CGRectMake(self.labWidth - LABNavBarHeight, LABStatusBarHeight, LABNavBarHeight, LABNavBarHeight) image:LABBundleImage(LABImageBundleSourceTypeNone)];
-        WeakSelf(self)
+        Weak(self)
         [_rightNavigationBarItem buttonClickCompletion:^{
             if (weakself.navigationBarItemBlock) {
                 weakself.navigationBarItemBlock(LABNavigationBarItemTypeRightButton);

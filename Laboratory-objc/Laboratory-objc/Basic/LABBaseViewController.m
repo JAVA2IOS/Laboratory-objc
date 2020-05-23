@@ -21,7 +21,7 @@
     _labNavgationBar.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:_labNavgationBar];
     
-    WeakSelf(self)
+    Weak(self)
     _labNavgationBar.navigationBarItemBlock = ^(LABNavigationBarItemType type) {
         [weakself lab_navgationBarItemHandler:type];
     };

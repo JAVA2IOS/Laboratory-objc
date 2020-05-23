@@ -18,7 +18,7 @@
 #define LABBundleImage(args) [LABBundleManager bundleName:args]
 
 // 循环引用
-#define WeakSelf(type) __weak typeof(type) weak##type = type;
+#define Weak(type) __weak typeof(type) weak##type = type;
 
 // 屏幕参数
 #define APPDELEGATE ((AppDelegate *)[[UIApplication sharedApplication] delegate])

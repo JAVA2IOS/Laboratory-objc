@@ -113,7 +113,7 @@
         return;
     }
     
-    WeakSelf(self)
+    Weak(self)
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(_reconnectTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         if (self->_callBack) {
             self->_callBack(@"正在重新连接服务器");

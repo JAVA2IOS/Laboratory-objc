@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2F6BF7C42479102400B6C86D /* OperationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F6BF7C32479102400B6C86D /* OperationViewController.m */; };
+		2F6BF7C82479112800B6C86D /* QueueManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F6BF7C72479112800B6C86D /* QueueManager.m */; };
+		2F6BF7CB2479113700B6C86D /* TaskOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F6BF7CA2479113700B6C86D /* TaskOperation.m */; };
 		C5A5E78131D00E521269514A /* Pods_Laboratory_objc.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A84FD0E27AEE1FAF19CA118D /* Pods_Laboratory_objc.framework */; };
 		F715EA9321F94B20004A870F /* EmitterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F715EA9221F94B20004A870F /* EmitterViewController.m */; };
 		F715EA9621F98AF3004A870F /* EditableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F715EA9521F98AF3004A870F /* EditableViewController.m */; };
@@ -96,6 +99,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2F6BF7C22479102400B6C86D /* OperationViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OperationViewController.h; sourceTree = "<group>"; };
+		2F6BF7C32479102400B6C86D /* OperationViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OperationViewController.m; sourceTree = "<group>"; };
+		2F6BF7C62479112800B6C86D /* QueueManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QueueManager.h; sourceTree = "<group>"; };
+		2F6BF7C72479112800B6C86D /* QueueManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QueueManager.m; sourceTree = "<group>"; };
+		2F6BF7C92479113700B6C86D /* TaskOperation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TaskOperation.h; sourceTree = "<group>"; };
+		2F6BF7CA2479113700B6C86D /* TaskOperation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TaskOperation.m; sourceTree = "<group>"; };
 		3038ABE175D426A7D6472B7A /* Pods-Laboratory-objc.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Laboratory-objc.release.xcconfig"; path = "Target Support Files/Pods-Laboratory-objc/Pods-Laboratory-objc.release.xcconfig"; sourceTree = "<group>"; };
 		68D04801BF2ECF9FE5CE9059 /* Pods-Laboratory-objc.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Laboratory-objc.debug.xcconfig"; path = "Target Support Files/Pods-Laboratory-objc/Pods-Laboratory-objc.debug.xcconfig"; sourceTree = "<group>"; };
 		A84FD0E27AEE1FAF19CA118D /* Pods_Laboratory_objc.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Laboratory_objc.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -256,6 +265,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2F6BF7C52479111B00B6C86D /* Queue */ = {
+			isa = PBXGroup;
+			children = (
+				2F6BF7C62479112800B6C86D /* QueueManager.h */,
+				2F6BF7C72479112800B6C86D /* QueueManager.m */,
+				2F6BF7C92479113700B6C86D /* TaskOperation.h */,
+				2F6BF7CA2479113700B6C86D /* TaskOperation.m */,
+			);
+			path = Queue;
+			sourceTree = "<group>";
+		};
 		38DC6B684CB075CFC9E59214 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -376,6 +396,7 @@
 		F792B71821F6B6FD00335025 /* Laboratory-objc */ = {
 			isa = PBXGroup;
 			children = (
+				2F6BF7C52479111B00B6C86D /* Queue */,
 				F766DC2423BF286000C3B16A /* IGListKitDemo */,
 				F7A6981D23A0957200647009 /* UnknownTerritory */,
 				F792B7B021F6BAA100335025 /* Category */,
@@ -590,6 +611,8 @@
 			children = (
 				F7A6981E23A095BE00647009 /* IMTestController.h */,
 				F7A6981F23A095BE00647009 /* IMTestController.m */,
+				2F6BF7C22479102400B6C86D /* OperationViewController.h */,
+				2F6BF7C32479102400B6C86D /* OperationViewController.m */,
 			);
 			name = UnknownTerritory;
 			sourceTree = "<group>";
@@ -804,6 +827,7 @@
 				F7FBEFC521F6F4DB00E2B362 /* UITableViewCell+Laboratory.m in Sources */,
 				F7160934229E829300729B9A /* StackCardsViewController.m in Sources */,
 				F792B7C421F6BAA200335025 /* HomeModel.m in Sources */,
+				2F6BF7C82479112800B6C86D /* QueueManager.m in Sources */,
 				F7FBEFC921F6F64800E2B362 /* HomeTableViewCell.m in Sources */,
 				F7A6C2E823A876C3007645F0 /* QHKeyboardView.m in Sources */,
 				F766DC2D23BF2DF700C3B16A /* IGUserModel.m in Sources */,
@@ -830,6 +854,7 @@
 				F7A6982023A095BE00647009 /* IMTestController.m in Sources */,
 				F7B56AE622324860008FE498 /* LABAlertController.m in Sources */,
 				F766DC3723BF39C000C3B16A /* IGWeiboSectionModel.m in Sources */,
+				2F6BF7CB2479113700B6C86D /* TaskOperation.m in Sources */,
 				F71FA2FA2271560000459CF8 /* AudioViewController.m in Sources */,
 				F715EA9621F98AF3004A870F /* EditableViewController.m in Sources */,
 				F792B7C821F6BAA200335025 /* LaboratoryAnimatiedTransitioning.m in Sources */,
@@ -843,6 +868,7 @@
 				F766DC3023BF2EFA00C3B16A /* UserSectionController.m in Sources */,
 				F792B7C521F6BAA200335025 /* HomeViewController.m in Sources */,
 				F792B7CA21F6BAA200335025 /* UIView+Laboratory.m in Sources */,
+				2F6BF7C42479102400B6C86D /* OperationViewController.m in Sources */,
 				F766DC3423BF30A700C3B16A /* UserCollectionCell.m in Sources */,
 				F792B7C621F6BAA200335025 /* FadeViewController.m in Sources */,
 				F792B72921F6B6FE00335025 /* main.m in Sources */,
